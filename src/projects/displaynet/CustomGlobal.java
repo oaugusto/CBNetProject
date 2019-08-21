@@ -1,8 +1,17 @@
 package projects.displaynet;
 
+import java.util.ArrayList;
+
+import projects.displaynet.nodeImplementations.BinaryTreeNode;
 import sinalgo.runtime.AbstractCustomGlobal;
+import sinalgo.runtime.Global;
+import sinalgo.tools.Tools;
 
 public class CustomGlobal extends AbstractCustomGlobal {
+
+    public int numNodes = 30;
+    public ArrayList<BinaryTreeNode> tree = null;
+    public TreeConnections treeTopology = null;
 
     @Override
     public boolean hasTerminated() {
@@ -12,11 +21,24 @@ public class CustomGlobal extends AbstractCustomGlobal {
     @Override
     public void preRun() {
 
+        this.tree = new ArrayList<BinaryTreeNode> ();
+        
+        for (int i = 0; i < numNodes; i++) {
+            BinaryTreeNode n = new BinaryTreeNode();
+            n.finishInitializationWithDefaultModels(true);
+            this.tree.add(n);
+        }
+
+        this.treeTopology = new TreeConnections(this.tree);
+        this.treeTopology.setBalancedTree();
     }
     
     @Override
     public void preRound() {
-
+        if (Global.isGuiMode) {
+            this.treeTopology.setPositions();
+            Tools.repaintGUI();
+        }
     }
 
 }
