@@ -3,6 +3,7 @@ package projects.displaynet;
 import java.util.ArrayList;
 
 import projects.displaynet.nodeImplementations.BinaryTreeNode;
+import projects.displaynet.nodeImplementations.SplayNetNode;
 import sinalgo.runtime.AbstractCustomGlobal;
 import sinalgo.runtime.Global;
 import sinalgo.tools.Tools;
@@ -24,13 +25,17 @@ public class CustomGlobal extends AbstractCustomGlobal {
         this.tree = new ArrayList<BinaryTreeNode> ();
         
         for (int i = 0; i < numNodes; i++) {
-            BinaryTreeNode n = new BinaryTreeNode();
+            SplayNetNode n = new SplayNetNode();
             n.finishInitializationWithDefaultModels(true);
             this.tree.add(n);
         }
 
         this.treeTopology = new TreeConnections(this.tree);
         this.treeTopology.setBalancedTree();
+        if (Global.isGuiMode) {
+            this.treeTopology.setPositions();
+            Tools.repaintGUI();
+        }
     }
     
     @Override

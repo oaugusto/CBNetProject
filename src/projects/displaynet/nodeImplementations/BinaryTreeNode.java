@@ -13,9 +13,10 @@ import sinalgo.tools.Tools;
 
 /**
  * BinaryTreeNode This class implements the binary tree node functions like
- * keeping track of neighboors and changing links
+ * keeping track of neighboors and changing links. Only parent nodes can change
+ * link to its children
  */
-public class BinaryTreeNode extends Node implements Comparable<BinaryTreeNode> {
+public abstract class BinaryTreeNode extends Node implements Comparable<BinaryTreeNode> {
 
     private BinaryTreeNode parent;
     private BinaryTreeNode leftChild;
@@ -48,6 +49,24 @@ public class BinaryTreeNode extends Node implements Comparable<BinaryTreeNode> {
 
     public boolean isRoot() {
         return this.parent == null;
+    }
+
+    public boolean isLeastCommonAncestorOf(BinaryTreeNode node) {
+
+        if (this.minIdInSubtree <= node.ID && node.ID <= this.maxIdInSubtree) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public boolean isLeastCommonAncestorOf(int id) {
+
+        if (this.minIdInSubtree <= id && id <= this.maxIdInSubtree) {
+            return true;
+        }
+
+        return false;
     }
 
     public boolean isLeaf() {
@@ -83,28 +102,20 @@ public class BinaryTreeNode extends Node implements Comparable<BinaryTreeNode> {
         }
     }
 
-    private boolean removeLinkTo(BinaryTreeNode node) {
+    private void removeLinkTo(BinaryTreeNode node) {
         if (!this.outgoingConnections.contains(this, node) || !node.outgoingConnections.contains(node, this)) {
-            return false;
+            Tools.fatalError("Trying to remove a non-existing connection");
         }
 
         this.outgoingConnections.remove(this, node);
         node.outgoingConnections.remove(node, this);
-        return true;
-    }
-
-    public void changeParentTo(BinaryTreeNode node) {
-        this.removeLinkTo(this.parent);
-        this.addLinkTo(node);
-        this.parent = node;
-        // change_log.logln(Global.currentTime + " [CHANGE LINK] node " + ID + " change
-        // parent to " + "node " + node);
     }
 
     public void changeRightChildTo(BinaryTreeNode node) {
         this.removeLinkTo(this.rightChild);
         this.addLinkTo(node);
         this.rightChild = node;
+        node.setParent(this);
         // change_log.logln(Global.currentTime + " [CHANGE LINK] node " + ID + " change
         // right child to " + "node " + node);
     }
@@ -113,6 +124,7 @@ public class BinaryTreeNode extends Node implements Comparable<BinaryTreeNode> {
         this.removeLinkTo(this.leftChild);
         this.addLinkTo(node);
         this.leftChild = node;
+        node.setParent(this);
         // change_log.logln(Global.currentTime + " [CHANGE LINK] node " + ID + " change
         // left child to " + "node " + node);
     }
@@ -182,6 +194,11 @@ public class BinaryTreeNode extends Node implements Comparable<BinaryTreeNode> {
         forwardMessage(msg);
     }
 
+    /**
+     * if the function return false the message will not be forward to next node
+     */
+    public abstract boolean snoopingMessage(RoutingMessage msg);
+
     @Override
     public void init() {
         this.parent = null;
@@ -193,7 +210,7 @@ public class BinaryTreeNode extends Node implements Comparable<BinaryTreeNode> {
 
     @Override
     public void preStep() {
-
+        // nothing to do
     }
 
     @Override
@@ -205,40 +222,33 @@ public class BinaryTreeNode extends Node implements Comparable<BinaryTreeNode> {
                 RoutingMessage rt = (RoutingMessage) msg;
 
                 if (rt.getDestination() == ID) {
-                    this.receiveMsg();
+                    this.receiveMsg(rt.getPayLoad());
                 } else {
-                    this.forwardMessage(rt);
+                    if (this.snoopingMessage(rt)) {
+                        this.forwardMessage(rt);
+                    }
                 }
+            } else {
+                this.receiveMsg(msg);
             }
         }
     }
 
-    public void receiveMsg() {
-        System.out.println("MessageReceive");
-    }
-
-    @Override
-    public void postStep() {
-        // if (time == 4) {
-        //     if (this.firstTime == false) {
-        //         if (ID == 1) {
-        //             RoutingMessage rt = new RoutingMessage(ID, 30);
-        //             sendForwardMessge(rt);
-        //         }
-        //         this.firstTime = true;
-        //     }
-        // }
-        // time++;
-    }
+    /**
+     * This function is called for each message received
+     * 
+     * @param msg
+     */
+    public abstract void receiveMsg(Message msg);
 
     @Override
     public void neighborhoodChange() {
-        //nothing to do
+        // nothing to do
     }
 
     @Override
     public void checkRequirements() throws WrongConfigurationException {
-        //nothing to do
+        // nothing to do
     }
 
     @Override
@@ -247,7 +257,7 @@ public class BinaryTreeNode extends Node implements Comparable<BinaryTreeNode> {
     }
 
     public void draw(Graphics g, PositionTransformation pt, boolean highlight) {
-        String text = Integer.toString(ID);
+        String text = "Node: " + ID;
         // draw the node as a circle with the text inside
         super.drawNodeAsDiskWithText(g, pt, highlight, text, 16, Color.YELLOW);
     }

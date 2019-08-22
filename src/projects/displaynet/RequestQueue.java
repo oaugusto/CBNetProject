@@ -10,8 +10,26 @@ import sinalgo.tools.Tuple;
 
 public class RequestQueue {
 	
+	private String separator = ",";
+
+	private int numberOfNodes;
+	private int numberOfRequests;
 	private Queue<Tuple<Integer, Integer>> queue = new LinkedList<>();
-		
+	
+	public RequestQueue() {
+		this.numberOfNodes = 0;
+		this.numberOfRequests = 0;
+	}
+
+	public RequestQueue(String path) {
+		this.setDataFromFile(path);
+	}
+
+	public RequestQueue(String path, String separator) {
+		this.separator = separator;
+		this.setDataFromFile(path);
+	}
+
 	public void setDataFromFile(String path) {
 		queue.clear();
 		
@@ -23,7 +41,7 @@ public class RequestQueue {
 			reader = new BufferedReader(new FileReader(path));
 					
 			while ((line = reader.readLine()) != null) {
-				String[] fields = line.split(",");
+				String[] fields = line.split(this.separator);
 				Tuple<Integer, Integer> r = new Tuple<>(Integer.valueOf(fields[0]) 
 						+ 1, Integer.valueOf(fields[1]) + 1);
 				queue.add(r);
@@ -35,6 +53,14 @@ public class RequestQueue {
 			e.printStackTrace();
 		} 
 		
+	}
+
+	public int getNumberOfNodes() {
+		return this.numberOfNodes;
+	}
+
+	public int getNumberOfRequests() {
+		return this.numberOfRequests;
 	}
 	
 	public Tuple<Integer, Integer> getNextRequest() {
