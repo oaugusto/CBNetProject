@@ -30,7 +30,9 @@ public class CustomGlobal extends AbstractCustomGlobal {
             this.tree.add(n);
         }
 
-        this.treeTopology = new TreeConnections(this.tree);
+        BinaryTreeNode nullNode = new SplayNetNode();
+
+        this.treeTopology = new TreeConnections(nullNode, this.tree);
         this.treeTopology.setBalancedTree();
         if (Global.isGuiMode) {
             this.treeTopology.setPositions();
