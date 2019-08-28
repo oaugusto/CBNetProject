@@ -23,6 +23,7 @@ public abstract class BinaryTreeNode extends Node implements Comparable<BinaryTr
     private BinaryTreeNode rightChild;
     private int minIdInSubtree;
     private int maxIdInSubtree;
+    private boolean isRoot;
 
     // private int time = 0;
     // private boolean firstTime = false;
@@ -48,7 +49,15 @@ public abstract class BinaryTreeNode extends Node implements Comparable<BinaryTr
     }
 
     public boolean isRoot() {
-        return this.parent == null;
+        return this.isRoot;
+    }
+
+    public void setRoot() {
+        this.isRoot = true;
+    }
+
+    public void unsetRoot() {
+        this.isRoot = false;
     }
 
     public boolean isLeastCommonAncestorOf(BinaryTreeNode node) {
@@ -81,67 +90,141 @@ public abstract class BinaryTreeNode extends Node implements Comparable<BinaryTr
         return this.rightChild != null;
     }
 
-    public void setParent(BinaryTreeNode node) {
-        this.parent = node;
+    public boolean isNeighbor(int id) {
+        if (this.parent.ID == id || this.leftChild.ID == id || this.rightChild.ID == id) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
-    public void setLeftChild(BinaryTreeNode node) {
-        this.leftChild = node;
+    public boolean isNeighbor(BinaryTreeNode node) {
+        if (this.parent.ID == node.ID || this.leftChild.ID == node.ID || this.rightChild.ID == node.ID) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
-    public void setRightChild(BinaryTreeNode node) {
-        this.rightChild = node;
+    public String getRelationship(BinaryTreeNode node) {
+        if (node.ID == this.parent.ID) {
+            return "Parent";
+        } else if (node.ID == this.leftChild.ID) {
+            return "LeftChild";
+        } else if (node.ID == this.rightChild.ID) {
+            return "RightChild";
+        } else {
+            return "None";
+        }
+    }
+
+    /**
+     * @param parent the parent to set
+     */
+    public void setParent(BinaryTreeNode parent) {
+        this.parent = parent;
+    }
+
+    /**
+     * @param leftChild the leftChild to set
+     */
+    public void setLeftChild(BinaryTreeNode leftChild) {
+        this.leftChild = leftChild;
+    }
+
+    /**
+     * @param rightChild the rightChild to set
+     */
+    public void setRightChild(BinaryTreeNode rightChild) {
+        this.rightChild = rightChild;
+    }
+
+
+    private boolean isConnectedTo(BinaryTreeNode node) {
+        if (this.outgoingConnections.contains(this, node) && node.outgoingConnections.contains(node, this)) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     private void addLinkTo(BinaryTreeNode node) {
         if (node != null) {
             this.outgoingConnections.add(this, node, false);
             node.outgoingConnections.add(node, this, false);
-        } else {
-            Tools.fatalError("Trying to add a connection with non-existing node");
         }
     }
 
+    /**
+     * Remove a link with the node is not null. 
+     * @param node
+     */
     private void removeLinkTo(BinaryTreeNode node) {
-        if (!this.outgoingConnections.contains(this, node) || !node.outgoingConnections.contains(node, this)) {
-            Tools.fatalError("Trying to remove a non-existing connection");
+
+        if (node == null) {
+            return;
         }
 
-        this.outgoingConnections.remove(this, node);
-        node.outgoingConnections.remove(node, this);
+        if (this.isConnectedTo(node)) {
+            this.outgoingConnections.remove(this, node);
+            node.outgoingConnections.remove(node, this);
+        } else {
+            Tools.fatalError("Trying to remove a non-existing conenction");
+        }
     }
 
-    public void changeRightChildTo(BinaryTreeNode node) {
-        this.removeLinkTo(this.rightChild);
-        this.addLinkTo(node);
-        this.rightChild = node;
-        node.setParent(this);
-        // change_log.logln(Global.currentTime + " [CHANGE LINK] node " + ID + " change
-        // right child to " + "node " + node);
+    /**
+     * Set the link to node and update reference to left child
+     * @param node
+     */
+    public void addLinkToLeftChild(BinaryTreeNode node) {
+         // update current left child and create edge
+         this.addLinkTo(node);
+         this.setLeftChild(node);
+         node.setParent(this);
     }
 
-    public void changeLeftChildTo(BinaryTreeNode node) {
-        this.removeLinkTo(this.leftChild);
+    /**
+     * Set the link to node and update reference to right child
+     * @param node
+     */
+    public void addLinkToRightChild(BinaryTreeNode node) {
         this.addLinkTo(node);
-        this.leftChild = node;
+        this.setRightChild(node);
         node.setParent(this);
-        // change_log.logln(Global.currentTime + " [CHANGE LINK] node " + ID + " change
-        // left child to " + "node " + node);
     }
 
     public void setMinIdInSubtree(int min) {
         this.minIdInSubtree = min;
-        // change_log.logln(Global.currentTime + " [CHANGE min] node " + ID + " change
-        // min to " + min);
     }
 
     public void setMaxIdInSubtree(int max) {
         this.maxIdInSubtree = max;
-        // change_log.logln(Global.currentTime + " [CHANGE max] node " + ID + " change
-        // MAX to " + max);
-
     }
 
+    /**
+     * Change link to left child, update reference to left child but do
+     * not update old left child parent reference. The next node to set old
+     * left child as child will update its parent.
+     */
+    public void changeLeftChildTo(BinaryTreeNode node) {
+        // remove the previous connection
+        this.removeLinkTo(this.leftChild);
+        // update current left child and create edge
+        this.addLinkToLeftChild(node);
+    }
+
+    /**
+     * Change link to right child, update reference to right child but do
+     * not update old right child parent reference. The next node to set old
+     * left child as child will update its parent.
+     */
+    public void changeRightChildTo(BinaryTreeNode node) {
+        this.removeLinkTo(this.rightChild);
+        this.addLinkToRightChild(node);
+    }
+
+    
     public boolean sendToParent(Message msg) {
         if (this.outgoingConnections.contains(this, this.parent)) {
             send(msg, this.parent);
@@ -184,20 +267,18 @@ public abstract class BinaryTreeNode extends Node implements Comparable<BinaryTr
         }
     }
 
-    public void sendForwardMessge(RoutingMessage msg) {
+    public void sendForwardMessage(int dst, Message msg) {
         // myLog.logln(Global.currentTime +":: "+"sendForwarding Message request splay"
         // + msg.receiver + "\n");
-        if (msg.getDestination() == ID) {
-            Tools.fatalError("Trying to send message to itself");
+        RoutingMessage rt = new RoutingMessage(ID, dst, msg);
+
+        if (dst == ID) {
+            this.receiveMessage(msg);
+            return;
         }
 
-        forwardMessage(msg);
+        forwardMessage(rt);
     }
-
-    /**
-     * if the function return false the message will not be forward to next node
-     */
-    public abstract boolean snoopingMessage(RoutingMessage msg);
 
     @Override
     public void init() {
@@ -213,6 +294,10 @@ public abstract class BinaryTreeNode extends Node implements Comparable<BinaryTr
         // nothing to do
     }
 
+    /**
+     * The snoopingMessage method allow to intercept one forward message and decide
+     * if the message should be routed or not.
+     */
     @Override
     public void handleMessages(Inbox inbox) {
         while (inbox.hasNext()) {
@@ -220,16 +305,18 @@ public abstract class BinaryTreeNode extends Node implements Comparable<BinaryTr
 
             if (msg instanceof RoutingMessage) {
                 RoutingMessage rt = (RoutingMessage) msg;
+                Message payload = rt.getPayLoad();
 
-                if (rt.getDestination() == ID) {
-                    this.receiveMsg(rt.getPayLoad());
-                } else {
-                    if (this.snoopingMessage(rt)) {
+                if (this.snoopingMessage(payload)) {
+                    if (rt.getDestination() == ID) {
+                        this.receiveMessage(payload);
+                    } else {
                         this.forwardMessage(rt);
                     }
                 }
+
             } else {
-                this.receiveMsg(msg);
+                this.receiveMessage(msg);
             }
         }
     }
@@ -239,7 +326,13 @@ public abstract class BinaryTreeNode extends Node implements Comparable<BinaryTr
      * 
      * @param msg
      */
-    public abstract void receiveMsg(Message msg);
+    public abstract void receiveMessage(Message msg);
+
+    /**
+     * if the function return false the message will not be forward to next node
+     */
+    public abstract boolean snoopingMessage(Message msg);
+
 
     @Override
     public void neighborhoodChange() {
@@ -261,5 +354,4 @@ public abstract class BinaryTreeNode extends Node implements Comparable<BinaryTr
         // draw the node as a circle with the text inside
         super.drawNodeAsDiskWithText(g, pt, highlight, text, 16, Color.YELLOW);
     }
-
 }

@@ -7,11 +7,11 @@ import sinalgo.gui.transformation.PositionTransformation;
 
 /**
  * SynchronizerNode Implements timeslots system to coordenate operations. The
- * node initiate the timeslot in 0 and go till 14
+ * node initiate the timeslot in 0 and go ...
  */
 public abstract class SynchronizerNode extends BinaryTreeNode {
 
-    private int MAX_TIMESLOT = 15;
+    private int MAX_TIMESLOT = 8;
     private int timeslot;
 
     public int getCurrentTimeSlot() {
@@ -26,22 +26,22 @@ public abstract class SynchronizerNode extends BinaryTreeNode {
 
     @Override
     public void postStep() {
-        // this.nodeStep();
+        
         switch (this.timeslot) {
         case 0:
             timeslotZero();
             break;
 
-        case 1:
-            timeslotOne();
+        case 3:
+            timeslotThree();
             break;
 
-        case 2:
-            timeslotTwo();
+        case 6:
+            timeslotSix();
             break;
 
-        case 5:
-            timeslotFive();
+        case 7:
+            timeslotSeven();
             break;
 
         default:
@@ -51,26 +51,18 @@ public abstract class SynchronizerNode extends BinaryTreeNode {
     }
 
     // public abstract void nodeStep();
-    public void timeslotZero() {
-        // System.out.println("timeslot zero");
-    }
-
-    public void timeslotOne() {
-        // System.out.println("timeslot one");
-    }
+    public abstract void timeslotZero(); //send request cluster
     
-    public void timeslotTwo() {
-        // System.out.println("timeslot two");
-    }
+    public abstract void timeslotThree();//all nodes receive request cluster message
 
-    public void timeslotFive() {
-        // System.out.println("timeslot five");
-    }
+    public abstract void timeslotSix();  //all nodes acknowledge one request cluster and the winner node rotate
+
+    public abstract void timeslotSeven();//check finish splay
 
     @Override
     public void draw(Graphics g, PositionTransformation pt, boolean highlight) {
-        String text = "timeslot: " + this.getCurrentTimeSlot();
-        super.drawNodeAsDiskWithText(g, pt, highlight, text, 20, Color.WHITE);
+        String text = "" + ID;
+        super.drawNodeAsDiskWithText(g, pt, highlight, text, 30, Color.WHITE);
     }
 
 }

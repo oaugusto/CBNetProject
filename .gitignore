@@ -1,4 +1,4 @@
 binaries/bin/
 *.class
-input/*
+inputs/*
 logs/

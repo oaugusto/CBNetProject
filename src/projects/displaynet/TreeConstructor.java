@@ -5,30 +5,47 @@ import java.util.Collections;
 
 import projects.displaynet.nodeImplementations.BinaryTreeNode;
 import sinalgo.configuration.Configuration;
+import sinalgo.runtime.Global;
+import sinalgo.tools.Tools;
 
-public class TreeConnections {
+public class TreeConstructor {
 
-	private BinaryTreeNode nullNode;
+	private BinaryTreeNode controlNode;
 	private ArrayList<BinaryTreeNode> tree;
 
-	public TreeConnections(BinaryTreeNode nullNode, ArrayList<BinaryTreeNode> tree) {
-		this.nullNode = nullNode;
+	public TreeConstructor(BinaryTreeNode controlNode, ArrayList<BinaryTreeNode> tree) {
+		this.controlNode = controlNode;
 		this.tree = tree;
 	}
 
 	public void setBalancedTree() {
-		if (tree.size() > 0) {
-			buildTree(1, this.tree.size());
+
+		if (tree.isEmpty()) {
+			Tools.fatalError("Empty network passed to TreeConstructor");
 		}
+
+		// build binary tree topology
+		BinaryTreeNode root = buildTree(1, this.tree.size());
+
+		// configure the control node
+		this.controlNode.setParent(null);
+		this.controlNode.setRightChild(null);
+		this.controlNode.addLinkToLeftChild(root);
 	}
 
-	private void buildTree(int start, int end) {
+	/**
+	 * This function build a balance binary tree network and return root node
+	 * @param start
+	 * @param end
+	 * @return
+	 */
+	private BinaryTreeNode buildTree(int start, int end) {
 
 		int parentId = Integer.MIN_VALUE;
 		int leftChildId = Integer.MIN_VALUE;
 		int rightChildId = Integer.MIN_VALUE;
 
-		BinaryTreeNode parent = this.nullNode;
+		BinaryTreeNode parent = null;
 		BinaryTreeNode leftChild = null;
 		BinaryTreeNode rightChild = null;
 
@@ -41,12 +58,9 @@ public class TreeConnections {
 		if (parentId != start) {
 			leftChildId = (start + parentId - 1) / 2; // find left child
 			leftChild = tree.get(leftChildId - 1);
-			parent.addBidirectionalConnectionTo(leftChild);
-
-			leftChild.setParent(parent);
+			parent.addLinkToLeftChild(leftChild);
 			leftChild.setMinIdInSubtree(start);
 			leftChild.setMaxIdInSubtree(parentId - 1);
-			parent.setLeftChild(leftChild);
 
 			buildTree(start, parentId - 1);
 		}
@@ -55,15 +69,14 @@ public class TreeConnections {
 		if (parentId != end) {
 			rightChildId = (parentId + 1 + end) / 2;
 			rightChild = tree.get(rightChildId - 1);
-			parent.addBidirectionalConnectionTo(rightChild);
-
-			rightChild.setParent(parent);
+			parent.addLinkToRightChild(rightChild);
 			rightChild.setMinIdInSubtree(parentId + 1);
 			rightChild.setMaxIdInSubtree(end);
-			parent.setRightChild(rightChild);
 
 			buildTree(parentId + 1, end);
 		}
+
+		return parent;
 	}
 
 	public void linearTree() {
@@ -142,13 +155,7 @@ public class TreeConnections {
 	}
 
 	public BinaryTreeNode getRootNode() {
-		BinaryTreeNode node = tree.get(0);
-
-		while (!node.isRoot()) {
-			node = node.getParent();
-		}
-
-		return node;
+		return this.controlNode.getLeftChild();
 	}
 
 	private int getTreeHeight(BinaryTreeNode root) {
@@ -160,17 +167,22 @@ public class TreeConnections {
 	}
 
 	public void setPositions() {
+		if (!Global.isGuiMode) {
+			return;
+		}
+
 		BinaryTreeNode root = getRootNode();
 		int height = getTreeHeight(root);
 
 		double x = Configuration.dimX / 2;
 		double y_space = Configuration.dimY / (height + 2);
 
-		//null node
-		this.nullNode.setPosition(x, 0, 0);
+		// null node
+		this.controlNode.setPosition(x, 0, 0);
 
 		setPositionHelper(root, x, y_space, 1);
 
+		Tools.repaintGUI();
 	}
 
 	private void setPositionHelper(BinaryTreeNode root, double x, double y_space, int level) {

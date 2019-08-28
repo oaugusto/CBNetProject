@@ -28,6 +28,11 @@ public class Request implements Comparable<Request> {
 
 	@Override
 	public int compareTo(Request o) {
-		return Double.compare(this.priority, o.priority);
+		int value = Double.compare(this.priority, o.priority);
+		if (value == 0) {
+			return this.srcId - o.srcId;
+		} else {
+			return value;
+		}
 	}
 }

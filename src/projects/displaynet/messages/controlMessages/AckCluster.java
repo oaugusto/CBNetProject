@@ -3,19 +3,17 @@ package projects.displaynet.messages.controlMessages;
 import sinalgo.nodes.messages.Message;
 
 /**
- * RequestCluster
+ * AckCluster
  */
-public class RequestCluster extends Message {
+public class AckCluster extends Message {
 
-    public int timeout;
     public int src;
     public int dst;
     public double priority;
 
-    public RequestCluster(int src, int dst, int timeout, double priority) {
+    public AckCluster(int src, int dst, double priority) {
         this.src = src;
         this.dst = dst;
-        this.timeout = timeout;
         this.priority = priority;
     }
 
@@ -23,5 +21,6 @@ public class RequestCluster extends Message {
     public Message clone() {
         return this;
     }
+
     
 }

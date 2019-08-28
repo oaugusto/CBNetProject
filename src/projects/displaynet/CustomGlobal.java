@@ -5,14 +5,14 @@ import java.util.ArrayList;
 import projects.displaynet.nodeImplementations.BinaryTreeNode;
 import projects.displaynet.nodeImplementations.SplayNetNode;
 import sinalgo.runtime.AbstractCustomGlobal;
-import sinalgo.runtime.Global;
-import sinalgo.tools.Tools;
 
 public class CustomGlobal extends AbstractCustomGlobal {
 
     public int numNodes = 30;
     public ArrayList<BinaryTreeNode> tree = null;
-    public TreeConnections treeTopology = null;
+    public BinaryTreeNode controlNode = null;
+    public TreeConstructor treeTopology = null;
+    public RequestQueue rqueue = null;
 
     @Override
     public boolean hasTerminated() {
@@ -22,6 +22,9 @@ public class CustomGlobal extends AbstractCustomGlobal {
     @Override
     public void preRun() {
 
+        /*
+            create the nodes and constructs the tree topology
+        */
         this.tree = new ArrayList<BinaryTreeNode> ();
         
         for (int i = 0; i < numNodes; i++) {
@@ -30,22 +33,16 @@ public class CustomGlobal extends AbstractCustomGlobal {
             this.tree.add(n);
         }
 
-        BinaryTreeNode nullNode = new SplayNetNode();
+        this.controlNode  = new SplayNetNode();
+        this.treeTopology = new TreeConstructor(controlNode, this.tree);
 
-        this.treeTopology = new TreeConnections(nullNode, this.tree);
         this.treeTopology.setBalancedTree();
-        if (Global.isGuiMode) {
-            this.treeTopology.setPositions();
-            Tools.repaintGUI();
-        }
+        this.treeTopology.setPositions();
     }
     
     @Override
     public void preRound() {
-        if (Global.isGuiMode) {
-            this.treeTopology.setPositions();
-            Tools.repaintGUI();
-        }
+        this.treeTopology.setPositions();
     }
 
 }

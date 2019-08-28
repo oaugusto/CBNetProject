@@ -58,5 +58,4 @@ public class RoutingMessage extends Message {
         return this;
     }
 
-    
 }

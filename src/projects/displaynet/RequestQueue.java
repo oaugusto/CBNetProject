@@ -39,6 +39,12 @@ public class RequestQueue {
 			
 			String line;
 			reader = new BufferedReader(new FileReader(path));
+
+			if ((line = reader.readLine()) != null) {
+				String[] fields = line.split(this.separator);
+				this.numberOfNodes = Integer.parseInt(fields[0]);
+				this.numberOfRequests = Integer.parseInt(fields[1]);
+			}
 					
 			while ((line = reader.readLine()) != null) {
 				String[] fields = line.split(this.separator);

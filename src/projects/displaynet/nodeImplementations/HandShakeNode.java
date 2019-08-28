@@ -66,8 +66,8 @@ public class HandShakeNode extends SplayNetNode {
     }
 
     @Override
-    public void receiveMsg(Message msg) {
-        super.receiveMsg(msg);
+    public void receiveMessage(Message msg) {
+        super.receiveMessage(msg);
 
         if (msg instanceof RequestSplay) {
 
