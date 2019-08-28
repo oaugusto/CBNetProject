@@ -12,15 +12,15 @@ import sinalgo.nodes.messages.Message;
 import sinalgo.tools.Tools;
 
 /**
- * BinaryTreeNode This class implements the binary tree node functions like
+ * BinaryTreeLayer This class implements the binary tree node functions like
  * keeping track of neighboors and changing links. Only parent nodes can change
  * link to its children
  */
-public abstract class BinaryTreeNode extends Node implements Comparable<BinaryTreeNode> {
+public abstract class BinaryTreeLayer extends Node implements Comparable<BinaryTreeLayer> {
 
-    private BinaryTreeNode parent;
-    private BinaryTreeNode leftChild;
-    private BinaryTreeNode rightChild;
+    private BinaryTreeLayer parent;
+    private BinaryTreeLayer leftChild;
+    private BinaryTreeLayer rightChild;
     private int minIdInSubtree;
     private int maxIdInSubtree;
     private boolean isRoot;
@@ -28,15 +28,15 @@ public abstract class BinaryTreeNode extends Node implements Comparable<BinaryTr
     // private int time = 0;
     // private boolean firstTime = false;
 
-    public BinaryTreeNode getParent() {
+    public BinaryTreeLayer getParent() {
         return this.parent;
     }
 
-    public BinaryTreeNode getLeftChild() {
+    public BinaryTreeLayer getLeftChild() {
         return this.leftChild;
     }
 
-    public BinaryTreeNode getRightChild() {
+    public BinaryTreeLayer getRightChild() {
         return this.rightChild;
     }
 
@@ -60,7 +60,7 @@ public abstract class BinaryTreeNode extends Node implements Comparable<BinaryTr
         this.isRoot = false;
     }
 
-    public boolean isLeastCommonAncestorOf(BinaryTreeNode node) {
+    public boolean isLeastCommonAncestorOf(BinaryTreeLayer node) {
 
         if (this.minIdInSubtree <= node.ID && node.ID <= this.maxIdInSubtree) {
             return true;
@@ -98,7 +98,7 @@ public abstract class BinaryTreeNode extends Node implements Comparable<BinaryTr
         }
     }
 
-    public boolean isNeighbor(BinaryTreeNode node) {
+    public boolean isNeighbor(BinaryTreeLayer node) {
         if (this.parent.ID == node.ID || this.leftChild.ID == node.ID || this.rightChild.ID == node.ID) {
             return true;
         } else {
@@ -106,7 +106,7 @@ public abstract class BinaryTreeNode extends Node implements Comparable<BinaryTr
         }
     }
 
-    public String getRelationship(BinaryTreeNode node) {
+    public String getRelationship(BinaryTreeLayer node) {
         if (node.ID == this.parent.ID) {
             return "Parent";
         } else if (node.ID == this.leftChild.ID) {
@@ -121,26 +121,26 @@ public abstract class BinaryTreeNode extends Node implements Comparable<BinaryTr
     /**
      * @param parent the parent to set
      */
-    public void setParent(BinaryTreeNode parent) {
+    public void setParent(BinaryTreeLayer parent) {
         this.parent = parent;
     }
 
     /**
      * @param leftChild the leftChild to set
      */
-    public void setLeftChild(BinaryTreeNode leftChild) {
+    public void setLeftChild(BinaryTreeLayer leftChild) {
         this.leftChild = leftChild;
     }
 
     /**
      * @param rightChild the rightChild to set
      */
-    public void setRightChild(BinaryTreeNode rightChild) {
+    public void setRightChild(BinaryTreeLayer rightChild) {
         this.rightChild = rightChild;
     }
 
 
-    private boolean isConnectedTo(BinaryTreeNode node) {
+    private boolean isConnectedTo(BinaryTreeLayer node) {
         if (this.outgoingConnections.contains(this, node) && node.outgoingConnections.contains(node, this)) {
             return true;
         } else {
@@ -148,7 +148,7 @@ public abstract class BinaryTreeNode extends Node implements Comparable<BinaryTr
         }
     }
 
-    private void addLinkTo(BinaryTreeNode node) {
+    private void addLinkTo(BinaryTreeLayer node) {
         if (node != null) {
             this.outgoingConnections.add(this, node, false);
             node.outgoingConnections.add(node, this, false);
@@ -159,7 +159,7 @@ public abstract class BinaryTreeNode extends Node implements Comparable<BinaryTr
      * Remove a link with the node is not null. 
      * @param node
      */
-    private void removeLinkTo(BinaryTreeNode node) {
+    private void removeLinkTo(BinaryTreeLayer node) {
 
         if (node == null) {
             return;
@@ -177,7 +177,7 @@ public abstract class BinaryTreeNode extends Node implements Comparable<BinaryTr
      * Set the link to node and update reference to left child
      * @param node
      */
-    public void addLinkToLeftChild(BinaryTreeNode node) {
+    public void addLinkToLeftChild(BinaryTreeLayer node) {
          // update current left child and create edge
          this.addLinkTo(node);
          this.setLeftChild(node);
@@ -188,7 +188,7 @@ public abstract class BinaryTreeNode extends Node implements Comparable<BinaryTr
      * Set the link to node and update reference to right child
      * @param node
      */
-    public void addLinkToRightChild(BinaryTreeNode node) {
+    public void addLinkToRightChild(BinaryTreeLayer node) {
         this.addLinkTo(node);
         this.setRightChild(node);
         node.setParent(this);
@@ -207,7 +207,7 @@ public abstract class BinaryTreeNode extends Node implements Comparable<BinaryTr
      * not update old left child parent reference. The next node to set old
      * left child as child will update its parent.
      */
-    public void changeLeftChildTo(BinaryTreeNode node) {
+    public void changeLeftChildTo(BinaryTreeLayer node) {
         // remove the previous connection
         this.removeLinkTo(this.leftChild);
         // update current left child and create edge
@@ -219,7 +219,7 @@ public abstract class BinaryTreeNode extends Node implements Comparable<BinaryTr
      * not update old right child parent reference. The next node to set old
      * left child as child will update its parent.
      */
-    public void changeRightChildTo(BinaryTreeNode node) {
+    public void changeRightChildTo(BinaryTreeLayer node) {
         this.removeLinkTo(this.rightChild);
         this.addLinkToRightChild(node);
     }
@@ -345,7 +345,7 @@ public abstract class BinaryTreeNode extends Node implements Comparable<BinaryTr
     }
 
     @Override
-    public int compareTo(BinaryTreeNode o) {
+    public int compareTo(BinaryTreeLayer o) {
         return ID - o.ID;
     }
 

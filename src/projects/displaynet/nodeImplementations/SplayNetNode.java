@@ -1,125 +1,105 @@
 package projects.displaynet.nodeImplementations;
 
-import projects.displaynet.messages.RoutingMessage;
-import projects.displaynet.messages.controlMessages.AckCluster;
-import projects.displaynet.messages.controlMessages.RequestCluster;
+import java.util.PriorityQueue;
+
 import projects.displaynet.tableEntry.Request;
 import sinalgo.nodes.messages.Message;
 
 /**
  * SplayNetNode
  */
-public class SplayNetNode extends SynchronizerNode {
+public class SplayNetNode extends SynchronizerLayer {
 
     public enum States {
-        PASSIVE, 
-        WAITING, 
-        CLIMBING
+        PASSIVE, ACTIVE, COMMUNICATING
     }
 
     // keep current state of the node
     public States state;
-    
-	// keeps track of every splay a node participate as source or destination. once
-	// a splay is completed, it is assigned null value
+
+    // keeps track of every splay a node participate as source or destination. once
+    // a splay is completed, it is assigned null value
+    public boolean newRequest;
     public Request activeSplay;
 
-    private Request currentCluster;
-
-    private boolean clusterRequestSent;
-    private boolean clusterAckReceived;
-    private boolean clusterRequestReceived;
+    public PriorityQueue<Request> requestClusterBuffer;
 
     @Override
     public void init() {
         super.init();
 
         this.state = States.PASSIVE;
+        this.newRequest = false;
         this.activeSplay = null;
-        this.clusterRequestSent = false;
-        this.clusterAckReceived = false;
-        this.clusterRequestReceived = false;
-        this.currentCluster = null;
     }
 
     public void newSplay(int src_splay, int dst_splay, double priority) {
-		Request splay = new Request(src_splay, dst_splay, priority);
-		this.activeSplay = splay;
-    }
-    
-    private void sendRequestCluster() {
-        RequestCluster rcluster = new RequestCluster(this.activeSplay.srcId, 
-                            this.activeSplay.dstId, 2, this.activeSplay.priority);
-        this.currentCluster = new Request(this.activeSplay.srcId, 
-                            this.activeSplay.dstId, this.activeSplay.priority);
-        this.sendToParent(rcluster); 
+        this.newRequest = true;
+        Request splay = new Request(src_splay, dst_splay, priority);
+        this.activeSplay = splay;
     }
 
     @Override
     public boolean snoopingMessage(Message msg) {
-                
         return true;
     }
 
     @Override
     public void receiveMessage(Message msg) {
-        
+        super.receiveMessage(msg);
     }
 
     @Override
-    public void timeslotZero() {
+    public void timeslot0() {
+        /*
+         * Update current state in time slot 0
+         */
+        switch (this.state) {
+        case PASSIVE:
+            if (this.newRequest) {
 
-        // switch (this.state) {
-        //     case PASSIVE:
-        //         if (this.activeSplay != null) {
-        //             if (this.isLeastCommonAncestorOf(this.activeSplay.dstId)) {
-        //                 this.state = States.WAITING;
-        //             } else {
-        //                 this.state = States.CLIMBING;
-        //                 //send cluster request
-        //                 this.sendRequestCluster();
-        //                 this.clusterRequestSent = true;
-        //             }
-        //         }
-        //         break;
-                
-        //     case WAITING:
-        //         if (!this.isLeastCommonAncestorOf(this.activeSplay.dstId)) {
-        //             this.state = States.CLIMBING;
-        //             //send cluster request
-        //             this.sendRequestCluster();
-        //             this.clusterRequestSent = true;
-        //         }
-        //         break;
-                
-        //     case CLIMBING:
-        //         if (this.isLeastCommonAncestorOf(this.activeSplay.dstId)) {
-        //             this.state = States.WAITING;
-        //         } else {
-        //             //send cluster request
-        //             this.sendRequestCluster();
-        //             this.clusterRequestSent = true;
-        //         }
-        //         break;
-                
-        //     default:
-        //         break;
-        // }
+                this.newRequest = false;
+
+                // if checkcompletion
+                // go to communicating
+                // else :
+
+                if (!this.isLeastCommonAncestorOf(this.activeSplay.dstId)) {
+                    this.state = States.ACTIVE;
+                    // request cluster
+                }
+            }
+            break;
+
+        case ACTIVE:
+            if (!this.isLeastCommonAncestorOf(this.activeSplay.dstId)) {
+                // send cluster request
+                // this.sendRequestCluster();
+            }
+            break;
+
+        case COMMUNICATING:
+
+            break;
+
+        default:
+            break;
+        }
     }
 
     @Override
-    public void timeslotThree() {
-       
+    public void timeslot3() {
+
     }
 
     @Override
-    public void timeslotSix() {
-      
+    public void timeslot6() {
+
     }
 
     @Override
-    public void timeslotSeven() {
-        
+    public void timeslot7() {
+
     }
 
     public void splayCompleted() {

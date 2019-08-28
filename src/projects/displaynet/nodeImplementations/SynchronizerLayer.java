@@ -9,13 +9,18 @@ import sinalgo.gui.transformation.PositionTransformation;
  * SynchronizerNode Implements timeslots system to coordenate operations. The
  * node initiate the timeslot in 0 and go ...
  */
-public abstract class SynchronizerNode extends BinaryTreeNode {
+public abstract class SynchronizerLayer extends RPCLayer {
 
     private int MAX_TIMESLOT = 8;
     private int timeslot;
+    private int round;
 
     public int getCurrentTimeSlot() {
         return this.timeslot;
+    }
+
+    public int getCurrentRound() {
+        return this.round;
     }
 
     @Override
@@ -29,19 +34,36 @@ public abstract class SynchronizerNode extends BinaryTreeNode {
         
         switch (this.timeslot) {
         case 0:
-            timeslotZero();
+            this.round++; // update round
+            timeslot0();
+            break;
+
+        case 1:
+            timeslot1();
+            break;
+
+        case 2:
+            timeslot2();
             break;
 
         case 3:
-            timeslotThree();
+            timeslot3();
+            break;
+
+        case 4:
+            timeslot4();
+            break;
+
+        case 5:
+            timeslot5();
             break;
 
         case 6:
-            timeslotSix();
+            timeslot6();
             break;
 
         case 7:
-            timeslotSeven();
+            timeslot7();
             break;
 
         default:
@@ -50,14 +72,37 @@ public abstract class SynchronizerNode extends BinaryTreeNode {
         this.timeslot = (this.timeslot + 1) % MAX_TIMESLOT;
     }
 
-    // public abstract void nodeStep();
-    public abstract void timeslotZero(); //send request cluster
+    public void timeslot0() {
+
+    }
+
+    public void timeslot1() {
+
+    } 
     
-    public abstract void timeslotThree();//all nodes receive request cluster message
+    public void timeslot2() {
 
-    public abstract void timeslotSix();  //all nodes acknowledge one request cluster and the winner node rotate
+    } 
 
-    public abstract void timeslotSeven();//check finish splay
+    public void timeslot3() {
+
+    } 
+
+    public void timeslot4() {
+
+    } 
+    
+    public void timeslot5() {
+
+    }
+
+    public void timeslot6() {
+
+    } 
+
+    public void timeslot7() {
+
+    } 
 
     @Override
     public void draw(Graphics g, PositionTransformation pt, boolean highlight) {

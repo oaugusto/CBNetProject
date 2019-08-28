@@ -2,15 +2,15 @@ package projects.displaynet;
 
 import java.util.ArrayList;
 
-import projects.displaynet.nodeImplementations.BinaryTreeNode;
+import projects.displaynet.nodeImplementations.BinaryTreeLayer;
 import projects.displaynet.nodeImplementations.SplayNetNode;
 import sinalgo.runtime.AbstractCustomGlobal;
 
 public class CustomGlobal extends AbstractCustomGlobal {
 
     public int numNodes = 30;
-    public ArrayList<BinaryTreeNode> tree = null;
-    public BinaryTreeNode controlNode = null;
+    public ArrayList<BinaryTreeLayer> tree = null;
+    public BinaryTreeLayer controlNode = null;
     public TreeConstructor treeTopology = null;
     public RequestQueue rqueue = null;
 
@@ -25,7 +25,7 @@ public class CustomGlobal extends AbstractCustomGlobal {
         /*
             create the nodes and constructs the tree topology
         */
-        this.tree = new ArrayList<BinaryTreeNode> ();
+        this.tree = new ArrayList<BinaryTreeLayer> ();
         
         for (int i = 0; i < numNodes; i++) {
             SplayNetNode n = new SplayNetNode();

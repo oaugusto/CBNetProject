@@ -3,17 +3,17 @@ package projects.displaynet;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import projects.displaynet.nodeImplementations.BinaryTreeNode;
+import projects.displaynet.nodeImplementations.BinaryTreeLayer;
 import sinalgo.configuration.Configuration;
 import sinalgo.runtime.Global;
 import sinalgo.tools.Tools;
 
 public class TreeConstructor {
 
-	private BinaryTreeNode controlNode;
-	private ArrayList<BinaryTreeNode> tree;
+	private BinaryTreeLayer controlNode;
+	private ArrayList<BinaryTreeLayer> tree;
 
-	public TreeConstructor(BinaryTreeNode controlNode, ArrayList<BinaryTreeNode> tree) {
+	public TreeConstructor(BinaryTreeLayer controlNode, ArrayList<BinaryTreeLayer> tree) {
 		this.controlNode = controlNode;
 		this.tree = tree;
 	}
@@ -25,7 +25,7 @@ public class TreeConstructor {
 		}
 
 		// build binary tree topology
-		BinaryTreeNode root = buildTree(1, this.tree.size());
+		BinaryTreeLayer root = buildTree(1, this.tree.size());
 
 		// configure the control node
 		this.controlNode.setParent(null);
@@ -39,15 +39,15 @@ public class TreeConstructor {
 	 * @param end
 	 * @return
 	 */
-	private BinaryTreeNode buildTree(int start, int end) {
+	private BinaryTreeLayer buildTree(int start, int end) {
 
 		int parentId = Integer.MIN_VALUE;
 		int leftChildId = Integer.MIN_VALUE;
 		int rightChildId = Integer.MIN_VALUE;
 
-		BinaryTreeNode parent = null;
-		BinaryTreeNode leftChild = null;
-		BinaryTreeNode rightChild = null;
+		BinaryTreeLayer parent = null;
+		BinaryTreeLayer leftChild = null;
+		BinaryTreeLayer rightChild = null;
 
 		parentId = (start + end) / 2;
 		parent = tree.get(parentId - 1);
@@ -80,8 +80,8 @@ public class TreeConstructor {
 	}
 
 	public void linearTree() {
-		BinaryTreeNode node = this.tree.get(0);
-		BinaryTreeNode previous = node;
+		BinaryTreeLayer node = this.tree.get(0);
+		BinaryTreeLayer previous = node;
 
 		node.setLeftChild(null);
 		node.setRightChild(null);
@@ -108,16 +108,16 @@ public class TreeConstructor {
 
 		Collections.shuffle(indexs);
 
-		BinaryTreeNode root = this.tree.get(indexs.remove(0));
+		BinaryTreeLayer root = this.tree.get(indexs.remove(0));
 		root.setParent(null);
 		root.setLeftChild(null);
 		root.setRightChild(null);
 		root.setMaxIdInSubtree(root.ID);
 		root.setMinIdInSubtree(root.ID);
 
-		BinaryTreeNode n;
-		BinaryTreeNode prev;
-		BinaryTreeNode next;
+		BinaryTreeLayer n;
+		BinaryTreeLayer prev;
+		BinaryTreeLayer next;
 
 		while (!indexs.isEmpty()) {
 			n = this.tree.get(indexs.remove(0));
@@ -154,11 +154,11 @@ public class TreeConstructor {
 		}
 	}
 
-	public BinaryTreeNode getRootNode() {
+	public BinaryTreeLayer getRootNode() {
 		return this.controlNode.getLeftChild();
 	}
 
-	private int getTreeHeight(BinaryTreeNode root) {
+	private int getTreeHeight(BinaryTreeLayer root) {
 
 		int left = (root.hasLeftChild()) ? getTreeHeight(root.getLeftChild()) : 0;
 		int right = (root.hasRightChild()) ? getTreeHeight(root.getRightChild()) : 0;
@@ -171,7 +171,7 @@ public class TreeConstructor {
 			return;
 		}
 
-		BinaryTreeNode root = getRootNode();
+		BinaryTreeLayer root = getRootNode();
 		int height = getTreeHeight(root);
 
 		double x = Configuration.dimX / 2;
@@ -185,7 +185,7 @@ public class TreeConstructor {
 		Tools.repaintGUI();
 	}
 
-	private void setPositionHelper(BinaryTreeNode root, double x, double y_space, int level) {
+	private void setPositionHelper(BinaryTreeLayer root, double x, double y_space, int level) {
 
 		root.setPosition(x, y_space * (level + 1), 0);
 

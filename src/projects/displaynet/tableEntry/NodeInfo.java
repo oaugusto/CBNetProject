@@ -1,13 +1,13 @@
 package projects.displaynet.tableEntry;
 
-import projects.displaynet.nodeImplementations.BinaryTreeNode;
+import sinalgo.nodes.Node;
 
 public class NodeInfo {
 
-    public BinaryTreeNode id;
-    public BinaryTreeNode parent;
-    public BinaryTreeNode leftChild;
-    public BinaryTreeNode rightChild;
+    public Node id;
+    public Node parent;
+    public Node leftChild;
+    public Node rightChild;
     public int minIdInSubtree;
     public int maxIdInSubtree;
 
@@ -20,8 +20,7 @@ public class NodeInfo {
         this.maxIdInSubtree = Integer.MAX_VALUE;
     }
 
-    public NodeInfo(BinaryTreeNode id, BinaryTreeNode parent, BinaryTreeNode left, BinaryTreeNode right, int smallId,
-            int largeId) {
+    public NodeInfo(Node id, Node parent, Node left, Node right, int smallId, int largeId) {
         this.id = id;
         this.parent = parent;
         this.leftChild = left;
