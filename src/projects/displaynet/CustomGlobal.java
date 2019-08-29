@@ -34,8 +34,9 @@ public class CustomGlobal extends AbstractCustomGlobal {
         }
 
         this.controlNode  = new SplayNetNode();
-        this.treeTopology = new TreeConstructor(controlNode, this.tree);
+        this.controlNode.finishInitializationWithDefaultModels(true);
 
+        this.treeTopology = new TreeConstructor(controlNode, this.tree);
         this.treeTopology.setBalancedTree();
         this.treeTopology.setPositions();
     }

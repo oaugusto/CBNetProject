@@ -3,12 +3,11 @@ package projects.displaynet.nodeImplementations;
 import java.util.PriorityQueue;
 
 import projects.displaynet.tableEntry.Request;
-import sinalgo.nodes.messages.Message;
 
 /**
  * SplayNetNode
  */
-public class SplayNetNode extends SynchronizerLayer {
+public class SplayNetNode extends RotationLayer {
 
     public enum States {
         PASSIVE, ACTIVE, COMMUNICATING
@@ -40,67 +39,58 @@ public class SplayNetNode extends SynchronizerLayer {
     }
 
     @Override
-    public boolean snoopingMessage(Message msg) {
-        return true;
-    }
+    public void updateState() {
+        super.updateState();
 
-    @Override
-    public void receiveMessage(Message msg) {
-        super.receiveMessage(msg);
-    }
+        if (ID == 7) {
+            this.setMyClusterRequest(ID, 30, 1.5);
+            this.sendRequestCluster();
+        }
 
-    @Override
-    public void timeslot0() {
+        // if (ID == 2) {
+        //     this.setMyClusterRequest(ID, 30, 1.0);
+        //     this.sendRequestCluster();
+        // }
+
+        // if (ID == 7) {
+        //     this.setMyClusterRequest(ID, 30, 1.0);
+        // }
         /*
          * Update current state in time slot 0
          */
-        switch (this.state) {
-        case PASSIVE:
-            if (this.newRequest) {
+        // switch (this.state) {
+        // case PASSIVE:
+        //     if (this.newRequest) {
 
-                this.newRequest = false;
+        //         this.newRequest = false;
 
-                // if checkcompletion
-                // go to communicating
-                // else :
+        //         // if checkcompletion
+        //         // go to communicating
+        //         // else :
 
-                if (!this.isLeastCommonAncestorOf(this.activeSplay.dstId)) {
-                    this.state = States.ACTIVE;
-                    // request cluster
-                }
-            }
-            break;
+        //         if (!this.isLeastCommonAncestorOf(this.activeSplay.dstId)) {
+        //             this.state = States.ACTIVE;
+        //             // request cluster
+        //         }
+        //     }
+        //     break;
 
-        case ACTIVE:
-            if (!this.isLeastCommonAncestorOf(this.activeSplay.dstId)) {
-                // send cluster request
-                // this.sendRequestCluster();
-            }
-            break;
+        // case ACTIVE:
+        //     if (!this.isLeastCommonAncestorOf(this.activeSplay.dstId)) {
+        //         // send cluster request
+        //         // this.sendRequestCluster();
+        //     }
+        //     break;
 
-        case COMMUNICATING:
+        // case COMMUNICATING:
 
-            break;
+        //     break;
 
-        default:
-            break;
-        }
+        // default:
+        //     break;
+        // }
     }
 
-    @Override
-    public void timeslot3() {
-
-    }
-
-    @Override
-    public void timeslot6() {
-
-    }
-
-    @Override
-    public void timeslot7() {
-
-    }
 
     public void splayCompleted() {
         System.out.println("Completed node " + ID);

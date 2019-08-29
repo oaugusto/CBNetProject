@@ -10,7 +10,7 @@ import sinalgo.tools.Tools;
 /**
  * RPCLayer
  */
-public abstract class RPCLayer extends BinaryTreeLayer {
+public abstract class RPCLayer extends SynchronizerLayer {
 
     private Queue<RPCMessage> rpcQueue;
 
@@ -44,6 +44,7 @@ public abstract class RPCLayer extends BinaryTreeLayer {
 
         case "changeRightChildTo":
             this.changeRightChildTo((BinaryTreeLayer) rpc.getArg());
+            break;
 
         default:
             Tools.fatalError("Wrong procedure called");

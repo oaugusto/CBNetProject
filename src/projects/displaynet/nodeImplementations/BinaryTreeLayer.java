@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 
 import projects.displaynet.messages.RoutingMessage;
+import projects.displaynet.tableEntry.NodeInfo;
 import sinalgo.configuration.WrongConfigurationException;
 import sinalgo.gui.transformation.PositionTransformation;
 import sinalgo.nodes.Node;
@@ -106,12 +107,40 @@ public abstract class BinaryTreeLayer extends Node implements Comparable<BinaryT
         }
     }
 
+    public BinaryTreeLayer getNeighbor(int id) {
+        if (id == this.parent.ID) {
+            return this.parent;
+        } else if (id == this.leftChild.ID) {
+            return this.leftChild;
+        } else if (id == this.rightChild.ID) {
+            return this.rightChild;
+        } else {
+            return null;
+        }
+    }
+
+    public NodeInfo getNodeInfo() {
+        return new NodeInfo(this, parent, leftChild, rightChild, minIdInSubtree, maxIdInSubtree);
+    }
+
     public String getRelationship(BinaryTreeLayer node) {
         if (node.ID == this.parent.ID) {
             return "Parent";
         } else if (node.ID == this.leftChild.ID) {
             return "LeftChild";
         } else if (node.ID == this.rightChild.ID) {
+            return "RightChild";
+        } else {
+            return "None";
+        }
+    }
+
+    public String getRelationship(int id) {
+        if (id == this.parent.ID) {
+            return "Parent";
+        } else if (id == this.leftChild.ID) {
+            return "LeftChild";
+        } else if (id == this.rightChild.ID) {
             return "RightChild";
         } else {
             return "None";
@@ -139,7 +168,6 @@ public abstract class BinaryTreeLayer extends Node implements Comparable<BinaryT
         this.rightChild = rightChild;
     }
 
-
     private boolean isConnectedTo(BinaryTreeLayer node) {
         if (this.outgoingConnections.contains(this, node) && node.outgoingConnections.contains(node, this)) {
             return true;
@@ -156,7 +184,8 @@ public abstract class BinaryTreeLayer extends Node implements Comparable<BinaryT
     }
 
     /**
-     * Remove a link with the node is not null. 
+     * Remove a link with the node is not null.
+     * 
      * @param node
      */
     private void removeLinkTo(BinaryTreeLayer node) {
@@ -175,17 +204,19 @@ public abstract class BinaryTreeLayer extends Node implements Comparable<BinaryT
 
     /**
      * Set the link to node and update reference to left child
+     * 
      * @param node
      */
     public void addLinkToLeftChild(BinaryTreeLayer node) {
-         // update current left child and create edge
-         this.addLinkTo(node);
-         this.setLeftChild(node);
-         node.setParent(this);
+        // update current left child and create edge
+        this.addLinkTo(node);
+        this.setLeftChild(node);
+        node.setParent(this);
     }
 
     /**
      * Set the link to node and update reference to right child
+     * 
      * @param node
      */
     public void addLinkToRightChild(BinaryTreeLayer node) {
@@ -203,9 +234,9 @@ public abstract class BinaryTreeLayer extends Node implements Comparable<BinaryT
     }
 
     /**
-     * Change link to left child, update reference to left child but do
-     * not update old left child parent reference. The next node to set old
-     * left child as child will update its parent.
+     * Change link to left child, update reference to left child but do not update
+     * old left child parent reference. The next node to set old left child as child
+     * will update its parent.
      */
     public void changeLeftChildTo(BinaryTreeLayer node) {
         // remove the previous connection
@@ -215,16 +246,15 @@ public abstract class BinaryTreeLayer extends Node implements Comparable<BinaryT
     }
 
     /**
-     * Change link to right child, update reference to right child but do
-     * not update old right child parent reference. The next node to set old
-     * left child as child will update its parent.
+     * Change link to right child, update reference to right child but do not update
+     * old right child parent reference. The next node to set old left child as
+     * child will update its parent.
      */
     public void changeRightChildTo(BinaryTreeLayer node) {
         this.removeLinkTo(this.rightChild);
         this.addLinkToRightChild(node);
     }
 
-    
     public boolean sendToParent(Message msg) {
         if (this.outgoingConnections.contains(this, this.parent)) {
             send(msg, this.parent);
@@ -326,13 +356,16 @@ public abstract class BinaryTreeLayer extends Node implements Comparable<BinaryT
      * 
      * @param msg
      */
-    public abstract void receiveMessage(Message msg);
+    public void receiveMessage(Message msg) {
+
+    }
 
     /**
      * if the function return false the message will not be forward to next node
      */
-    public abstract boolean snoopingMessage(Message msg);
-
+    public boolean snoopingMessage(Message msg) {
+        return true;
+    }
 
     @Override
     public void neighborhoodChange() {

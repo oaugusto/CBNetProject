@@ -31,6 +31,8 @@ public class TreeConstructor {
 		this.controlNode.setParent(null);
 		this.controlNode.setRightChild(null);
 		this.controlNode.addLinkToLeftChild(root);
+		this.controlNode.setMinIdInSubtree(1);
+		this.controlNode.setMaxIdInSubtree(this.tree.size());
 	}
 
 	/**
@@ -178,7 +180,7 @@ public class TreeConstructor {
 		double y_space = Configuration.dimY / (height + 2);
 
 		// null node
-		this.controlNode.setPosition(x, 0, 0);
+		this.controlNode.setPosition(x, Configuration.dimY/20, 0);
 
 		setPositionHelper(root, x, y_space, 1);
 

@@ -9,7 +9,7 @@ import sinalgo.gui.transformation.PositionTransformation;
  * SynchronizerNode Implements timeslots system to coordenate operations. The
  * node initiate the timeslot in 0 and go ...
  */
-public abstract class SynchronizerLayer extends RPCLayer {
+public abstract class SynchronizerLayer extends BinaryTreeLayer {
 
     private int MAX_TIMESLOT = 8;
     private int timeslot;
@@ -35,7 +35,7 @@ public abstract class SynchronizerLayer extends RPCLayer {
         switch (this.timeslot) {
         case 0:
             this.round++; // update round
-            timeslot0();
+            updateState();
             break;
 
         case 1:
@@ -72,7 +72,7 @@ public abstract class SynchronizerLayer extends RPCLayer {
         this.timeslot = (this.timeslot + 1) % MAX_TIMESLOT;
     }
 
-    public void timeslot0() {
+    public void updateState() {
 
     }
 
@@ -101,6 +101,18 @@ public abstract class SynchronizerLayer extends RPCLayer {
     } 
 
     public void timeslot7() {
+
+    } 
+
+    public void timeslot8() {
+
+    }
+
+    public void timeslot9() {
+
+    } 
+
+    public void timeslot10() {
 
     } 
 
