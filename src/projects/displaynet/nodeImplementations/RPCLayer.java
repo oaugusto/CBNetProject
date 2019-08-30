@@ -20,7 +20,7 @@ public abstract class RPCLayer extends SynchronizerLayer {
         this.rpcQueue = new LinkedList<>();
     }
 
-    public void cleanBuffer() {
+    public void clearRPCQueue() {
         this.rpcQueue.clear();
     }
 

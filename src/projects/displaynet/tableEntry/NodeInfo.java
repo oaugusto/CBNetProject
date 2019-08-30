@@ -1,13 +1,14 @@
 package projects.displaynet.tableEntry;
 
+import projects.displaynet.nodeImplementations.BinaryTreeLayer;
 import sinalgo.nodes.Node;
 
 public class NodeInfo {
 
-    private Node node;
-    private Node parent;
-    private Node leftChild;
-    private Node rightChild;
+    private BinaryTreeLayer node;
+    private BinaryTreeLayer parent;
+    private BinaryTreeLayer leftChild;
+    private BinaryTreeLayer rightChild;
     private int minIdInSubtree;
     private int maxIdInSubtree;
 
@@ -20,8 +21,9 @@ public class NodeInfo {
         this.maxIdInSubtree = Integer.MAX_VALUE;
     }
 
-    public NodeInfo(Node id, Node parent, Node left, Node right, int smallId, int largeId) {
-        this.node = id;
+    public NodeInfo(BinaryTreeLayer node, BinaryTreeLayer parent, BinaryTreeLayer left, BinaryTreeLayer right,
+            int smallId, int largeId) {
+        this.node = node;
         this.parent = parent;
         this.leftChild = left;
         this.rightChild = right;
@@ -32,28 +34,28 @@ public class NodeInfo {
     /**
      * @return the node
      */
-    public Node getNode() {
+    public BinaryTreeLayer getNode() {
         return node;
     }
 
     /**
      * @return the parent
      */
-    public Node getParent() {
+    public BinaryTreeLayer getParent() {
         return parent;
     }
 
     /**
      * @return the leftChild
      */
-    public Node getLeftChild() {
+    public BinaryTreeLayer getLeftChild() {
         return leftChild;
     }
 
     /**
      * @return the rightChild
      */
-    public Node getRightChild() {
+    public BinaryTreeLayer getRightChild() {
         return rightChild;
     }
 
@@ -74,28 +76,28 @@ public class NodeInfo {
     /**
      * @param node the node to set
      */
-    public void setNode(Node node) {
+    public void setNode(BinaryTreeLayer node) {
         this.node = node;
     }
 
     /**
      * @param parent the parent to set
      */
-    public void setParent(Node parent) {
+    public void setParent(BinaryTreeLayer parent) {
         this.parent = parent;
     }
 
     /**
      * @param leftChild the leftChild to set
      */
-    public void setLeftChild(Node leftChild) {
+    public void setLeftChild(BinaryTreeLayer leftChild) {
         this.leftChild = leftChild;
     }
 
     /**
      * @param rightChild the rightChild to set
      */
-    public void setRightChild(Node rightChild) {
+    public void setRightChild(BinaryTreeLayer rightChild) {
         this.rightChild = rightChild;
     }
 

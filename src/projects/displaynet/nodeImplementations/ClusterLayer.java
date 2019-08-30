@@ -1,6 +1,6 @@
 package projects.displaynet.nodeImplementations;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.PriorityQueue;
 import java.util.Queue;
@@ -15,8 +15,8 @@ import sinalgo.nodes.messages.Message;
  */
 public abstract class ClusterLayer extends RPCLayer {
 
-    // set with my current splay request
-    private RequestClusterMessage myClusterRequest;
+    // set with current splay request of this node
+    private RequestClusterMessage clusterRequest;
 
     // this priority queue store all request cluster message received
     private PriorityQueue<RequestClusterMessage> queueClusterRequest;
@@ -28,7 +28,7 @@ public abstract class ClusterLayer extends RPCLayer {
     public void init() {
         super.init();
 
-        this.myClusterRequest = null;
+        this.clusterRequest = null;
         this.queueClusterRequest = new PriorityQueue<>();
         this.queueAckCluster = new LinkedList<>();
     }
@@ -36,22 +36,22 @@ public abstract class ClusterLayer extends RPCLayer {
     /**
      * @return the myClusterRquest
      */
-    public RequestClusterMessage getMyClusterRquest() {
-        return myClusterRequest;
+    public RequestClusterMessage getClusterRequest() {
+        return clusterRequest;
     }
 
     /**
      * set the current request operation of this node
      */
-    public void setMyClusterRequest(int src, int dst, double priority) {
-        this.myClusterRequest = new RequestClusterMessage(src, dst, 3, priority);
+    public void setClusterRequest(int src, int dst, double priority) {
+        this.clusterRequest = new RequestClusterMessage(src, dst, 3, priority);
     }
 
-    public void clearMyClusterRequest() {
-        this.myClusterRequest = null;
+    public void clearClusterRequest() {
+        this.clusterRequest = null;
     }
 
-    public void clearRequestClusterQueue() {
+    public void clearClusterRequestQueue() {
         this.queueClusterRequest.clear();
     }
 
@@ -68,8 +68,8 @@ public abstract class ClusterLayer extends RPCLayer {
      * @param priority
      */
     public void sendRequestCluster() {
-        this.queueClusterRequest.add(this.myClusterRequest);
-        RequestClusterMessage msg = new RequestClusterMessage(this.myClusterRequest);
+        this.queueClusterRequest.add(this.clusterRequest);
+        RequestClusterMessage msg = new RequestClusterMessage(this.clusterRequest);
         msg.setTimeout(2);
         this.sendToParent(msg);
     }
@@ -82,7 +82,7 @@ public abstract class ClusterLayer extends RPCLayer {
 
             RequestClusterMessage rqMessage = (RequestClusterMessage) msg;
             int timeout = rqMessage.getTimeout();
-            System.out.println("Node: " + ID + " time: " + timeout);
+
             /**
              * 0  --------- x
              *    -------- /
@@ -113,6 +113,7 @@ public abstract class ClusterLayer extends RPCLayer {
 
             }
 
+            //add current request to queue
             this.queueClusterRequest.add(rqMessage);
 
             return;
@@ -139,7 +140,7 @@ public abstract class ClusterLayer extends RPCLayer {
             // check if my current request is greater than request received
             // if my current msg is greater than the request received send ack message.
             // The node can send message to itself
-            if (this.myClusterRequest == null || (this.myClusterRequest.compareTo(rq) >= 0)) {
+            if (this.clusterRequest == null || (this.clusterRequest.compareTo(rq) >= 0)) {
 
                 AckClusterMessage ack = new AckClusterMessage(rq.getSrc(), rq.getDst(), rq.getPriority(),
                         this.getNodeInfo());
@@ -186,18 +187,31 @@ public abstract class ClusterLayer extends RPCLayer {
         return clusterGranted;
     }
 
-    private ArrayList<NodeInfo> getNodeSequenceFromAckBuffer() {
-        ArrayList<NodeInfo> list = new ArrayList<>();
+    private HashMap<String, NodeInfo> getClusterSequenceFromAckBuffer() {
+        HashMap<String, NodeInfo> table = new HashMap<>();
+        NodeInfo info;
 
-        for (AckClusterMessage m : this.queueAckCluster) {
-            list.add(m.getInfo());
+        info = findAckMessageInBufferById(ID).getInfo();
+        table.put("x", info);
+
+        info = findAckMessageInBufferById(info.getParent().ID).getInfo();
+        table.put("y", info);
+
+        info = findAckMessageInBufferById(info.getParent().ID).getInfo();
+        table.put("z", info);
+
+        if (this.queueAckCluster.size() == 4) {
+            info = findAckMessageInBufferById(info.getParent().ID).getInfo();
+            table.put("w", info);
         }
 
-        return list;
+        return table;
     }
 
     /**
      * In this time slot all ack message will have arrived
+     * If the node has sent message requesting cluster formation
+     * verify if the permission was granted.
      */
     @Override
     public void timeslot6() {
@@ -205,14 +219,14 @@ public abstract class ClusterLayer extends RPCLayer {
 
         if (!this.queueAckCluster.isEmpty()) { // This node has sent request cluster message
            if (this.isClusterGranted()) {
-                rotate(this.getNodeSequenceFromAckBuffer());
-                System.out.println("rotate node: " + ID);
+                this.clusterCompleted(this.getClusterSequenceFromAckBuffer());
            }
         }
 
+        //reset queue
+        this.clearClusterRequestQueue();
+        this.clearAckClusterQueue();
     }
 
-    public void rotate(ArrayList<NodeInfo> seq) {
-
-    }
+    public abstract void clusterCompleted(HashMap<String, NodeInfo> cluster);
 }

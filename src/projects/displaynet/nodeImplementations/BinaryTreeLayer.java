@@ -26,9 +26,6 @@ public abstract class BinaryTreeLayer extends Node implements Comparable<BinaryT
     private int maxIdInSubtree;
     private boolean isRoot;
 
-    // private int time = 0;
-    // private boolean firstTime = false;
-
     public BinaryTreeLayer getParent() {
         return this.parent;
     }
