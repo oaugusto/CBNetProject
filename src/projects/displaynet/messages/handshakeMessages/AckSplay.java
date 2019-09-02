@@ -9,8 +9,7 @@ public class AckSplay extends Message {
 
     @Override
     public Message clone() {
-        return null;
+        return this;
     }
-
     
 }

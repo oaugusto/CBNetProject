@@ -16,7 +16,7 @@ import sinalgo.tools.Tools;
 /**
  * HandShakeNode
  */
-public class HandShakeNode extends SplayNetNode {
+public class HandShakeLayer extends SplayNetNode {
 
     // Otavio -----------------------------------------------------------
 
@@ -84,10 +84,15 @@ public class HandShakeNode extends SplayNetNode {
             this.isStartMSGReceived = true;
         }
     }
-/* 
+
     @Override
-    public void splayCompleted() {
+    public void communicationCompleted() {
         this.isSplayCompleted = true;
+        this.splayCompleted();
+    }
+
+    public void splayCompleted() {
+
     }
 
     @Override
@@ -213,7 +218,7 @@ public class HandShakeNode extends SplayNetNode {
             // + " generate next splay src:" + this.currentSplay_handshake.srcId + " dst"
             // + this.currentSplay_handshake.dstId + "priority: " +
             // this.currentSplay_handshake.priority);
-            this.generateSplay(this.currentSplay_handshake.srcId, this.currentSplay_handshake.dstId,
+            this.newSplay(this.currentSplay_handshake.srcId, this.currentSplay_handshake.dstId,
                     this.currentSplay_handshake.priority);
 
             this.state_handshake = State_handshake.SPLAY;
@@ -246,5 +251,5 @@ public class HandShakeNode extends SplayNetNode {
             break;
         }
 
-    } */
+    } 
 }

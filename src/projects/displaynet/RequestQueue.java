@@ -74,7 +74,7 @@ public class RequestQueue {
 	}
 	
 	public boolean hasNextRequest() {
-		return !queue.isEmpty();
+		return !this.queue.isEmpty();
 	}
 	
 }

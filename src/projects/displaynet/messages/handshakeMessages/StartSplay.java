@@ -9,7 +9,7 @@ public class StartSplay extends Message {
 
     @Override
     public Message clone() {
-        return null;
+        return this;
     }
 
     

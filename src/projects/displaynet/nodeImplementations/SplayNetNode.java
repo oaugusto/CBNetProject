@@ -127,7 +127,12 @@ public class SplayNetNode extends RotationLayer {
     }
 
     public void communicationCompleted() {
-        System.out.println("Communication Completed node " + ID);
+        
+    }
+
+    @Override
+    public void nodeStep() {
+
     }
 
 }

@@ -82,6 +82,8 @@ public abstract class SynchronizerLayer extends BinaryTreeLayer {
             break;
         }
         this.timeslot = (this.timeslot + 1) % MAX_TIMESLOT;
+
+        this.nodeStep();
     }
 
     public void updateState() {
@@ -127,6 +129,8 @@ public abstract class SynchronizerLayer extends BinaryTreeLayer {
     public void timeslot10() {
 
     } 
+
+    public abstract void nodeStep();
 
     // @Override
     // public void draw(Graphics g, PositionTransformation pt, boolean highlight) {
