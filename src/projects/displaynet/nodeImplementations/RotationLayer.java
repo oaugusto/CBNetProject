@@ -45,30 +45,121 @@ public abstract class RotationLayer extends ClusterLayer {
 
     }
 
+    //TODO set nodes range in subtree
+
+    /*
+                  z                     z
+                 /                    /
+                y                   x
+              /   \               /   \
+             x     c     ->      a     y
+            / \                       / \
+           a   b                     b   c
+	 
+	 */
     private void zig(NodeInfo x, NodeInfo y, NodeInfo z) {
 
-        if (z.getLeftChild().ID == y.getNode().ID) {
-            this.requestRPCTo(z.getNode().ID, "changeLeftChildTo", x.getNode());
+        int xId = x.getNode().ID;
+        int yId = y.getNode().ID;
+        int zId = z.getNode().ID;
+
+        //set the new child of node z
+
+        if (z.getLeftChild().ID == yId) {
+            this.requestRPCTo(zId, "changeLeftChildTo", x.getNode());
         } else {
-            this.requestRPCTo(z.getNode().ID, "changeRightChildTo", x.getNode());
+            this.requestRPCTo(zId, "changeRightChildTo", x.getNode());
+        }
+
+        // left zig operetion
+        if (y.getLeftChild().ID == xId) {
+            this.requestRPCTo(yId, "changeLeftChildTo", x.getRightChild()); // change node y
+            this.requestRPCTo(xId, "changeRightChildTo", y.getNode()); // change node x
+        } else {
+            this.requestRPCTo(yId, "changeRightChildTo", x.getLeftChild()); // change node y
+            this.requestRPCTo(xId, "changeLeftChildTo", y.getNode()); // change node x
         }
     }
 
+    /*              
+                   w               w
+                  /               /
+                 z               x
+                / \             / \
+	           y   d           a   y
+              / \       ->        / \
+             x   c               b   z
+            / \                     / \
+           a   b                   c   d
+   */
     private void zigZig(NodeInfo x, NodeInfo y, NodeInfo z, NodeInfo w) {
 
-        if (z.getLeftChild().ID == y.getNode().ID) {
-            this.requestRPCTo(z.getNode().ID, "changeLeftChildTo", x.getNode());
+        int xId = x.getNode().ID;
+        int yId = y.getNode().ID;
+        int zId = z.getNode().ID;
+        int wId = w.getNode().ID;
+
+        // set new child of node z
+
+        if (w.getLeftChild().ID == zId) {
+            this.requestRPCTo(wId, "changeLeftChildTo", x.getNode());
         } else {
-            this.requestRPCTo(z.getNode().ID, "changeRightChildTo", x.getNode());
+            this.requestRPCTo(wId, "changeRightChildTo", x.getNode());
         }
+
+        // deciding between lef or right zigzig operation
+        if (yId == z.getLeftChild().ID) {
+            this.requestRPCTo(zId, "changeLeftChildTo", y.getRightChild()); // change node z
+            this.requestRPCTo(yId, "changeLeftChildTo", x.getRightChild()); // change node y
+            this.requestRPCTo(yId, "changeRightChildTo", z.getNode());
+            this.requestRPCTo(xId, "changeRightChildTo", y.getNode()); // change node x
+        } else {
+            this.requestRPCTo(zId, "changeRightChildTo", y.getLeftChild()); // change node z
+            this.requestRPCTo(yId, "changeRightChildTo", x.getLeftChild()); // change node y
+            this.requestRPCTo(yId, "changeLeftChildTo", z.getNode());
+            this.requestRPCTo(xId, "changeLeftChildTo", y.getNode()); // change node x
+        }
+
     }
 
+
+    /*
+                   w                  w
+                  /                  /
+                 z					x
+                / \               /   \
+               y   d             y     z
+              / \		  ->    / \   / \
+             a   x             a   b c   d
+                / \
+               b   c 
+	 */
     private void zigZag(NodeInfo x, NodeInfo y, NodeInfo z, NodeInfo w) {
 
-        if (z.getLeftChild().ID == y.getNode().ID) {
-            this.requestRPCTo(z.getNode().ID, "changeLeftChildTo", x.getNode());
+        int xId = x.getNode().ID;
+        int yId = y.getNode().ID;
+        int zId = z.getNode().ID;
+        int wId = z.getNode().ID;
+
+        // set new child of node z
+
+        if (w.getLeftChild().ID == yId) {
+            this.requestRPCTo(wId, "changeLeftChildTo", x.getNode());
         } else {
-            this.requestRPCTo(z.getNode().ID, "changeRightChildTo", x.getNode());
+            this.requestRPCTo(wId, "changeRightChildTo", x.getNode());
+        }
+
+         // deciding between lef or right zigzag operation
+         if (yId == z.getLeftChild().ID) {
+            this.requestRPCTo(zId, "changeLeftChildTo", x.getRightChild()); // change node z
+            this.requestRPCTo(yId, "changeRightChildTo", x.getLeftChild()); // change node y
+            this.requestRPCTo(xId, "changeLeftChildTo", y.getNode()); // change node x
+            this.requestRPCTo(xId, "changeRightChildTo", z.getNode()); // change node x
+        } else {
+            this.requestRPCTo(zId, "changeRightChildTo", x.getLeftChild()); // change node z
+            this.requestRPCTo(yId, "changeLeftChildTo", x.getRightChild()); // change node y
+            this.requestRPCTo(xId, "changeRightChildTo", y.getNode()); // change node x
+            this.requestRPCTo(xId, "changeLeftChildTo", z.getNode()); // change node x
         }
     }
 
