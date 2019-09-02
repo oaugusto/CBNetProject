@@ -23,6 +23,9 @@ public class SplayNetNode extends RotationLayer {
     public boolean newRequest;
     public Request activeSplay;
 
+
+    boolean first = true;
+
     @Override
     public void init() {
         super.init();
@@ -114,6 +117,7 @@ public class SplayNetNode extends RotationLayer {
 
     @Override
     public void clusterCompleted(HashMap<String, NodeInfo> cluster) {
+        System.out.println("Node " + ID + ": cluster completed");
         this.rotate(cluster);
     }
 
@@ -123,7 +127,7 @@ public class SplayNetNode extends RotationLayer {
     }
 
     public void communicationCompleted() {
-        System.out.println("Completed node " + ID);
+        System.out.println("Communication Completed node " + ID);
     }
 
 }

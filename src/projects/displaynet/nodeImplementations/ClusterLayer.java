@@ -84,14 +84,6 @@ public abstract class ClusterLayer extends RPCLayer {
             int timeout = rqMessage.getTimeout();
 
             /**
-             * 0  --------- x
-             *    -------- /
-             * 1  ------- x [dst]
-             *    ------ /  
-             * 2  ----  x [LCA]
-             *    ---  / 
-             * 3  --  x dst 
-             * 
              * It is not possible to parent to be the dst because completion is check first
              * and the grandparent being LCA has effect on the type of rotation
              */
@@ -113,7 +105,7 @@ public abstract class ClusterLayer extends RPCLayer {
 
             }
 
-            //add current request to queue
+            // add current request to queue
             this.queueClusterRequest.add(rqMessage);
 
             return;
@@ -140,7 +132,8 @@ public abstract class ClusterLayer extends RPCLayer {
             // check if my current request is greater than request received
             // if my current msg is greater than the request received send ack message.
             // The node can send message to itself
-            if (this.clusterRequest == null || (this.clusterRequest.compareTo(rq) >= 0)) {
+            if (this.clusterRequest == null || this.clusterRequest.compareTo(rq) >= 0
+                    || (this.isLeastCommonAncestorOf(rq.getSrc()) && this.clusterRequest.getDst() == rq.getSrc())) {
 
                 AckClusterMessage ack = new AckClusterMessage(rq.getSrc(), rq.getDst(), rq.getPriority(),
                         this.getNodeInfo());
@@ -165,24 +158,23 @@ public abstract class ClusterLayer extends RPCLayer {
     }
 
     /**
-     * This function check ack buffer to see if ack message
-     * form a linear sequence to final node. In case missing one
-     * ack message the function return false.
+     * This function check ack buffer to see if ack message form a linear sequence
+     * to final node. In case missing one ack message the function return false.
+     * 
      * @return
-    */
+     */
     public boolean isClusterGranted() {
         boolean clusterGranted = false;
         BinaryTreeLayer node = this;
         AckClusterMessage m;
 
-        while((m = findAckMessageInBufferById(node.ID)) != null) {
+        while ((m = findAckMessageInBufferById(node.ID)) != null) {
             if (m.isFinalNode()) {
                 clusterGranted = true;
                 break;
             }
             node = (BinaryTreeLayer) m.getInfo().getParent();
         }
-         
 
         return clusterGranted;
     }
@@ -209,21 +201,20 @@ public abstract class ClusterLayer extends RPCLayer {
     }
 
     /**
-     * In this time slot all ack message will have arrived
-     * If the node has sent message requesting cluster formation
-     * verify if the permission was granted.
+     * In this time slot all ack message will have arrived If the node has sent
+     * message requesting cluster formation verify if the permission was granted.
      */
     @Override
     public void timeslot6() {
         super.timeslot6();
 
         if (!this.queueAckCluster.isEmpty()) { // This node has sent request cluster message
-           if (this.isClusterGranted()) {
+            if (this.isClusterGranted()) {
                 this.clusterCompleted(this.getClusterSequenceFromAckBuffer());
-           }
+            }
         }
 
-        //reset queue
+        // reset queue
         this.clearClusterRequestQueue();
         this.clearAckClusterQueue();
     }

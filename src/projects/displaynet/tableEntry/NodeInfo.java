@@ -1,7 +1,6 @@
 package projects.displaynet.tableEntry;
 
 import projects.displaynet.nodeImplementations.BinaryTreeLayer;
-import sinalgo.nodes.Node;
 
 public class NodeInfo {
 

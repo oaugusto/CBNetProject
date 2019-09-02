@@ -27,23 +27,31 @@ public abstract class RPCLayer extends SynchronizerLayer {
     public void execute(RPCMessage rpc) {
         switch (rpc.getCommand()) {
         case "setParent":
-            this.setParent((BinaryTreeLayer) rpc.getArg());
+            this.setParent((BinaryTreeLayer) rpc.getNode());
             break;
 
         case "setLeftChild":
-            this.setLeftChild((BinaryTreeLayer) rpc.getArg());
+            this.setLeftChild((BinaryTreeLayer) rpc.getNode());
             break;
 
         case "setRightChild":
-            this.setRightChild((BinaryTreeLayer) rpc.getArg());
+            this.setRightChild((BinaryTreeLayer) rpc.getNode());
+            break;
+
+        case "setMinIdInSubtree":
+            this.setMinIdInSubtree(rpc.getValue());
+            break;
+
+        case "setMaxIdInSubtree":
+            this.setMaxIdInSubtree(rpc.getValue());
             break;
 
         case "changeLeftChildTo":
-            this.changeLeftChildTo((BinaryTreeLayer) rpc.getArg());
+            this.changeLeftChildTo((BinaryTreeLayer) rpc.getNode());
             break;
 
         case "changeRightChildTo":
-            this.changeRightChildTo((BinaryTreeLayer) rpc.getArg());
+            this.changeRightChildTo((BinaryTreeLayer) rpc.getNode());
             break;
 
         default:
@@ -59,8 +67,13 @@ public abstract class RPCLayer extends SynchronizerLayer {
         }
     }
 
-    public void requestRPCTo(int id, String command, BinaryTreeLayer node ) {
+    public void requestRPCTo(int id, String command, BinaryTreeLayer node) {
         RPCMessage msg = new RPCMessage(command, node);
+        this.sendForwardMessage(id, msg);
+    }
+
+    public void requestRPCTo(int id, String command, int n) {
+        RPCMessage msg = new RPCMessage(command, n);
         this.sendForwardMessage(id, msg);
     }
 

@@ -11,7 +11,7 @@ import sinalgo.gui.transformation.PositionTransformation;
  */
 public abstract class SynchronizerLayer extends BinaryTreeLayer {
 
-    private int MAX_TIMESLOT = 8;
+    private int MAX_TIMESLOT = 11;
     private int timeslot;
     private int round;
 
@@ -66,6 +66,18 @@ public abstract class SynchronizerLayer extends BinaryTreeLayer {
             timeslot7();
             break;
 
+        case 8:
+            timeslot8();
+            break;
+
+        case 9:
+            timeslot9();
+            break;
+
+        case 10:
+            timeslot10();
+            break;
+
         default:
             break;
         }
@@ -116,10 +128,10 @@ public abstract class SynchronizerLayer extends BinaryTreeLayer {
 
     } 
 
-    @Override
-    public void draw(Graphics g, PositionTransformation pt, boolean highlight) {
-        String text = "" + ID;
-        super.drawNodeAsDiskWithText(g, pt, highlight, text, 30, Color.WHITE);
-    }
+    // @Override
+    // public void draw(Graphics g, PositionTransformation pt, boolean highlight) {
+    //     String text = "" + ID;
+    //     super.drawNodeAsDiskWithText(g, pt, highlight, text, 30, Color.WHITE);
+    // }
 
 }

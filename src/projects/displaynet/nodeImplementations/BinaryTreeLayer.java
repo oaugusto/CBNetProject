@@ -89,7 +89,8 @@ public abstract class BinaryTreeLayer extends Node implements Comparable<BinaryT
     }
 
     public boolean isNeighbor(int id) {
-        if (this.parent.ID == id || this.leftChild.ID == id || this.rightChild.ID == id) {
+        if ((this.parent != null && this.parent.ID == id) || (this.leftChild != null && this.leftChild.ID == id)
+                || (this.rightChild != null && this.rightChild.ID == id)) {
             return true;
         } else {
             return false;
@@ -97,7 +98,7 @@ public abstract class BinaryTreeLayer extends Node implements Comparable<BinaryT
     }
 
     public boolean isNeighbor(BinaryTreeLayer node) {
-        if (this.parent.ID == node.ID || this.leftChild.ID == node.ID || this.rightChild.ID == node.ID) {
+        if (this.parent == node || this.leftChild == node || this.rightChild == node) {
             return true;
         } else {
             return false;
@@ -121,11 +122,11 @@ public abstract class BinaryTreeLayer extends Node implements Comparable<BinaryT
     }
 
     public String getRelationship(BinaryTreeLayer node) {
-        if (node.ID == this.parent.ID) {
+        if (node == this.parent) {
             return "Parent";
-        } else if (node.ID == this.leftChild.ID) {
+        } else if (node == this.leftChild) {
             return "LeftChild";
-        } else if (node.ID == this.rightChild.ID) {
+        } else if (node == this.rightChild) {
             return "RightChild";
         } else {
             return "None";
@@ -133,11 +134,11 @@ public abstract class BinaryTreeLayer extends Node implements Comparable<BinaryT
     }
 
     public String getRelationship(int id) {
-        if (id == this.parent.ID) {
+        if (this.parent != null && id == this.parent.ID) {
             return "Parent";
-        } else if (id == this.leftChild.ID) {
+        } else if (this.leftChild != null && id == this.leftChild.ID) {
             return "LeftChild";
-        } else if (id == this.rightChild.ID) {
+        } else if (this.rightChild != null && id == this.rightChild.ID) {
             return "RightChild";
         } else {
             return "None";
@@ -187,7 +188,7 @@ public abstract class BinaryTreeLayer extends Node implements Comparable<BinaryT
      */
     private void removeLinkTo(BinaryTreeLayer node) {
 
-        if (node == null) {
+        if (node == null || this.getRelationship(node) == "Parent") {
             return;
         }
 
@@ -195,7 +196,7 @@ public abstract class BinaryTreeLayer extends Node implements Comparable<BinaryT
             this.outgoingConnections.remove(this, node);
             node.outgoingConnections.remove(node, this);
         } else {
-            Tools.fatalError("Trying to remove a non-existing conenction");
+            Tools.fatalError("Trying to remove a non-existing conenction on node " + ID);
         }
     }
 
@@ -208,7 +209,10 @@ public abstract class BinaryTreeLayer extends Node implements Comparable<BinaryT
         // update current left child and create edge
         this.addLinkTo(node);
         this.setLeftChild(node);
-        node.setParent(this);
+
+        if (node != null) {
+            node.setParent(this);
+        }
     }
 
     /**
@@ -219,7 +223,10 @@ public abstract class BinaryTreeLayer extends Node implements Comparable<BinaryT
     public void addLinkToRightChild(BinaryTreeLayer node) {
         this.addLinkTo(node);
         this.setRightChild(node);
-        node.setParent(this);
+
+        if (node != null) {
+            node.setParent(this);
+        }
     }
 
     public void setMinIdInSubtree(int min) {
@@ -380,8 +387,10 @@ public abstract class BinaryTreeLayer extends Node implements Comparable<BinaryT
     }
 
     public void draw(Graphics g, PositionTransformation pt, boolean highlight) {
-        String text = "Node: " + ID;
+        String text = ID + " l:" + this.minIdInSubtree + " r:" + this.maxIdInSubtree;
+        // String text = "N:" + ID;
+
         // draw the node as a circle with the text inside
-        super.drawNodeAsDiskWithText(g, pt, highlight, text, 16, Color.YELLOW);
+        super.drawNodeAsDiskWithText(g, pt, highlight, text, 10, Color.YELLOW);
     }
 }
