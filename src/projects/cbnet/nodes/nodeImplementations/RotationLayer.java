@@ -288,6 +288,70 @@ public abstract class RotationLayer extends ClusterLayer {
         }
     }
 
+    private double log2(long value) {
+		return Math.log(value) / Math.log(2);
+	}
+
+    public double zigDiffRank() {
+		RotationLayer x = this;
+		RotationLayer y = (RotationLayer) x.getParent();
+		
+		//type of operation
+		boolean leftZig = (x == y.getLeftChild())? true: false;
+		
+		RotationLayer b = (RotationLayer) ((leftZig) ? x.getRightChild(): x.getLeftChild());
+		
+		long xOldWeight = x.getWeight();
+		long yOldWeight = y.getWeight();
+		
+		long bWeight = (b != null) ? b.getWeight(): 0;
+		
+		long yNewWeight = yOldWeight - xOldWeight + bWeight;
+		long xNewWeight = xOldWeight - bWeight + yNewWeight;
+		
+		double xOldRank = (xOldWeight == 0) ? 0 : log2(xOldWeight);
+		double yOldRank = (yOldWeight == 0) ? 0 : log2(yOldWeight);
+		double xNewRank = (xNewWeight == 0) ? 0 : log2(xNewWeight);
+		double yNewRank = (yNewWeight == 0) ? 0 : log2(yNewWeight);
+		
+		double deltaRank = yNewRank + xNewRank - yOldRank - xOldRank;
+		
+		return deltaRank;
+	}
+
+    private double zigZagDiffRank() {
+		RotationLayer x = this;
+		RotationLayer y = (RotationLayer) x.getParent();
+		RotationLayer z = (RotationLayer) y.getParent(); 
+		
+		boolean lefZigZag = (y == z.getLeftChild())? true: false;
+		
+		RotationLayer b = (CBNetNode) (lefZigZag ? x.getLeftChild(): x.getRightChild()); 
+		RotationLayer c = (CBNetNode) (lefZigZag ? x.getRightChild(): x.getLeftChild()); 
+		
+		long xOldWeight = x.getWeight();
+		long yOldWeight = y.getWeight();
+		long zOldWeight = z.getWeight();
+		
+		long bWeight = (b != null) ? b.getWeight(): 0;
+		long cWeight = (c != null) ? c.getWeight(): 0;
+		
+		long yNewWeight = yOldWeight - xOldWeight + bWeight;
+		long zNewWeight = zOldWeight - yOldWeight + cWeight;
+		long xNewWeight = xOldWeight - bWeight - cWeight + yNewWeight + zNewWeight;
+		
+		double xOldRank = (xOldWeight == 0) ? 0 : log2(xOldWeight);
+		double yOldRank = (yOldWeight == 0) ? 0 : log2(yOldWeight);
+		double zOldRank = (zOldWeight == 0) ? 0 : log2(zOldWeight);
+		double xNewRank = (xNewWeight == 0) ? 0 : log2(xNewWeight);
+		double yNewRank = (yNewWeight == 0) ? 0 : log2(yNewWeight);
+		double zNewRank = (zNewWeight == 0) ? 0 : log2(zNewWeight);
+		
+		double deltaRank = xNewRank + yNewRank + zNewRank - xOldRank - yOldRank - zOldRank;
+		
+		return deltaRank;
+	}
+
     @Override
     public void timeslot9() {
         super.timeslot9();
@@ -301,6 +365,14 @@ public abstract class RotationLayer extends ClusterLayer {
         }
     }
 
-    public abstract void rotationCompleted();
+    @Override
+    public void clusterCompleted(HashMap<String, NodeInfo> cluster) {
+        System.out.println("Node " + ID + ": cluster completed");
+        this.rotate(cluster);
+    }
+
+    public void rotationCompleted() {
+
+    }
     
 }

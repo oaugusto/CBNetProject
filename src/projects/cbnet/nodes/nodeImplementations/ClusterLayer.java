@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.PriorityQueue;
 import java.util.Queue;
 
+import projects.cbnet.nodes.messages.CBNetMessage;
 import projects.displaynet.messages.controlMessages.AckClusterMessage;
 import projects.displaynet.messages.controlMessages.RequestClusterMessage;
 import projects.displaynet.nodeImplementations.BinaryTreeLayer;
@@ -16,210 +17,189 @@ import sinalgo.nodes.messages.Message;
  * ClusterLayer
  */
 public abstract class ClusterLayer extends RPCLayer {
-   // set with current splay request of this node
-   private RequestClusterMessage clusterRequest;
 
-   // this priority queue store all request cluster message received
-   private PriorityQueue<RequestClusterMessage> queueClusterRequest;
+    // set with current splay request of this node
+    private RequestClusterMessage clusterRequest;
 
-   // this queue keeps all acks received due to a request cluster operation
-   private Queue<AckClusterMessage> queueAckCluster;
+    // this priority queue store all request cluster message received
+    private PriorityQueue<RequestClusterMessage> queueClusterRequest;
 
-   @Override
-   public void init() {
-       super.init();
+    // this queue keeps all acks received due to a request cluster operation
+    private Queue<AckClusterMessage> queueAckCluster;
 
-       this.clusterRequest = null;
-       this.queueClusterRequest = new PriorityQueue<>();
-       this.queueAckCluster = new LinkedList<>();
-   }
+    @Override
+    public void init() {
+        super.init();
 
-   /**
-    * @return the myClusterRquest
-    */
-   public RequestClusterMessage getClusterRequest() {
-       return clusterRequest;
-   }
+        this.clusterRequest = null;
+        this.queueClusterRequest = new PriorityQueue<>();
+        this.queueAckCluster = new LinkedList<>();
+    }
 
-   /**
-    * set the current request operation of this node
-    */
-   public void setClusterRequest(int src, int dst, double priority) {
-       this.clusterRequest = new RequestClusterMessage(src, dst, 3, priority);
-   }
 
-   public void clearClusterRequest() {
-       this.clusterRequest = null;
-   }
+    public RequestClusterMessage getClusterRequest() {
+        return clusterRequest;
+    }
 
-   public void clearClusterRequestQueue() {
-       this.queueClusterRequest.clear();
-   }
+    public void setClusterRequest(int src, int dst, double priority) {
+        this.clusterRequest = new RequestClusterMessage(src, dst, 3, priority);
+    }
 
-   public void clearAckClusterQueue() {
-       this.queueAckCluster.clear();
-   }
+    public void clearClusterRequest() {
+        this.clusterRequest = null;
+    }
 
-   /**
-    * This method send a cluster request and put the request into the buffer of
-    * current node. The timout means how many times the message should be routed.
-    * 
-    * @param src
-    * @param dst
-    * @param priority
-    */
-   public void sendRequestCluster() {
-       this.queueClusterRequest.add(this.clusterRequest);
-       RequestClusterMessage msg = new RequestClusterMessage(this.clusterRequest);
-       msg.setTimeout(2);
-       this.sendToParent(msg);
-   }
+    public void clearClusterRequestQueue() {
+        this.queueClusterRequest.clear();
+    }
 
-   @Override
-   public void receiveMessage(Message msg) {
-       super.receiveMessage(msg);
+    public void clearAckClusterQueue() {
+        this.queueAckCluster.clear();
+    }
 
-       if (msg instanceof RequestClusterMessage) {
+    private void forwardRequestCluster(RequestClusterMessage msg) {
 
-           RequestClusterMessage rqMessage = (RequestClusterMessage) msg;
-           int timeout = rqMessage.getTimeout();
+    }
 
-           /**
-            * It is not possible to parent to be the dst because completion is check first
-            * and the grandparent being LCA has effect on the type of rotation
-            */
-           if (timeout == 2 && this.isLeastCommonAncestorOf(rqMessage.getDst())) {
+    public void sendRequestCluster() {
 
-               RequestClusterMessage newRqMessage = new RequestClusterMessage(rqMessage);
-               newRqMessage.setTimeout(0);
-               this.sendToParent(newRqMessage);
+    }
 
-           } else if (timeout == 1 && ID == rqMessage.getDst()) {
+    public void sendRequestClusterBottomUp() {
+        this.queueClusterRequest.add(this.clusterRequest);
+        RequestClusterMessage msg = new RequestClusterMessage(this.clusterRequest);
+        msg.setTimeout(2);
+        this.sendToParent(msg);
+    }
 
-               rqMessage.setTimeout(0);
+    public void sendRequestClusterTopDown() {
 
-           } else if (timeout != 0) {
+    }
 
-               RequestClusterMessage newRqMessage = new RequestClusterMessage(rqMessage);
-               newRqMessage.setTimeout(timeout - 1);
-               this.sendToParent(newRqMessage);
+    @Override
+    public void receiveMessage(Message msg) {
+        super.receiveMessage(msg);
 
-           }
+        if (msg instanceof RequestClusterMessage) {
 
-           // add current request to queue
-           this.queueClusterRequest.add(rqMessage);
+            RequestClusterMessage rqMessage = (RequestClusterMessage) msg;
+            int timeout = rqMessage.getTimeout();
 
-           return;
 
-       } else if (msg instanceof AckClusterMessage) {
+            // add current request to queue
+            this.queueClusterRequest.add(rqMessage);
 
-           AckClusterMessage ackMessage = (AckClusterMessage) msg;
-           this.queueAckCluster.add(ackMessage);
+            return;
 
-           return;
-       }
-   }
+        } else if (msg instanceof AckClusterMessage) {
 
-   /**
-    * In this time slot all request message will have arrived
-    */
-   @Override
-   public void timeslot3() {
-       super.timeslot3();
+            AckClusterMessage ackMessage = (AckClusterMessage) msg;
+            this.queueAckCluster.add(ackMessage);
 
-       if (!this.queueClusterRequest.isEmpty()) {
-           RequestClusterMessage rq = this.queueClusterRequest.poll();
+            return;
 
-           // check if my current request is greater than request received
-           // if my current msg is greater than the request received send ack message.
-           // The node can send message to itself
-           if (this.clusterRequest == null || this.clusterRequest.compareTo(rq) >= 0
-                   || (this.isLeastCommonAncestorOf(rq.getSrc()) && this.clusterRequest.getDst() == rq.getSrc())) {
+        } 
+    }
 
-               AckClusterMessage ack = new AckClusterMessage(rq.getSrc(), rq.getDst(), rq.getPriority(),
-                       this.getNodeInfo());
+    /**
+     * In this time slot all request message will have arrived
+     */
+    @Override
+    public void timeslot3() {
+        super.timeslot3();
 
-               if (rq.getTimeout() == 0) {
-                   ack.setFinalNode();
-               }
+        if (!this.queueClusterRequest.isEmpty()) {
+            RequestClusterMessage rq = this.queueClusterRequest.poll();
 
-               this.sendForwardMessage(rq.getSrc(), ack);
-           }
-       }
-   }
+            // check if my current request is greater than request received
+            // if my current msg is greater than the request received send ack message.
+            // The node can send message to itself
+            if (this.clusterRequest == null || this.clusterRequest.compareTo(rq) >= 0) {
 
-   private AckClusterMessage findAckMessageInBufferById(int id) {
-       for (AckClusterMessage m : this.queueAckCluster) {
-           if (m.getInfo().getNode().ID == id) {
-               return m;
-           }
-       }
+                AckClusterMessage ack = new AckClusterMessage(rq.getSrc(), rq.getDst(), rq.getPriority(),
+                        this.getNodeInfo());
 
-       return null;
-   }
+                if (rq.getTimeout() == 0) {
+                    ack.setFinalNode();
+                }
 
-   /**
-    * This function check ack buffer to see if ack message form a linear sequence
-    * to final node. In case missing one ack message the function return false.
-    * 
-    * @return
-    */
-   public boolean isClusterGranted() {
-       boolean clusterGranted = false;
-       BinaryTreeLayer node = this;
-       AckClusterMessage m;
+                this.sendForwardMessage(rq.getSrc(), ack);
+            }
+        }
+    }
 
-       while ((m = findAckMessageInBufferById(node.ID)) != null) {
-           if (m.isFinalNode()) {
-               clusterGranted = true;
-               break;
-           }
-           node = (BinaryTreeLayer) m.getInfo().getParent();
-       }
+    private AckClusterMessage findAckMessageInBufferById(int id) {
+        for (AckClusterMessage m : this.queueAckCluster) {
+            if (m.getInfo().getNode().ID == id) {
+                return m;
+            }
+        }
 
-       return clusterGranted;
-   }
+        return null;
+    }
 
-   private HashMap<String, NodeInfo> getClusterSequenceFromAckBuffer() {
-       HashMap<String, NodeInfo> table = new HashMap<>();
-       NodeInfo info;
+    /**
+     * This function check ack buffer to see if ack message form a linear sequence
+     * to final node. In case missing one ack message the function return false.
+     * 
+     * @return
+     */
+    public boolean isClusterGranted() {
+        boolean clusterGranted = false;
+        BinaryTreeLayer node = this;
+        AckClusterMessage m;
 
-       info = findAckMessageInBufferById(ID).getInfo();
-       table.put("x", info);
+        while ((m = findAckMessageInBufferById(node.ID)) != null) {
+            if (m.isFinalNode()) {
+                clusterGranted = true;
+                break;
+            }
+            node = (BinaryTreeLayer) m.getInfo().getParent();
+        }
 
-       info = findAckMessageInBufferById(info.getParent().ID).getInfo();
-       table.put("y", info);
+        return clusterGranted;
+    }
 
-       info = findAckMessageInBufferById(info.getParent().ID).getInfo();
-       table.put("z", info);
+    private HashMap<String, NodeInfo> getClusterSequenceFromAckBuffer() {
+        HashMap<String, NodeInfo> table = new HashMap<>();
+        NodeInfo info;
 
-       if (this.queueAckCluster.size() == 4) {
-           info = findAckMessageInBufferById(info.getParent().ID).getInfo();
-           table.put("w", info);
-       }
+        info = findAckMessageInBufferById(ID).getInfo();
+        table.put("x", info);
 
-       return table;
-   }
+        info = findAckMessageInBufferById(info.getParent().ID).getInfo();
+        table.put("y", info);
 
-   /**
-    * In this time slot all ack message will have arrived If the node has sent
-    * message requesting cluster formation verify if the permission was granted.
-    */
-   @Override
-   public void timeslot6() {
-       super.timeslot6();
+        info = findAckMessageInBufferById(info.getParent().ID).getInfo();
+        table.put("z", info);
 
-       if (!this.queueAckCluster.isEmpty()) { // This node has sent request cluster message
-           if (this.isClusterGranted()) {
-               this.clusterCompleted(this.getClusterSequenceFromAckBuffer());
-           }
-       }
+        if (this.queueAckCluster.size() == 4) {
+            info = findAckMessageInBufferById(info.getParent().ID).getInfo();
+            table.put("w", info);
+        }
 
-       // reset queue
-       this.clearClusterRequestQueue();
-       this.clearAckClusterQueue();
-   }
+        return table;
+    }
 
-   public abstract void clusterCompleted(HashMap<String, NodeInfo> cluster);
-    
+    /**
+     * In this time slot all ack message will have arrived If the node has sent
+     * message requesting cluster formation verify if the permission was granted.
+     */
+    @Override
+    public void timeslot6() {
+        super.timeslot6();
+
+        if (!this.queueAckCluster.isEmpty()) { // This node has sent request cluster message
+            if (this.isClusterGranted()) {
+                this.clusterCompleted(this.getClusterSequenceFromAckBuffer());
+            }
+        }
+
+        // reset queue
+        this.clearClusterRequestQueue();
+        this.clearAckClusterQueue();
+    }
+
+    public abstract void clusterCompleted(HashMap<String, NodeInfo> cluster);
+
 }

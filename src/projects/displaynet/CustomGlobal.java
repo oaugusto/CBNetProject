@@ -15,7 +15,7 @@ public class CustomGlobal extends AbstractCustomGlobal {
     public ArrayList<BinaryTreeLayer> tree = null;
     public BinaryTreeLayer controlNode = null;
     public TreeConstructor treeTopology = null;
-    public RequestQueue rqueue = new RequestQueue("inputs/datasetC_pairs_small.txt", " ");
+    // public RequestQueue rqueue = new RequestQueue("inputs/datasetC_pairs_small.txt", " ");
 
     public static boolean isSequencial = true;
     public static boolean newSplay = false;
@@ -52,17 +52,17 @@ public class CustomGlobal extends AbstractCustomGlobal {
         /*
 
         */
-        if (isSequencial) {
+        // if (isSequencial) {
 
-            this.newSplay = true;
+        //     this.newSplay = true;
 
-        } else  {
-            while (this.rqueue.hasNextRequest()) {
-                Tuple<Integer, Integer> pair = this.rqueue.getNextRequest();
-                SplayNetApp node = (SplayNetApp) Tools.getNodeByID(pair.first);
-                node.newSplayOperation(pair.second);
-            }
-        }
+        // } else  {
+        //     while (this.rqueue.hasNextRequest()) {
+        //         Tuple<Integer, Integer> pair = this.rqueue.getNextRequest();
+        //         SplayNetApp node = (SplayNetApp) Tools.getNodeByID(pair.first);
+        //         node.newSplayOperation(pair.second);
+        //     }
+        // }
     }
     
     @Override
@@ -74,14 +74,17 @@ public class CustomGlobal extends AbstractCustomGlobal {
 
             SplayNetApp node = (SplayNetApp) Tools.getNodeByID(2);
             node.newSplayOperation(30);
+
+            node = (SplayNetApp) Tools.getNodeByID(10);
+            node.newSplayOperation(30);
         }
 
-        if (isSequencial && newSplay) {
-            newSplay = false;
-            Tuple<Integer, Integer> pair = this.rqueue.getNextRequest();
-            SplayNetApp node = (SplayNetApp) Tools.getNodeByID(pair.first);
-            node.newSplayOperation(pair.second);
-        }
+        // if (isSequencial && newSplay) {
+        //     newSplay = false;
+        //     Tuple<Integer, Integer> pair = this.rqueue.getNextRequest();
+        //     SplayNetApp node = (SplayNetApp) Tools.getNodeByID(pair.first);
+        //     node.newSplayOperation(pair.second);
+        // }
     }
 
 }

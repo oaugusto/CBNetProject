@@ -1,9 +1,11 @@
 package projects.cbnet.nodes.nodeImplementations;
 
-import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Queue;
 
-import projects.displaynet.tableEntry.NodeInfo;
+import projects.cbnet.nodes.messages.CompletionMessage;
 import projects.displaynet.tableEntry.Request;
+import sinalgo.nodes.messages.Message;
 import sinalgo.tools.Tools;
 
 /**
@@ -11,123 +13,69 @@ import sinalgo.tools.Tools;
  */
 public class CBNetNode extends RotationLayer {
 
-	public enum States {
-        PASSIVE, ACTIVE, COMMUNICATING
+    private boolean newMessage;
+    private Request activeRequest;
+
+    private Queue<Request> bufferRequest;
+
+    private enum States {
+        PASSIVE,
+        BLOCKED,
+        COMMUNICATING
     }
 
-    // keep current state of the node
-    public States state;
-
-    // keeps track of every splay a node participate as source or destination. once
-    // a splay is completed, it is assigned null value
-    public boolean newRequest;
-    public Request activeSplay;
-
-
-    boolean first = true;
+    private States state;
 
     @Override
     public void init() {
         super.init();
 
-        this.state = States.PASSIVE;
-        this.newRequest = false;
-        this.activeSplay = null;
+        this.newMessage = false;
+        this.activeRequest = null;
+        this.bufferRequest = new LinkedList<>();
     }
 
     @Override
     public void updateState() {
         super.updateState();
 
-        /*
-         * Update current state in time slot 0
-         */
         switch (this.state) {
+            case PASSIVE:
+                
+                break;
 
-        case COMMUNICATING:
-            this.state = States.PASSIVE;
-            this.unblockRotations();
-            this.clearClusterRequest();
-            this.communicationCompleted();
+            case BLOCKED:
 
-        case PASSIVE:
-            if (this.newRequest) {
+                break;
 
-                this.newRequest = false;
+            case COMMUNICATING:
+                break;
+        
+            default:
+                Tools.fatalError("Invalid CBNetNode state");
+                break;
+        }
 
-                if (this.checkCompletion() == true) {
+    }
 
-                    this.blockRotations();
-                    this.state = States.COMMUNICATING;
-                    // communicate for one round
+    @Override
+    public void receiveMessage(Message msg) {
+        super.receiveMessage(msg);
 
-                } else if (!this.isLeastCommonAncestorOf(this.activeSplay.dstId)) {
+        if (msg instanceof CompletionMessage) {
 
-                    this.state = States.ACTIVE;
-                    this.setClusterRequest(this.activeSplay.srcId, this.activeSplay.dstId, this.activeSplay.priority);
-                    this.trySplayOperation();
-
-                }
-            }
-            break;
-
-        case ACTIVE:
-            if (this.checkCompletion() == true) {
-
-                this.blockRotations();
-                this.state = States.COMMUNICATING;
-                // communicate for one round
-
-            } else if (!this.isLeastCommonAncestorOf(this.activeSplay.dstId)) {
-                this.trySplayOperation();
-            }
-
-            break;
-
-        default:
-            Tools.fatalError("Non-existing splay state");
-            break;
+            return;
         }
     }
 
-    public void newSplay(int src_splay, int dst_splay, double priority) {
-        this.newRequest = true;
+    public void newMessage(int src_splay, int dst_splay, double priority) {
         Request splay = new Request(src_splay, dst_splay, priority);
-        this.activeSplay = splay;
-    }
-
-    private boolean checkCompletion() {
-        if (this.isNeighbor(this.activeSplay.dstId)) {
-            return true;
-        }
-        return false;
-    }
-
-    private void blockRotations() {
-        this.setClusterRequest(Integer.MIN_VALUE, Integer.MIN_VALUE, Double.MIN_VALUE);
-    }
-
-    private void unblockRotations() {
-        this.clearClusterRequest();
-    }
-
-    private void trySplayOperation() {
-        this.sendRequestCluster();
-    }
-
-    @Override
-    public void clusterCompleted(HashMap<String, NodeInfo> cluster) {
-        System.out.println("Node " + ID + ": cluster completed");
-        this.rotate(cluster);
-    }
-
-    @Override
-    public void rotationCompleted() {
-        // collect data here
+        this.activeRequest = splay;
+        this.newMessage = true;
     }
 
     public void communicationCompleted() {
-        System.out.println("Communication Completed node " + ID);
+        // System.out.println("Communication Completed node " + ID);
     }
 
     @Override
