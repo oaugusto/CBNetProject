@@ -1,8 +1,5 @@
 package projects.displaynet.nodeImplementations;
 
-import java.util.HashMap;
-
-import projects.displaynet.tableEntry.NodeInfo;
 import projects.displaynet.tableEntry.Request;
 import sinalgo.tools.Tools;
 
@@ -64,8 +61,8 @@ public class SplayNetNode extends RotationLayer {
                 } else if (!this.isLeastCommonAncestorOf(this.activeSplay.dstId)) {
 
                     this.state = States.ACTIVE;
-                    this.setClusterRequest(this.activeSplay.srcId, this.activeSplay.dstId, this.activeSplay.priority);
-                    this.trySplayOperation();
+                    this.setOperation(this.activeSplay.srcId, this.activeSplay.dstId, this.activeSplay.priority);
+                    this.tryRotation();
 
                 }
             }
@@ -79,7 +76,7 @@ public class SplayNetNode extends RotationLayer {
                 // communicate for one round
 
             } else if (!this.isLeastCommonAncestorOf(this.activeSplay.dstId)) {
-                this.trySplayOperation();
+                this.tryRotation();
             }
 
             break;
@@ -104,21 +101,11 @@ public class SplayNetNode extends RotationLayer {
     }
 
     private void blockRotations() {
-        this.setClusterRequest(Integer.MIN_VALUE, Integer.MIN_VALUE, Double.MIN_VALUE);
+        this.setOperation(Integer.MIN_VALUE, Integer.MIN_VALUE, Double.MIN_VALUE);
     }
 
     private void unblockRotations() {
         this.clearClusterRequest();
-    }
-
-    private void trySplayOperation() {
-        this.sendRequestCluster();
-    }
-
-    @Override
-    public void clusterCompleted(HashMap<String, NodeInfo> cluster) {
-        System.out.println("Node " + ID + ": cluster completed");
-        this.rotate(cluster);
     }
 
     @Override
@@ -127,7 +114,7 @@ public class SplayNetNode extends RotationLayer {
     }
 
     public void communicationCompleted() {
-        
+        System.out.println("Node " + ID + ": Comunication completed");
     }
 
     @Override

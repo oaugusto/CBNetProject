@@ -85,11 +85,11 @@ public class HandShakeLayer extends SplayNetNode {
         }
     }
 
-    @Override
-    public void communicationCompleted() {
-        this.isSplayCompleted = true;
-        this.splayCompleted();
-    }
+    // @Override
+    // public void communicationCompleted() {
+    //     this.isSplayCompleted = true;
+    //     this.splayCompleted();
+    // }
 
     public void splayCompleted() {
 
@@ -218,8 +218,9 @@ public class HandShakeLayer extends SplayNetNode {
             // + " generate next splay src:" + this.currentSplay_handshake.srcId + " dst"
             // + this.currentSplay_handshake.dstId + "priority: " +
             // this.currentSplay_handshake.priority);
-            this.newSplay(this.currentSplay_handshake.srcId, this.currentSplay_handshake.dstId,
-                    this.currentSplay_handshake.priority);
+            // TODO
+            // this.newSplay(this.currentSplay_handshake.srcId, this.currentSplay_handshake.dstId,
+            //         this.currentSplay_handshake.priority);
 
             this.state_handshake = State_handshake.SPLAY;
             // handshake_log.logln("[" + Global.currentTime + "] " + ID + ": State:" +

@@ -18,6 +18,20 @@ public abstract class RotationLayer extends ClusterLayer {
         this.rotating = false;
     }
 
+    public void setOperation(int src, int dst, double priority) {
+        this.setClusterRequest(src, dst, priority);
+    }
+
+    public void tryRotation() {
+        this.sendRequestCluster();
+    }
+
+    @Override
+    public void clusterCompleted(HashMap<String, NodeInfo> cluster) {
+        System.out.println("Node " + ID + ": cluster completed");
+        this.rotate(cluster);
+    }
+
     public void rotate(HashMap<String, NodeInfo> cluster) {
         this.rotating = true;
 

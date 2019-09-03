@@ -13,83 +13,63 @@ public class AckClusterMessage extends Message {
     private double priority;
     private NodeInfo info;
 
-    private boolean finalNode;
+    private int position;
+    private boolean isFinalNode; // keep track if this node is final node in current request
 
-    public AckClusterMessage(int src, int dst, double priority, NodeInfo info) {
+    public AckClusterMessage(int src, int dst, double priority, int position, NodeInfo info) {
         this.src = src;
         this.dst = dst;
         this.priority = priority;
         this.info = info;
+        this.position = position;
     }
 
-    /**
-     * @param finalNode the finalNode to set
-     */
-    public void setFinalNode() {
-        this.finalNode = true;
-    }
-
-    /**
-     * @return the finalNode
-     */
-    public boolean isFinalNode() {
-        return finalNode;
-    }
-
-    /**
-     * @return the src
-     */
     public int getSrc() {
         return src;
     }
 
-    /**
-     * @return the dst
-     */
     public int getDst() {
         return dst;
     }
 
-    /**
-     * @return the priority
-     */
     public double getPriority() {
         return priority;
     }
 
-    /**
-     * @return the info
-     */
     public NodeInfo getInfo() {
         return info;
     }
 
-    /**
-     * @param src the src to set
-     */
+    public int getPosition() {
+        return position;
+    }
+
+    public boolean isFinalNode() {
+        return isFinalNode;
+    }
+
     public void setSrc(int src) {
         this.src = src;
     }
 
-    /**
-     * @param dst the dst to set
-     */
     public void setDst(int dst) {
         this.dst = dst;
     }
 
-    /**
-     * @param priority the priority to set
-     */
     public void setPriority(double priority) {
         this.priority = priority;
     }
 
-    /**
-     * @param info the info to set
-     */
     public void setInfo(NodeInfo info) {
         this.info = info;
+    }
+
+    public void setPosition(int position) {
+        this.position = position;
+    }
+
+    public void setFinalNode() {
+        this.isFinalNode = true;
     }
 
     @Override

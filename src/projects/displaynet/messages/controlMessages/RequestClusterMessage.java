@@ -10,71 +10,68 @@ public class RequestClusterMessage extends Message implements Comparable<Request
     private int src;
     private int dst;
     private double priority;
-    
-    public int timeout;
 
+    private int position;
+    private boolean isFinalNode; // keep track if this node is final node in current request
+    
     public RequestClusterMessage(RequestClusterMessage msg) {
         this.src = msg.getSrc();
         this.dst = msg.getDst();
         this.priority = msg.getPriority();
-        this.timeout = msg.getTimeout();
+        this.position = msg.getPosition();
+        this.isFinalNode = false;
     }
 
-    public RequestClusterMessage(int src, int dst, int timeout, double priority) {
+    public RequestClusterMessage(int src, int dst, int position, double priority) {
         this.src = src;
         this.dst = dst;
-        this.timeout = timeout;
         this.priority = priority;
+        this.position = position;
+        this.isFinalNode = false;
     }
 
-    /**
-     * @return the src
-     */
     public int getSrc() {
         return src;
     }
 
-    /**
-     * @return the dst
-     */
     public int getDst() {
         return dst;
     }
 
-    /**
-     * @return the priority
-     */
     public double getPriority() {
         return priority;
     }
 
-    /**
-     * @param src the src to set
-     */
+    public int getPosition() {
+        return position;
+    }
+
+    public boolean isFinalNode() {
+        return isFinalNode;
+    }
+
     public void setSrc(int src) {
         this.src = src;
     }
 
-    /**
-     * @param dst the dst to set
-     */
     public void setDst(int dst) {
         this.dst = dst;
     }
 
-    /**
-     * @param priority the priority to set
-     */
     public void setPriority(double priority) {
         this.priority = priority;
     }
 
-    public int getTimeout() {
-        return this.timeout;
+    public void setPosition(int position) {
+        this.position = position;
     }
 
-    public void setTimeout(int t) {
-        this.timeout = t;
+    public void shiftPosition() {
+        this.position++;
+    }
+
+    public void setFinalNode() {
+        this.isFinalNode = true;
     }
 
     @Override

@@ -1,10 +1,13 @@
 package projects.displaynet;
 
+import java.awt.Color;
+import java.awt.Graphics;
 import java.util.ArrayList;
 
 import projects.displaynet.nodeImplementations.BinaryTreeLayer;
 import projects.displaynet.nodeImplementations.SplayNetApp;
 import projects.displaynet.nodeImplementations.SplayNetNode;
+import sinalgo.gui.transformation.PositionTransformation;
 import sinalgo.runtime.AbstractCustomGlobal;
 import sinalgo.tools.Tools;
 import sinalgo.tools.Tuple;
@@ -42,7 +45,12 @@ public class CustomGlobal extends AbstractCustomGlobal {
             this.tree.add(n);
         }
 
-        this.controlNode  = new SplayNetNode();
+        this.controlNode  = new SplayNetNode() {
+            public void draw(Graphics g, PositionTransformation pt, boolean highlight) {
+                String text = "ControlNode";
+                super.drawNodeAsDiskWithText(g, pt, highlight, text, 10, Color.YELLOW);
+            }
+        };
         this.controlNode.finishInitializationWithDefaultModels(true);
 
         this.treeTopology = new TreeConstructor(controlNode, this.tree);
