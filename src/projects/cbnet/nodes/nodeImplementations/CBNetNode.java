@@ -20,7 +20,6 @@ public class CBNetNode extends RotationLayer {
 
     private enum States {
         PASSIVE,
-        BLOCKED,
         COMMUNICATING
     }
 
@@ -42,10 +41,6 @@ public class CBNetNode extends RotationLayer {
         switch (this.state) {
             case PASSIVE:
                 
-                break;
-
-            case BLOCKED:
-
                 break;
 
             case COMMUNICATING:
