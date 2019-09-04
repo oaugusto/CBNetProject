@@ -1,10 +1,10 @@
-package projects.displaynet.nodeImplementations;
+package projects.displaynet.nodes.nodeImplementations;
 
 import java.awt.Color;
 import java.awt.Graphics;
 
-import projects.displaynet.messages.RoutingMessage;
-import projects.displaynet.tableEntry.NodeInfo;
+import projects.displaynet.nodes.messages.RoutingMessage;
+import projects.displaynet.nodes.tableEntry.NodeInfo;
 import sinalgo.configuration.WrongConfigurationException;
 import sinalgo.gui.transformation.PositionTransformation;
 import sinalgo.nodes.Node;
@@ -117,10 +117,6 @@ public abstract class BinaryTreeLayer extends Node implements Comparable<BinaryT
         }
     }
 
-    public NodeInfo getNodeInfo() {
-        return new NodeInfo(this, parent, leftChild, rightChild, minIdInSubtree, maxIdInSubtree);
-    }
-
     public String getRelationship(BinaryTreeLayer node) {
         if (node == this.parent) {
             return "Parent";
@@ -143,6 +139,11 @@ public abstract class BinaryTreeLayer extends Node implements Comparable<BinaryT
         } else {
             return "None";
         }
+    }
+
+    public NodeInfo getNodeInfo() {
+        return new NodeInfo(this, this.parent, this.leftChild, this.rightChild, this.minIdInSubtree,
+                this.maxIdInSubtree);
     }
 
     /**

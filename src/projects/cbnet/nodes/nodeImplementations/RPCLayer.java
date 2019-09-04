@@ -1,9 +1,9 @@
-package projects.displaynet.nodeImplementations;
+package projects.cbnet.nodes.nodeImplementations;
 
 import java.util.LinkedList;
 import java.util.Queue;
 
-import projects.displaynet.messages.controlMessages.RPCMessage;
+import projects.cbnet.nodes.messages.controlMessage.RPCMessage;
 import sinalgo.nodes.messages.Message;
 import sinalgo.tools.Tools;
 
@@ -27,32 +27,38 @@ public abstract class RPCLayer extends SynchronizerLayer {
     public void execute(RPCMessage rpc) {
         switch (rpc.getCommand()) {
         case "setParent":
-            this.setParent((BinaryTreeLayer) rpc.getNode());
+            this.setParent((CBTreeLayer) rpc.getNode());
             break;
 
         case "setLeftChild":
-            this.setLeftChild((BinaryTreeLayer) rpc.getNode());
+            this.setLeftChild((CBTreeLayer) rpc.getNode());
             break;
 
         case "setRightChild":
-            this.setRightChild((BinaryTreeLayer) rpc.getNode());
+            this.setRightChild((CBTreeLayer) rpc.getNode());
             break;
 
         case "setMinIdInSubtree":
-            this.setMinIdInSubtree(rpc.getValue());
+            this.setMinIdInSubtree((int) rpc.getValue());
             break;
 
         case "setMaxIdInSubtree":
-            this.setMaxIdInSubtree(rpc.getValue());
+            this.setMaxIdInSubtree((int) rpc.getValue());
             break;
 
         case "changeLeftChildTo":
-            this.changeLeftChildTo((BinaryTreeLayer) rpc.getNode());
+            this.changeLeftChildTo((CBTreeLayer) rpc.getNode());
             break;
 
         case "changeRightChildTo":
-            this.changeRightChildTo((BinaryTreeLayer) rpc.getNode());
+            this.changeRightChildTo((CBTreeLayer) rpc.getNode());
             break;
+
+        case "setWeight":
+            this.setWeight(rpc.getValue());
+
+        case "incrementWeight":
+            this.incrementWeight();
 
         default:
             Tools.fatalError("Wrong procedure called");
@@ -67,7 +73,7 @@ public abstract class RPCLayer extends SynchronizerLayer {
         }
     }
 
-    public void requestRPCTo(int id, String command, BinaryTreeLayer node) {
+    public void requestRPCTo(int id, String command, CBTreeLayer node) {
         RPCMessage msg = new RPCMessage(command, node);
         this.sendForwardMessage(id, msg);
     }

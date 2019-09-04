@@ -1,7 +1,7 @@
-package projects.displaynet.nodeImplementations;
+package projects.displaynet.nodes.nodeImplementations;
 
 import projects.displaynet.CustomGlobal;
-import projects.displaynet.tableEntry.Request;
+import projects.displaynet.nodes.tableEntry.Request;
 
 /**
  * SplayNetApp

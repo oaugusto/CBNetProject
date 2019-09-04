@@ -1,4 +1,4 @@
-package projects.displaynet.messages.handshakeMessages;
+package projects.displaynet.nodes.messages.handshakeMessages;
 
 import sinalgo.nodes.messages.Message;
 

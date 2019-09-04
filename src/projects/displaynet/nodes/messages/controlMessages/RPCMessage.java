@@ -1,6 +1,6 @@
-package projects.displaynet.messages.controlMessages;
+package projects.displaynet.nodes.messages.controlMessages;
 
-import projects.displaynet.nodeImplementations.BinaryTreeLayer;
+import projects.displaynet.nodes.nodeImplementations.BinaryTreeLayer;
 import sinalgo.nodes.messages.Message;
 
 /**

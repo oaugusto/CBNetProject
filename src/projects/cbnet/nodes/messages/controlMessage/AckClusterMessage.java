@@ -1,22 +1,22 @@
 package projects.cbnet.nodes.messages.controlMessage;
 
-import projects.cbnet.tableEntry.NodeInfo;
+import projects.cbnet.nodes.tableEntry.CBInfo;
 import sinalgo.nodes.messages.Message;
 
 /**
  * AckCluster
  */
 public class AckClusterMessage extends Message {
-
+    
     private int src;
     private int dst;
     private double priority;
-    private NodeInfo info;
+    private CBInfo info;
 
     private int position;
     private boolean isFinalNode; // keep track if this node is final node in current request
 
-    public AckClusterMessage(int src, int dst, double priority, int position, NodeInfo info) {
+    public AckClusterMessage(int src, int dst, double priority, int position, CBInfo info) {
         this.src = src;
         this.dst = dst;
         this.priority = priority;
@@ -36,7 +36,7 @@ public class AckClusterMessage extends Message {
         return priority;
     }
 
-    public NodeInfo getInfo() {
+    public CBInfo getInfo() {
         return info;
     }
 
@@ -60,7 +60,7 @@ public class AckClusterMessage extends Message {
         this.priority = priority;
     }
 
-    public void setInfo(NodeInfo info) {
+    public void setInfo(CBInfo info) {
         this.info = info;
     }
 

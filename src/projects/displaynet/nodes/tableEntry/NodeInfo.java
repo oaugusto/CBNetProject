@@ -1,6 +1,6 @@
-package projects.displaynet.tableEntry;
+package projects.displaynet.nodes.tableEntry;
 
-import projects.displaynet.nodeImplementations.BinaryTreeLayer;
+import projects.displaynet.nodes.nodeImplementations.BinaryTreeLayer;
 
 public class NodeInfo {
 

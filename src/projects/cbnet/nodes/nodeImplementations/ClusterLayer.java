@@ -5,21 +5,17 @@ import java.util.LinkedList;
 import java.util.PriorityQueue;
 import java.util.Queue;
 
-import projects.cbnet.nodes.messages.CBNetMessage;
-import projects.displaynet.messages.controlMessages.AckClusterMessage;
-import projects.displaynet.messages.controlMessages.RequestClusterMessage;
-import projects.displaynet.nodeImplementations.BinaryTreeLayer;
-import projects.displaynet.nodeImplementations.RPCLayer;
-import projects.displaynet.tableEntry.NodeInfo;
+import projects.cbnet.nodes.messages.controlMessage.AckClusterMessage;
+import projects.cbnet.nodes.messages.controlMessage.RequestClusterUpMessage;
+import projects.cbnet.nodes.messages.controlMessage.RequestClusterDownMessage;
+import projects.cbnet.nodes.tableEntry.CBInfo;
+import projects.displaynet.nodes.messages.controlMessages.RequestClusterMessage;
 import sinalgo.nodes.messages.Message;
 
 /**
  * ClusterLayer
  */
-public abstract class ClusterLayer extends RPCLayer {
-
-    // set with current splay request of this node
-    private RequestClusterMessage clusterRequest;
+public class ClusterLayer extends CBNetLayer {
 
     // this priority queue store all request cluster message received
     private PriorityQueue<RequestClusterMessage> queueClusterRequest;
@@ -27,26 +23,17 @@ public abstract class ClusterLayer extends RPCLayer {
     // this queue keeps all acks received due to a request cluster operation
     private Queue<AckClusterMessage> queueAckCluster;
 
+    private boolean isClusterUp; // change this
+    private boolean isClusterDown;
+
     @Override
     public void init() {
         super.init();
 
-        this.clusterRequest = null;
         this.queueClusterRequest = new PriorityQueue<>();
         this.queueAckCluster = new LinkedList<>();
-    }
-
-    public RequestClusterMessage getClusterRequest() {
-        return clusterRequest;
-    }
-
-    public void setClusterRequest(int src, int dst, double priority) {
-        // position is set to 0, first node in the sequence
-        this.clusterRequest = new RequestClusterMessage(src, dst, 0, priority);
-    }
-
-    public void clearClusterRequest() {
-        this.clusterRequest = null;
+        this.isClusterUp = false;
+        this.isClusterDown = false;
     }
 
     public void clearClusterRequestQueue() {
@@ -57,10 +44,6 @@ public abstract class ClusterLayer extends RPCLayer {
         this.queueAckCluster.clear();
     }
 
-    private void forwardRequestCluster(RequestClusterMessage msg) {
-        this.sendToParent(msg);
-    }
-
     /**
      * This method send a cluster request and put the request into the buffer of
      * current node. The positon means how many times the message should be routed.
@@ -69,24 +52,50 @@ public abstract class ClusterLayer extends RPCLayer {
      * @param dst
      * @param priority
      */
-    public void sendRequestCluster() {
+    public void sendRequestClusterUp(int src, int dst, double priority) {
+        System.out.println("Node " + ID + " sending cluster up");
+        this.isClusterUp = true;
+
+        RequestClusterUpMessage msg = new RequestClusterUpMessage(src, dst, 0, priority);
+
         // add cluster request to buffer
-        this.queueClusterRequest.add(this.clusterRequest);
+        this.queueClusterRequest.add(msg);
 
         // shift the position one hop
-        RequestClusterMessage msg = new RequestClusterMessage(this.clusterRequest);
-        msg.shiftPosition();
+        RequestClusterUpMessage m = new RequestClusterUpMessage(msg);
+        m.shiftPosition();
 
-        this.forwardRequestCluster(msg);
+        this.sendToParent(m);
+    }
+
+    public void sendRequestClusterDown(int src, int dst, double priority) {
+        System.out.println("Node " + ID + " sending cluster down");
+        this.isClusterDown = true;
+
+        RequestClusterDownMessage msg = new RequestClusterDownMessage(src, dst, 1, priority);
+        this.queueClusterRequest.add(msg);
+
+        RequestClusterDownMessage toParent = new RequestClusterDownMessage(msg);
+        toParent.setPosition(0);
+        this.sendToParent(toParent);
+
+        RequestClusterDownMessage downward = new RequestClusterDownMessage(msg);
+        downward.shiftPosition();
+        
+        if (ID < msg.getDst() && msg.getDst() <= this.getMaxIdInSubtree()) {
+            this.sendToRightChild(downward);
+        } else if (this.getMinIdInSubtree() <= msg.getDst() && msg.getDst() < ID) {
+            this.sendToLeftChild(downward);
+        }
     }
 
     @Override
     public void receiveMessage(Message msg) {
         super.receiveMessage(msg);
 
-        if (msg instanceof RequestClusterMessage) {
+        if (msg instanceof RequestClusterUpMessage) {
 
-            RequestClusterMessage requestMessage = (RequestClusterMessage) msg;
+            RequestClusterUpMessage requestMessage = (RequestClusterUpMessage) msg;
             int position = requestMessage.getPosition();
 
             /**
@@ -99,14 +108,55 @@ public abstract class ClusterLayer extends RPCLayer {
 
             } else if (!requestMessage.isFinalNode()) {
 
-                RequestClusterMessage newRequestMessage = new RequestClusterMessage(requestMessage);
+                RequestClusterUpMessage newRequestMessage = new RequestClusterUpMessage(requestMessage);
                 newRequestMessage.shiftPosition();
 
                 if (position == 1 && this.isLeastCommonAncestorOf(requestMessage.getDst())) {
                     newRequestMessage.setFinalNode();
                 }
 
-                this.forwardRequestCluster(newRequestMessage);
+                this.sendToParent(newRequestMessage);
+
+            }
+
+            // add current request to queue
+            this.queueClusterRequest.add(requestMessage);
+
+            return;
+
+        } else if (msg instanceof RequestClusterDownMessage) {
+
+            RequestClusterDownMessage requestMessage = (RequestClusterDownMessage) msg;
+            int position = requestMessage.getPosition();
+
+            /**
+             * It is not possible to parent to be the dst because completion is check first
+             * and the grandparent being LCA has effect on the type of rotation
+             */
+            if (position == 3) {
+
+                requestMessage.setFinalNode();
+
+            } else if (position != 0) {
+
+                RequestClusterDownMessage newRequestMessage = new RequestClusterDownMessage(requestMessage);
+                newRequestMessage.shiftPosition();
+
+                if (ID < newRequestMessage.getDst() && newRequestMessage.getDst() <= this.getMaxIdInSubtree()) {
+                    if (this.hasRightChild()) {
+                        System.out.println("node " + ID + " forwarding cluster msg down left");
+                        this.sendToRightChild(newRequestMessage);
+                    } else {
+                        requestMessage.setFinalNode();
+                    }
+                } else if (this.getMinIdInSubtree() <= newRequestMessage.getDst() && newRequestMessage.getDst() < ID) {
+                    System.out.println("node " + ID + " forwarding cluster msg down right");
+                    if (this.hasLeftChild()) {
+                        this.sendToLeftChild(newRequestMessage);
+                    } else {
+                        requestMessage.setFinalNode();
+                    }
+                }
 
             }
 
@@ -133,21 +183,16 @@ public abstract class ClusterLayer extends RPCLayer {
         if (!this.queueClusterRequest.isEmpty()) {
             RequestClusterMessage rq = this.queueClusterRequest.poll();
 
-            // check if my current request is greater than request received
-            // if my current msg is greater than the request received send ack message.
-            // The node can send message to itself
-            if (this.clusterRequest == null || this.clusterRequest.compareTo(rq) >= 0
-                    || (this.isLeastCommonAncestorOf(rq.getSrc()) && this.clusterRequest.getDst() == rq.getSrc())) {
+            CBInfo info = this.getNodeInfo();
+            AckClusterMessage ack = new AckClusterMessage(rq.getSrc(), rq.getDst(), rq.getPriority(), rq.getPosition(),
+                    info);
 
-                AckClusterMessage ack = new AckClusterMessage(rq.getSrc(), rq.getDst(), rq.getPriority(),
-                        rq.getPosition(), this.getNodeInfo());
-
-                if (rq.isFinalNode()) {
-                    ack.setFinalNode();
-                }
-
-                this.sendForwardMessage(rq.getSrc(), ack);
+            if (rq.isFinalNode()) {
+                ack.setFinalNode();
             }
+
+            this.sendForwardMessage(rq.getSrc(), ack);
+
         }
     }
 
@@ -187,9 +232,9 @@ public abstract class ClusterLayer extends RPCLayer {
         return false;
     }
 
-    private HashMap<String, NodeInfo> getClusterSequenceFromAckBuffer() {
-        HashMap<String, NodeInfo> table = new HashMap<>();
-        NodeInfo info;
+    private HashMap<String, CBInfo> getClusterSequenceFromAckBufferBottomUp() {
+        HashMap<String, CBInfo> table = new HashMap<>();
+        CBInfo info;
 
         info = findAckMessageInBufferByPosition(0).getInfo();
         table.put("x", info);
@@ -208,6 +253,27 @@ public abstract class ClusterLayer extends RPCLayer {
         return table;
     }
 
+    private HashMap<String, CBInfo> getClusterSequenceFromAckBufferTopDown() {
+        HashMap<String, CBInfo> table = new HashMap<>();
+        CBInfo info;
+
+        info = findAckMessageInBufferByPosition(0).getInfo();
+        table.put("w", info);
+
+        info = findAckMessageInBufferByPosition(1).getInfo();
+        table.put("z", info);
+
+        info = findAckMessageInBufferByPosition(2).getInfo();
+        table.put("y", info);
+
+        if (this.queueAckCluster.size() == 4) {
+            info = findAckMessageInBufferByPosition(3).getInfo();
+            table.put("x", info);
+        }
+
+        return table;
+    }
+
     /**
      * In this time slot all ack message will have arrived If the node has sent
      * message requesting cluster formation verify if the permission was granted.
@@ -217,16 +283,36 @@ public abstract class ClusterLayer extends RPCLayer {
         super.timeslot6();
 
         // This node has sent request cluster message
-        if (!this.queueAckCluster.isEmpty()) {
-            if (this.isClusterGranted()) {
-                this.clusterCompleted(this.getClusterSequenceFromAckBuffer());
+        if (!this.queueAckCluster.isEmpty() && this.isClusterGranted()) {
+            if (this.isClusterUp) {
+
+                this.clusterCompletedBottomUp(this.getClusterSequenceFromAckBufferBottomUp());
+
+            } else if (this.isClusterDown) {
+
+                this.clusterCompletedTopDown(this.getClusterSequenceFromAckBufferTopDown());
+
             }
+
         }
 
         // reset queue
         this.clearClusterRequestQueue();
         this.clearAckClusterQueue();
+        this.isClusterDown = false;
+        this.isClusterUp = false;
     }
 
-    public abstract void clusterCompleted(HashMap<String, NodeInfo> cluster);
+    public void clusterCompletedBottomUp(HashMap<String, CBInfo> cluster) {
+        System.out.println("Cluster Up formed at node " + ID);
+    }
+
+    public void clusterCompletedTopDown(HashMap<String, CBInfo> cluster) {
+        System.out.println("Cluster Down formed at node " + ID);
+    }
+
+    @Override
+    public void nodeStep() {
+
+    }
 }

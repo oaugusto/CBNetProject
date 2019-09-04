@@ -2,102 +2,105 @@ package projects.cbnet.nodes.nodeImplementations;
 
 import java.util.HashMap;
 
-import projects.displaynet.nodeImplementations.BinaryTreeLayer;
-import projects.displaynet.tableEntry.NodeInfo;
+import projects.cbnet.nodes.messages.CBNetMessage;
+import projects.cbnet.nodes.tableEntry.CBInfo;
 
 /**
  * RotationLayer
  */
-public abstract class RotationLayer extends ClusterLayer {
-
-    private long weight;
+public class RotationLayer extends ClusterLayer {
 
     private boolean rotating;
+    
+    private CBNetMessage cbnetMessage;
 
     @Override
     public void init() {
         super.init();
 
         this.rotating = false;
+        this.cbnetMessage = null;
     }
 
-    public void setWeight(long weight) {
-        this.weight = weight;
+    @Override
+    public void updateState() {
+        this.tryOperation();
     }
 
-    public long getWeight() {
-        return weight;
-    }
+    public void tryOperation() {
 
-    public void incrementWeight() {
-        this.weight++; 
-    }
+        if (this.hasCBNetMessage()) {
+            //System.out.println("Node " + ID + "has cbnet message");
 
-    public void updateWeights(RotationLayer from, RotationLayer to) {
-        RotationLayer aux = from;
+            this.cbnetMessage = this.getTopCBNetMessage();
 
-        if (!aux.isLeastCommonAncestorOf(to)) {
-            while (!aux.isLeastCommonAncestorOf(to)) {
-				aux.incrementWeight();
-				aux = (RotationLayer) aux.getParent();
-			} 
-			
-			aux.incrementWeight();
+            if (this.getMinIdInSubtree() <= cbnetMessage.getDst() 
+                    && cbnetMessage.getDst() <= this.getMaxIdInSubtree()) {
+                this.sendRequestClusterDown(ID, 
+                    cbnetMessage.getDst(), cbnetMessage.getPriority());
+            } else {
+                this.sendRequestClusterUp(ID, 
+                    cbnetMessage.getDst(), cbnetMessage.getPriority());
+            }
         }
 
-        while (aux != to) {
-			aux.incrementWeight();
-			if (aux.ID > to.ID) {
-				aux = (RotationLayer) aux.getLeftChild();
-			} else {
-				aux = (RotationLayer) aux.getRightChild();
-			}
-		}
-		
-		aux.incrementWeight();
     }
 
-    public void rotate(HashMap<String, NodeInfo> cluster) {
+    @Override
+    public void clusterCompletedBottomUp(HashMap<String, CBInfo> cluster) {
+        this.rotateBottomUp(cluster);
+    }
+
+    @Override
+    public void clusterCompletedTopDown(HashMap<String, CBInfo> cluster) {
+        this.rotateTopDown(cluster);
+    }
+
+    private void rotateBottomUp(HashMap<String, CBInfo> cluster) {
         this.rotating = true;
 
-        NodeInfo xInfo = cluster.get("x");
-        NodeInfo yInfo = cluster.get("y");
-        NodeInfo zInfo = cluster.get("z");
+        CBInfo xInfo = cluster.get("x");
+        CBInfo yInfo = cluster.get("y");
+        CBInfo zInfo = cluster.get("z");
 
         if (cluster.size() == 3) {
-            this.zig(xInfo, yInfo, zInfo);
+            this.zigBottomUp(xInfo, yInfo, zInfo);
 
         } else {
-            NodeInfo wInfo = cluster.get("w");
-            BinaryTreeLayer x = xInfo.getNode();
-            BinaryTreeLayer y = yInfo.getNode();
+            CBInfo wInfo = cluster.get("w");
+            CBTreeLayer x = (CBTreeLayer) xInfo.getNode();
+            CBTreeLayer y = (CBTreeLayer) yInfo.getNode();
 
             if ((x == yInfo.getLeftChild() && y == zInfo.getLeftChild())
                     || (x == yInfo.getRightChild() && y == zInfo.getRightChild())) {
-                this.zigZig(xInfo, yInfo, zInfo, wInfo);
+                this.zigZigBottomUp(xInfo, yInfo, zInfo, wInfo);
             } else {
-                this.zigZag(xInfo, yInfo, zInfo, wInfo);
+                this.zigZagBottomUp(xInfo, yInfo, zInfo, wInfo);
             }
         }
 
     }
 
 
-    /*
+    /* DONE
                   z                     z
                  /                    /
-                y                   x
+                y                   *x
               /   \               /   \
-             x     c     ->      a     y
+            *x     c     ->      a     y
             / \                       / \
            a   b                     b   c
 	 
 	 */
-    private void zig(NodeInfo xInfo, NodeInfo yInfo, NodeInfo zInfo) {
-        System.out.println("zig operation: " + ID);
-        BinaryTreeLayer x = xInfo.getNode();
-        BinaryTreeLayer y = yInfo.getNode();
-        BinaryTreeLayer z = zInfo.getNode();
+    private void zigBottomUp(CBInfo xInfo, CBInfo yInfo, CBInfo zInfo) {
+        System.out.println("zig bottom up operation: " + ID);
+
+        CBTreeLayer x = (CBTreeLayer) xInfo.getNode();
+        CBTreeLayer y = (CBTreeLayer) yInfo.getNode();
+        CBTreeLayer z = (CBTreeLayer) zInfo.getNode();
+        
+        // forward message
+        this.forwardCBNetMessage(x.ID, this.cbnetMessage);
 
         //set the new child of node z
         if (zInfo.getLeftChild() == y) {
@@ -109,7 +112,7 @@ public abstract class RotationLayer extends ClusterLayer {
         // left zig operetion
         if (yInfo.getLeftChild() == x) {
             // change node y
-            this.requestRPCTo(y.ID, "changeLeftChildTo", xInfo.getRightChild());
+            this.requestRPCTo(y.ID, "changeLeftChildTo", (CBTreeLayer) xInfo.getRightChild());
             int min = y.ID; 
             if (xInfo.getRightChild() != null) {
                 min = xInfo.getRightChild().getMinIdInSubtree();
@@ -121,10 +124,10 @@ public abstract class RotationLayer extends ClusterLayer {
             this.requestRPCTo(x.ID, "setMaxIdInSubtree", yInfo.getMaxIdInSubtree()); 
         } else {
             // change node y
-            this.requestRPCTo(y.ID, "changeRightChildTo", xInfo.getLeftChild()); 
+            this.requestRPCTo(y.ID, "changeRightChildTo", (CBTreeLayer) xInfo.getLeftChild()); 
             int max = y.ID;
-            if (x.getLeftChild() != null) {
-                max = x.getLeftChild().getMaxIdInSubtree();
+            if (xInfo.getLeftChild() != null) {
+                max = xInfo.getLeftChild().getMaxIdInSubtree();
             }
             this.requestRPCTo(y.ID, "setMaxIdInSubtree", max); 
 
@@ -134,104 +137,86 @@ public abstract class RotationLayer extends ClusterLayer {
         }
     }
 
-    /*              
-                   w               w
-                  /               /
-                 z               x
-                / \             / \
-	           y   d           a   y
-              / \       ->        / \
-             x   c               b   z
-            / \                     / \
-           a   b                   c   d
-   */
-    private void zigZig(NodeInfo xInfo, NodeInfo yInfo, NodeInfo zInfo, NodeInfo wInfo) {
-        System.out.println("zig zig operation: " + ID);
-        BinaryTreeLayer x = xInfo.getNode();
-        BinaryTreeLayer y = yInfo.getNode();
-        BinaryTreeLayer z = zInfo.getNode();
-        BinaryTreeLayer w = wInfo.getNode();
+   /* DONE
+	            z                  *y
+     	       / \                /   \
+     		  y   d              x     z
+	         / \       ->       / \   / \
+	       *x   c              a   b c   d
+	       / \                    
+	      a   b                   
+	*/
+    private void zigZigBottomUp(CBInfo xInfo, CBInfo yInfo, CBInfo zInfo, CBInfo wInfo) {
+        System.out.println("zig zig bottom up operation: " + ID);
+        
+        CBTreeLayer x = (CBTreeLayer) xInfo.getNode();
+        CBTreeLayer y = (CBTreeLayer) yInfo.getNode();
+        CBTreeLayer z = (CBTreeLayer) zInfo.getNode();
+        CBTreeLayer w = (CBTreeLayer) wInfo.getNode();
+        
+        // forward message
+        this.forwardCBNetMessage(y.ID, this.cbnetMessage);
 
         // set new child of node z
-
         if (wInfo.getLeftChild() == z) {
-            this.requestRPCTo(w.ID, "changeLeftChildTo", x);
+            this.requestRPCTo(w.ID, "changeLeftChildTo", y);
         } else {
-            this.requestRPCTo(w.ID, "changeRightChildTo", x);
+            this.requestRPCTo(w.ID, "changeRightChildTo", y);
         }
 
-        // deciding between lef or right zigzig operation
-        if (y == zInfo.getLeftChild()) {
+        // left zig operetion on node y
+        if (zInfo.getLeftChild() == y) {
             // change node z
-            this.requestRPCTo(z.ID, "changeLeftChildTo", yInfo.getRightChild()); 
-            int min = z.ID;
+            this.requestRPCTo(z.ID, "changeLeftChildTo", (CBTreeLayer) yInfo.getRightChild());
+            int min = z.ID; 
             if (yInfo.getRightChild() != null) {
                 min = yInfo.getRightChild().getMinIdInSubtree();
             }
-            this.requestRPCTo(z.ID, "setMinIdInSubtree", min);
+            this.requestRPCTo(z.ID, "setMinIdInSubtree", min); 
 
             // change node y
-            this.requestRPCTo(y.ID, "changeLeftChildTo", xInfo.getRightChild()); 
-            min = y.ID;
-            if (xInfo.getRightChild() != null) {
-                min = xInfo.getRightChild().getMinIdInSubtree();
-            }
-            this.requestRPCTo(y.ID, "setMinIdInSubtree", min);
             this.requestRPCTo(y.ID, "changeRightChildTo", z);
-            this.requestRPCTo(y.ID, "setMaxIdInSubtree", zInfo.getMaxIdInSubtree());
-            
-            // change node x
-            this.requestRPCTo(x.ID, "changeRightChildTo", y);
-            this.requestRPCTo(x.ID, "setMaxIdInSubtree", zInfo.getMaxIdInSubtree());
-
+            this.requestRPCTo(y.ID, "setMaxIdInSubtree", zInfo.getMaxIdInSubtree()); 
         } else {
+            // change node z
+            this.requestRPCTo(z.ID, "changeRightChildTo", (CBTreeLayer) yInfo.getLeftChild()); 
+            int max = z.ID;
+            if (yInfo.getLeftChild() != null) {
+                max = yInfo.getLeftChild().getMaxIdInSubtree();
+            }
+            this.requestRPCTo(z.ID, "setMaxIdInSubtree", max); 
 
-           // change node z
-           this.requestRPCTo(z.ID, "changeRightChildTo", yInfo.getLeftChild()); 
-           int max = z.ID;
-           if (yInfo.getLeftChild() != null) {
-               max = yInfo.getLeftChild().getMaxIdInSubtree();
-           }
-           this.requestRPCTo(z.ID, "setMaxIdInSubtree", max);
-
-           // change node y
-           this.requestRPCTo(y.ID, "changeRightChildTo", x.getLeftChild()); 
-           max = y.ID;
-           if (x.getLeftChild() != null) {
-               max = x.getLeftChild().getMaxIdInSubtree();
-           }
-           this.requestRPCTo(y.ID, "setMaxIdInSubtree", max);
-           this.requestRPCTo(y.ID, "changeLeftChildTo", z);
-           this.requestRPCTo(y.ID, "setMinIdInSubtree", zInfo.getMinIdInSubtree());
-           
-           // change node x
-           this.requestRPCTo(x.ID, "changeLeftChildTo", y);
-           this.requestRPCTo(x.ID, "setMinIdInSubtree", zInfo.getMinIdInSubtree());
+            // change node y
+            this.requestRPCTo(y.ID, "changeLeftChildTo", z); 
+            this.requestRPCTo(y.ID, "setMinIdInSubtree", zInfo.getMinIdInSubtree()); 
         }
 
     }
 
 
-    /*
+    /* DONE
                    w                  w
                   /                  /
-                 z					x
+                 z				   *x
                 / \               /   \
                y   d             y     z
               / \		  ->    / \   / \
-             a   x             a   b c   d
+             a   x*            a   b c   d
                 / \
                b   c 
 	 */
-    private void zigZag(NodeInfo xInfo, NodeInfo yInfo, NodeInfo zInfo, NodeInfo wInfo) {
-        System.out.println("zig zag operation: " + ID);
-        BinaryTreeLayer x = xInfo.getNode();
-        BinaryTreeLayer y = yInfo.getNode();
-        BinaryTreeLayer z = zInfo.getNode();
-        BinaryTreeLayer w = wInfo.getNode();
+    private void zigZagBottomUp(CBInfo xInfo, CBInfo yInfo, CBInfo zInfo, CBInfo wInfo) {
+        System.out.println("zig zag bottom up operation: " + ID);
+        
+        CBTreeLayer x = (CBTreeLayer) xInfo.getNode();
+        CBTreeLayer y = (CBTreeLayer) yInfo.getNode();
+        CBTreeLayer z = (CBTreeLayer) zInfo.getNode();
+        CBTreeLayer w = (CBTreeLayer) wInfo.getNode();
+
+        // forward message
+        this.forwardCBNetMessage(x.ID, this.cbnetMessage);
 
         // set new child of node z
-
         if (wInfo.getLeftChild() == z) {
             this.requestRPCTo(w.ID, "changeLeftChildTo", x);
         } else {
@@ -241,7 +226,7 @@ public abstract class RotationLayer extends ClusterLayer {
          // deciding between lef or right zigzag operation
          if (y == zInfo.getLeftChild()) {
             // change node z
-            this.requestRPCTo(z.ID, "changeLeftChildTo", xInfo.getRightChild()); 
+            this.requestRPCTo(z.ID, "changeLeftChildTo", (CBTreeLayer) xInfo.getRightChild()); 
             int min = z.ID;
             if (xInfo.getRightChild() != null) {
                 min = xInfo.getRightChild().getMinIdInSubtree();
@@ -249,7 +234,7 @@ public abstract class RotationLayer extends ClusterLayer {
             this.requestRPCTo(z.ID, "setMinIdInSubtree", min);
 
             // change node y
-            this.requestRPCTo(y.ID, "changeRightChildTo", xInfo.getLeftChild()); 
+            this.requestRPCTo(y.ID, "changeRightChildTo", (CBTreeLayer) xInfo.getLeftChild()); 
             int max = y.ID;
             if (xInfo.getLeftChild() != null) {
                 max = xInfo.getLeftChild().getMaxIdInSubtree();
@@ -265,7 +250,7 @@ public abstract class RotationLayer extends ClusterLayer {
         } else {
 
             // change node z
-            this.requestRPCTo(z.ID, "changeRightChildTo", x.getLeftChild()); 
+            this.requestRPCTo(z.ID, "changeRightChildTo", (CBTreeLayer) x.getLeftChild()); 
             int max = z.ID;
             if (x.getLeftChild() != null) {
                 max = x.getLeftChild().getMaxIdInSubtree();
@@ -273,7 +258,163 @@ public abstract class RotationLayer extends ClusterLayer {
             this.requestRPCTo(z.ID, "setMaxIdInSubtree", max);
 
             // change node y
-            this.requestRPCTo(y.ID, "changeLeftChildTo", xInfo.getRightChild()); 
+            this.requestRPCTo(y.ID, "changeLeftChildTo", (CBTreeLayer) xInfo.getRightChild()); 
+            int min = y.ID;
+            if (xInfo.getRightChild() != null) {
+                min = xInfo.getRightChild().getMinIdInSubtree();
+            }
+            this.requestRPCTo(y.ID, "setMinIdInSubtree", min);
+
+            // change node x
+            this.requestRPCTo(x.ID, "changeRightChildTo", y); 
+            this.requestRPCTo(x.ID, "setMaxIdInSubtree", yInfo.getMaxIdInSubtree());
+            this.requestRPCTo(x.ID, "changeLeftChildTo", z);
+            this.requestRPCTo(x.ID, "setMinIdInSubtree", zInfo.getMinIdInSubtree());
+        }
+    }
+
+    private void rotateTopDown(HashMap<String, CBInfo> cluster) {
+        this.rotating = true;
+
+        CBInfo xInfo = cluster.get("x");
+        CBInfo yInfo = cluster.get("y");
+        CBInfo zInfo = cluster.get("z");
+        CBInfo wInfo = cluster.get("w");
+
+        CBTreeLayer x = (CBTreeLayer) xInfo.getNode();
+        CBTreeLayer y = (CBTreeLayer) yInfo.getNode();
+
+        if ((x == yInfo.getLeftChild() && y == zInfo.getLeftChild())
+                || (x == yInfo.getRightChild() && y == zInfo.getRightChild())) {
+            this.zigZigTopDown(xInfo, yInfo, zInfo, wInfo);
+        } else {
+            this.zigZagTopDown(xInfo, yInfo, zInfo, wInfo);
+        }
+    }
+
+    /* DONE
+	      	    *z                    y
+		        / \                 /   \
+		       y   d      ->      *x     z
+		      / \                 / \   / \
+		     x   c               a   b c   d
+		    / \
+		   a   b    
+	*/
+    private void zigZigTopDown(CBInfo xInfo, CBInfo yInfo, CBInfo zInfo, CBInfo wInfo) {
+        System.out.println("zig zig top down operation: " + ID);
+      
+        CBTreeLayer x = (CBTreeLayer) xInfo.getNode();
+        CBTreeLayer y = (CBTreeLayer) yInfo.getNode();
+        CBTreeLayer z = (CBTreeLayer) zInfo.getNode();
+        CBTreeLayer w = (CBTreeLayer) wInfo.getNode();
+
+
+        // forward message
+        this.forwardCBNetMessage(x.ID, this.cbnetMessage);
+
+        // set new child of node z
+        if (wInfo.getLeftChild() == z) {
+            this.requestRPCTo(w.ID, "changeLeftChildTo", y);
+        } else {
+            this.requestRPCTo(w.ID, "changeRightChildTo", y);
+        }
+
+        // left zig operetion on node y
+        if (zInfo.getLeftChild() == y) {
+            // change node z
+            this.requestRPCTo(z.ID, "changeLeftChildTo", (CBTreeLayer) yInfo.getRightChild());
+            int min = z.ID; 
+            if (yInfo.getRightChild() != null) {
+                min = yInfo.getRightChild().getMinIdInSubtree();
+            }
+            this.requestRPCTo(z.ID, "setMinIdInSubtree", min); 
+
+            // change node y
+            this.requestRPCTo(y.ID, "changeRightChildTo", z);
+            this.requestRPCTo(y.ID, "setMaxIdInSubtree", zInfo.getMaxIdInSubtree()); 
+        } else {
+            // change node z
+            this.requestRPCTo(z.ID, "changeRightChildTo", (CBTreeLayer) yInfo.getLeftChild()); 
+            int max = z.ID;
+            if (yInfo.getLeftChild() != null) {
+                max = yInfo.getLeftChild().getMaxIdInSubtree();
+            }
+            this.requestRPCTo(z.ID, "setMaxIdInSubtree", max); 
+
+            // change node y
+            this.requestRPCTo(y.ID, "changeLeftChildTo", z); 
+            this.requestRPCTo(y.ID, "setMinIdInSubtree", zInfo.getMinIdInSubtree()); 
+        }
+    }
+
+    /* DONE
+	         *z                     x
+	         / \        ->        /   \
+	        y   d                y     z
+	       / \                  / \   / \
+	      a   x                a  *b *c  d
+	         / \
+	        b   c
+	*/
+    private void zigZagTopDown(CBInfo xInfo, CBInfo yInfo, CBInfo zInfo, CBInfo wInfo) {
+        System.out.println("zig zag top down operation: " + ID);
+        
+        CBTreeLayer x = (CBTreeLayer) xInfo.getNode();
+        CBTreeLayer y = (CBTreeLayer) yInfo.getNode();
+        CBTreeLayer z = (CBTreeLayer) zInfo.getNode();
+        CBTreeLayer w = (CBTreeLayer) wInfo.getNode();
+
+        // forward message
+        if (xInfo.getMinIdInSubtree() <= this.cbnetMessage.getDst() && this.cbnetMessage.getDst() < x.ID) {
+            this.forwardCBNetMessage(xInfo.getLeftChild().ID, this.cbnetMessage);
+        } {
+            this.forwardCBNetMessage(xInfo.getRightChild().ID, this.cbnetMessage);
+        }
+
+        // set new child of node z
+        if (wInfo.getLeftChild() == z) {
+            this.requestRPCTo(w.ID, "changeLeftChildTo", x);
+        } else {
+            this.requestRPCTo(w.ID, "changeRightChildTo", x);
+        }
+
+         // deciding between lef or right zigzag operation
+         if (y == zInfo.getLeftChild()) {
+            // change node z
+            this.requestRPCTo(z.ID, "changeLeftChildTo", (CBTreeLayer) xInfo.getRightChild()); 
+            int min = z.ID;
+            if (xInfo.getRightChild() != null) {
+                min = xInfo.getRightChild().getMinIdInSubtree();
+            }
+            this.requestRPCTo(z.ID, "setMinIdInSubtree", min);
+
+            // change node y
+            this.requestRPCTo(y.ID, "changeRightChildTo", (CBTreeLayer) xInfo.getLeftChild()); 
+            int max = y.ID;
+            if (xInfo.getLeftChild() != null) {
+                max = xInfo.getLeftChild().getMaxIdInSubtree();
+            }
+            this.requestRPCTo(y.ID, "setMaxIdInSubtree", max);
+
+            // change node x
+            this.requestRPCTo(x.ID, "changeLeftChildTo", y); 
+            this.requestRPCTo(x.ID, "setMinIdInSubtree", yInfo.getMinIdInSubtree());
+            this.requestRPCTo(x.ID, "changeRightChildTo", z);
+            this.requestRPCTo(x.ID, "setMaxIdInSubtree", zInfo.getMaxIdInSubtree());
+
+        } else {
+
+            // change node z
+            this.requestRPCTo(z.ID, "changeRightChildTo", (CBTreeLayer) x.getLeftChild()); 
+            int max = z.ID;
+            if (x.getLeftChild() != null) {
+                max = x.getLeftChild().getMaxIdInSubtree();
+            }
+            this.requestRPCTo(z.ID, "setMaxIdInSubtree", max);
+
+            // change node y
+            this.requestRPCTo(y.ID, "changeLeftChildTo", (CBTreeLayer) xInfo.getRightChild()); 
             int min = y.ID;
             if (xInfo.getRightChild() != null) {
                 min = xInfo.getRightChild().getMinIdInSubtree();
@@ -292,17 +433,24 @@ public abstract class RotationLayer extends ClusterLayer {
 		return Math.log(value) / Math.log(2);
 	}
 
-    public double zigDiffRank() {
-		RotationLayer x = this;
-		RotationLayer y = (RotationLayer) x.getParent();
+    /*
+              y                   x
+            /   \               /   \
+           x     c     ->      a     y
+          / \                       / \
+         a   b                     b   c
+    */
+    public double zigDiffRank(CBInfo xInfo, CBInfo yInfo) {
+		RotationLayer x = (RotationLayer) xInfo.getNode();
+		RotationLayer y = (RotationLayer) yInfo.getNode();
 		
 		//type of operation
-		boolean leftZig = (x == y.getLeftChild())? true: false;
+		boolean leftZig = (x == yInfo.getLeftChild())? true: false;
 		
-		RotationLayer b = (RotationLayer) ((leftZig) ? x.getRightChild(): x.getLeftChild());
+		RotationLayer b = (RotationLayer) ((leftZig) ? xInfo.getRightChild(): xInfo.getLeftChild());
 		
-		long xOldWeight = x.getWeight();
-		long yOldWeight = y.getWeight();
+		long xOldWeight = xInfo.getWeight();
+		long yOldWeight = yInfo.getWeight();
 		
 		long bWeight = (b != null) ? b.getWeight(): 0;
 		
@@ -319,19 +467,28 @@ public abstract class RotationLayer extends ClusterLayer {
 		return deltaRank;
 	}
 
-    private double zigZagDiffRank() {
-		RotationLayer x = this;
-		RotationLayer y = (RotationLayer) x.getParent();
-		RotationLayer z = (RotationLayer) y.getParent(); 
+    /*
+	            z                  *y
+     	       / \                /   \
+     		  y   d              x     z
+	         / \       ->       / \   / \
+	       *x   c              a   b c   d
+	       / \                    
+	      a   b                   
+	*/
+    private double zigZagDiffRank(CBInfo xInfo, CBInfo yInfo, CBInfo zInfo) {
+		RotationLayer x = (RotationLayer) xInfo.getNode();
+		RotationLayer y = (RotationLayer) yInfo.getNode();
+		RotationLayer z = (RotationLayer) zInfo.getNode(); 
 		
-		boolean lefZigZag = (y == z.getLeftChild())? true: false;
+		boolean lefZigZag = (y == zInfo.getLeftChild())? true: false;
 		
-		RotationLayer b = (CBNetNode) (lefZigZag ? x.getLeftChild(): x.getRightChild()); 
-		RotationLayer c = (CBNetNode) (lefZigZag ? x.getRightChild(): x.getLeftChild()); 
+		RotationLayer b =  (RotationLayer) (lefZigZag ? xInfo.getLeftChild(): xInfo.getRightChild()); 
+		RotationLayer c =  (RotationLayer) (lefZigZag ? xInfo.getRightChild(): xInfo.getLeftChild()); 
 		
-		long xOldWeight = x.getWeight();
-		long yOldWeight = y.getWeight();
-		long zOldWeight = z.getWeight();
+		long xOldWeight = xInfo.getWeight();
+		long yOldWeight = yInfo.getWeight();
+		long zOldWeight = zInfo.getWeight();
 		
 		long bWeight = (b != null) ? b.getWeight(): 0;
 		long cWeight = (c != null) ? c.getWeight(): 0;
@@ -365,14 +522,32 @@ public abstract class RotationLayer extends ClusterLayer {
         }
     }
 
-    @Override
-    public void clusterCompleted(HashMap<String, NodeInfo> cluster) {
-        System.out.println("Node " + ID + ": cluster completed");
-        this.rotate(cluster);
-    }
-
     public void rotationCompleted() {
 
+    }
+
+    public void updateWeights(int from, int to) {
+        RotationLayer aux = this;
+
+        if (!aux.isLeastCommonAncestorOf(to)) {
+            while (!aux.isLeastCommonAncestorOf(to)) {
+                aux.incrementWeight();
+                aux = (RotationLayer) aux.getParent();
+			} 
+			
+			aux.incrementWeight();
+        }
+
+        while (aux.ID != to) {
+			aux.incrementWeight();
+			if (aux.ID > to) {
+				aux = (RotationLayer) aux.getLeftChild();
+			} else {
+				aux = (RotationLayer) aux.getRightChild();
+			}
+		}
+		
+		aux.incrementWeight();
     }
     
 }

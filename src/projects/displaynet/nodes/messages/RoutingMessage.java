@@ -1,4 +1,4 @@
-package projects.displaynet.messages;
+package projects.displaynet.nodes.messages;
 
 import sinalgo.nodes.messages.Message;
 

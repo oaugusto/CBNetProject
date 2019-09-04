@@ -1,4 +1,4 @@
-package projects.displaynet.messages.controlMessages;
+package projects.displaynet.nodes.messages.controlMessages;
 
 import sinalgo.nodes.messages.Message;
 
@@ -83,7 +83,7 @@ public class RequestClusterMessage extends Message implements Comparable<Request
 	public int compareTo(RequestClusterMessage o) {
 		int value = Double.compare(this.priority, o.priority);
 		if (value == 0) { // In case tie, compare the id of the source node
-			return this.src - o.src;
+			return this.dst - o.dst;
 		} else {
 			return value;
 		}

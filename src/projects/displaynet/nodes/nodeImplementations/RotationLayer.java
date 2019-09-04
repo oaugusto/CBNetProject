@@ -1,8 +1,8 @@
-package projects.displaynet.nodeImplementations;
+package projects.displaynet.nodes.nodeImplementations;
 
 import java.util.HashMap;
 
-import projects.displaynet.tableEntry.NodeInfo;
+import projects.displaynet.nodes.tableEntry.NodeInfo;
 
 /**
  * RotationLayer

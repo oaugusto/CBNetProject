@@ -1,4 +1,4 @@
-package projects.displaynet.nodeImplementations;
+package projects.displaynet.nodes.nodeImplementations;
 
 import java.awt.Color;
 import java.awt.Graphics;

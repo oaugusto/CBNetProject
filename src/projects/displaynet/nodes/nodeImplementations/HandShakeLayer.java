@@ -1,14 +1,14 @@
-package projects.displaynet.nodeImplementations;
+package projects.displaynet.nodes.nodeImplementations;
 
 import java.util.LinkedList;
 import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Random;
 
-import projects.displaynet.messages.handshakeMessages.AckSplay;
-import projects.displaynet.messages.handshakeMessages.RequestSplay;
-import projects.displaynet.messages.handshakeMessages.StartSplay;
-import projects.displaynet.tableEntry.Request;
+import projects.displaynet.nodes.messages.handshakeMessages.AckSplay;
+import projects.displaynet.nodes.messages.handshakeMessages.RequestSplay;
+import projects.displaynet.nodes.messages.handshakeMessages.StartSplay;
+import projects.displaynet.nodes.tableEntry.Request;
 import sinalgo.nodes.messages.Message;
 import sinalgo.runtime.Global;
 import sinalgo.tools.Tools;

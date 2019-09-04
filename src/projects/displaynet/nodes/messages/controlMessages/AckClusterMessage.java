@@ -1,6 +1,6 @@
-package projects.displaynet.messages.controlMessages;
+package projects.displaynet.nodes.messages.controlMessages;
 
-import projects.displaynet.tableEntry.NodeInfo;
+import projects.displaynet.nodes.tableEntry.NodeInfo;
 import sinalgo.nodes.messages.Message;
 
 /**

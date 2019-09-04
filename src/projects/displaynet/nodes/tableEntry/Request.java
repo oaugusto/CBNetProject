@@ -1,4 +1,4 @@
-package projects.displaynet.tableEntry;
+package projects.displaynet.nodes.tableEntry;
 
 /**
  * Request

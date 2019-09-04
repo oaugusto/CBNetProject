@@ -4,13 +4,12 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.util.ArrayList;
 
-import projects.displaynet.nodeImplementations.BinaryTreeLayer;
-import projects.displaynet.nodeImplementations.SplayNetApp;
-import projects.displaynet.nodeImplementations.SplayNetNode;
+import projects.displaynet.nodes.nodeImplementations.BinaryTreeLayer;
+import projects.displaynet.nodes.nodeImplementations.SplayNetApp;
+import projects.displaynet.nodes.nodeImplementations.SplayNetNode;
 import sinalgo.gui.transformation.PositionTransformation;
 import sinalgo.runtime.AbstractCustomGlobal;
 import sinalgo.tools.Tools;
-import sinalgo.tools.Tuple;
 
 public class CustomGlobal extends AbstractCustomGlobal {
 

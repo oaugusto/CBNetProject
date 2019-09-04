@@ -1,4 +1,4 @@
-package projects.displaynet.timers;
+package projects.displaynet.nodes.timers;
 
 import sinalgo.nodes.timers.Timer;
 

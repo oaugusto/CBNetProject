@@ -1,13 +1,13 @@
-package projects.displaynet.nodeImplementations;
+package projects.displaynet.nodes.nodeImplementations;
 
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.PriorityQueue;
 import java.util.Queue;
 
-import projects.displaynet.messages.controlMessages.AckClusterMessage;
-import projects.displaynet.messages.controlMessages.RequestClusterMessage;
-import projects.displaynet.tableEntry.NodeInfo;
+import projects.displaynet.nodes.messages.controlMessages.AckClusterMessage;
+import projects.displaynet.nodes.messages.controlMessages.RequestClusterMessage;
+import projects.displaynet.nodes.tableEntry.NodeInfo;
 import sinalgo.nodes.messages.Message;
 
 /**
@@ -136,8 +136,9 @@ public abstract class ClusterLayer extends RPCLayer {
             if (this.clusterRequest == null || this.clusterRequest.compareTo(rq) >= 0
                     || (this.isLeastCommonAncestorOf(rq.getSrc()) && this.clusterRequest.getDst() == rq.getSrc())) {
 
+                NodeInfo info = this.getNodeInfo();
                 AckClusterMessage ack = new AckClusterMessage(rq.getSrc(), rq.getDst(), rq.getPriority(),
-                        rq.getPosition(), this.getNodeInfo());
+                        rq.getPosition(), info);
 
                 if (rq.isFinalNode()) {
                     ack.setFinalNode();
@@ -214,7 +215,7 @@ public abstract class ClusterLayer extends RPCLayer {
         super.timeslot6();
 
         // This node has sent request cluster message
-        if (!this.queueAckCluster.isEmpty()) { 
+        if (!this.queueAckCluster.isEmpty()) {
             if (this.isClusterGranted()) {
                 this.clusterCompleted(this.getClusterSequenceFromAckBuffer());
             }

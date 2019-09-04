@@ -5,11 +5,17 @@ import sinalgo.nodes.messages.Message;
 /**
  * CBNetMessage
  */
-public class CBNetMessage extends Message {
+public class CBNetMessage extends Message implements Comparable<CBNetMessage> {
 
     private int src;
     private int dst;
     private double priority;
+
+    public CBNetMessage(int src, int dst, double priority) {
+        this.src = src;
+        this.dst = dst;
+        this.priority = priority;
+    }
 
     /**
      * @return the src
@@ -57,6 +63,16 @@ public class CBNetMessage extends Message {
     public Message clone() {
         return this;
     }
+
+    @Override
+    public int compareTo(CBNetMessage o) {
+            int value = Double.compare(this.priority, o.priority);
+            if (value == 0) { // In case tie, compare the id of the source node
+                return this.dst - o.dst;
+            } else {
+                return value;
+            }
+        }
 
     
 }

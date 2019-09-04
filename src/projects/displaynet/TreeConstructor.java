@@ -3,7 +3,7 @@ package projects.displaynet;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import projects.displaynet.nodeImplementations.BinaryTreeLayer;
+import projects.displaynet.nodes.nodeImplementations.BinaryTreeLayer;
 import sinalgo.configuration.Configuration;
 import sinalgo.runtime.Global;
 import sinalgo.tools.Tools;
