@@ -56,15 +56,17 @@ public abstract class RotationLayer extends ClusterLayer {
 
         this.removeTopCBNetMesssage();
         this.rotateBottomUp(cluster);
+        // System.out.println("Cluster formed bottom up at node " + ID);
     }
     
     @Override
     public void clusterCompletedTopDown(HashMap<String, CBInfo> cluster) {
         // LOG
         CustomGlobal.numberClusters++;
-
+        
         this.removeTopCBNetMesssage();
         this.rotateTopDown(cluster);
+        // System.out.println("Cluster formed top down at node " + ID);
     }
     
     @Override
@@ -75,6 +77,7 @@ public abstract class RotationLayer extends ClusterLayer {
         this.removeTopCBNetMesssage();
         this.cbnetMessage.incrementRouting(); // DATA LOG
         this.forwardCBNetMessage(target.getNode().ID, this.cbnetMessage);
+        // System.out.println("Cluster target found at node " + ID);
     }
 
     private void rotateBottomUp(HashMap<String, CBInfo> cluster) {
@@ -122,7 +125,9 @@ public abstract class RotationLayer extends ClusterLayer {
 
         double deltaRank = this.zigDiffRank(xInfo, yInfo);
 
-        if (deltaRank < this.epsilon) {
+        // if (deltaRank < this.epsilon) {
+        // if (true) {
+        if (false) {
 
             //DATA LOG
             this.cbnetMessage.incrementRotations();
@@ -209,7 +214,9 @@ public abstract class RotationLayer extends ClusterLayer {
 
         double deltaRank = this.zigDiffRank(yInfo, zInfo);
         
-        if (deltaRank < this.epsilon) {
+        // if (deltaRank < this.epsilon) {
+        // if (true) {
+        if (false) {
             //DATA LOG
             this.cbnetMessage.incrementRotations();
             // forward message
@@ -298,7 +305,9 @@ public abstract class RotationLayer extends ClusterLayer {
 
         double deltaRank = this.zigZagDiffRank(xInfo, yInfo, zInfo);
 
-        if (deltaRank < this.epsilon) {
+        // if (deltaRank < this.epsilon) {
+        // if (true) {
+        if (false) {
             //DATA LOG
             this.cbnetMessage.incrementRotations();
             // forward message
@@ -429,7 +438,9 @@ public abstract class RotationLayer extends ClusterLayer {
 
         double deltaRank = this.zigDiffRank(yInfo, zInfo);
 
-        if (deltaRank < this.epsilon) {
+        // if (deltaRank < this.epsilon) {
+        // if (true) {
+        if (false) {
             //DATA LOG
             this.cbnetMessage.incrementRotations();
             // forward message
@@ -515,7 +526,9 @@ public abstract class RotationLayer extends ClusterLayer {
 
         double deltaRank = this.zigZagDiffRank(xInfo, yInfo, zInfo);
 
-        if (deltaRank < this.epsilon) {
+        // if (deltaRank < this.epsilon) {
+        // if (true) {
+        if (false) {
             //DATA LOG
             this.cbnetMessage.incrementRotations();
             // forward message
@@ -608,7 +621,7 @@ public abstract class RotationLayer extends ClusterLayer {
             //DATA LOG
             this.cbnetMessage.incrementRouting();
             // forward
-            this.forwardCBNetMessage(z.ID, this.cbnetMessage);
+            this.forwardCBNetMessage(x.ID, this.cbnetMessage);
         }
     }
 

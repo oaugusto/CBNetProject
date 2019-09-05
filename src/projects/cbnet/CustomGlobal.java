@@ -53,7 +53,8 @@ public class CustomGlobal extends AbstractCustomGlobal {
          * read input data and configure the simulation
          */
         this.numNodes = this.rqueue.getNumberOfNodes();
-        MAX_REQ = this.rqueue.getNumberOfRequests();
+        // MAX_REQ = this.rqueue.getNumberOfRequests();
+        MAX_REQ = 23;
 
         /*
          * create the nodes and constructs the tree topology

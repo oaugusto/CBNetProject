@@ -104,6 +104,9 @@ public class CBNetNode extends RotationLayer {
 
         if (msg instanceof CompletionMessage) {
             this.state = States.PASSIVE;
+
+            // LOG
+            CustomGlobal.completedRequests++;
             return;
         }
     }

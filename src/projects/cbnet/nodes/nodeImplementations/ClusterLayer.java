@@ -154,8 +154,8 @@ public abstract class ClusterLayer extends CBNetLayer {
                         requestMessage.setFinalNode();
                     }
                 } else if (this.getMinIdInSubtree() <= newRequestMessage.getDst() && newRequestMessage.getDst() < ID) {
-                    // System.out.println("node " + ID + " forwarding cluster msg down right");
                     if (this.hasLeftChild()) {
+                        // System.out.println("node " + ID + " forwarding cluster msg down right");
                         this.sendToLeftChild(newRequestMessage);
                     } else {
                         requestMessage.setFinalNode();
