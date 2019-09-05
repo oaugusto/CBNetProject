@@ -11,10 +11,18 @@ public class CBNetMessage extends Message implements Comparable<CBNetMessage> {
     private int dst;
     private double priority;
 
+    // collect data variable
+    private long rotations;
+    private long routing;
+
     public CBNetMessage(int src, int dst, double priority) {
         this.src = src;
         this.dst = dst;
         this.priority = priority;
+
+        // collect
+        this.rotations = 0;
+        this.routing = 0;
     }
 
     /**
@@ -62,6 +70,28 @@ public class CBNetMessage extends Message implements Comparable<CBNetMessage> {
     @Override
     public Message clone() {
         return this;
+    }
+
+    /**
+     * @return the rotations
+     */
+    public long getRotations() {
+        return rotations;
+    }
+
+    /**
+     * @return the routing
+     */
+    public long getRouting() {
+        return routing;
+    }
+
+    public void incrementRotations() {
+        this.rotations++;
+    }
+
+    public void incrementRouting() {
+        this.routing++;
     }
 
     @Override

@@ -1,9 +1,15 @@
 package projects.cbnet.nodes.nodeImplementations;
 
+import projects.cbnet.CustomGlobal;
+import sinalgo.tools.logging.Logging;
+
 /**
  * SynchronizerLayer
  */
 public abstract class SynchronizerLayer extends CBTreeLayer {
+
+    // LOG
+    public Logging numCluster = Logging.getLogger("cluster.txt");
 
     private int MAX_TIMESLOT = 11;
     private int timeslot;
@@ -70,6 +76,7 @@ public abstract class SynchronizerLayer extends CBTreeLayer {
 
         case 10:
             timeslot10();
+            roundLog();
             break;
 
         default:
@@ -121,7 +128,14 @@ public abstract class SynchronizerLayer extends CBTreeLayer {
     } 
 
     public void timeslot10() {
-        
+
+    }
+
+    // LOG
+    public void roundLog() {
+        if (ID == 1) {
+            numCluster.logln("" + CustomGlobal.numberClusters);
+        }
     }
 
     public abstract void nodeStep();

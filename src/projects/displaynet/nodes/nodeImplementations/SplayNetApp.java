@@ -15,10 +15,6 @@ public class SplayNetApp extends HandShakeLayer {
     
     @Override
     public void splayCompleted() {
-        CustomGlobal.nOperations++;
-        
-        // if (CustomGlobal.isSequencial) {
-        //     CustomGlobal.newSplay = true;
-        // }
+        CustomGlobal.activeSplays--;
     }
 }
