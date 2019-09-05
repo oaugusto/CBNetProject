@@ -14,6 +14,8 @@ public class RotationLayer extends ClusterLayer {
     
     private CBNetMessage cbnetMessage;
 
+    private double epsilon = -2;
+
     @Override
     public void init() {
         super.init();
@@ -54,6 +56,11 @@ public class RotationLayer extends ClusterLayer {
     @Override
     public void clusterCompletedTopDown(HashMap<String, CBInfo> cluster) {
         this.rotateTopDown(cluster);
+    }
+
+    @Override
+    public void targetNodeFound(CBInfo target) {
+        this.forwardCBNetMessage(target.getNode().ID, this.cbnetMessage);
     }
 
     private void rotateBottomUp(HashMap<String, CBInfo> cluster) {
@@ -99,6 +106,8 @@ public class RotationLayer extends ClusterLayer {
         CBTreeLayer y = (CBTreeLayer) yInfo.getNode();
         CBTreeLayer z = (CBTreeLayer) zInfo.getNode();
 
+        double deltaRank = this.zigDiffRank(xInfo, yInfo);
+
         if (true) {
 
             // forward message
@@ -111,6 +120,21 @@ public class RotationLayer extends ClusterLayer {
                 this.requestRPCTo(z.ID, "changeRightChildTo", x);
             }
 
+            // calculate the new rank of nodes
+            // type of operation----------------------------------------------------
+            boolean leftZig = (x == yInfo.getLeftChild()) ? true : false;
+
+            RotationLayer b = (RotationLayer) ((leftZig) ? xInfo.getRightChild() : xInfo.getLeftChild());
+
+            long xOldWeight = xInfo.getWeight();
+            long yOldWeight = yInfo.getWeight();
+
+            long bWeight = (b != null) ? b.getWeight() : 0;
+
+            long yNewWeight = yOldWeight - xOldWeight + bWeight;
+            long xNewWeight = xOldWeight - bWeight + yNewWeight;
+            // ---------------------------------------------------------------------
+
             // left zig operetion
             if (yInfo.getLeftChild() == x) {
                 // change node y
@@ -120,10 +144,12 @@ public class RotationLayer extends ClusterLayer {
                     min = xInfo.getRightChild().getMinIdInSubtree();
                 }
                 this.requestRPCTo(y.ID, "setMinIdInSubtree", min);
+                this.requestRPCTo(y.ID, "setWeight", yNewWeight);
 
                 // change node x
                 this.requestRPCTo(x.ID, "changeRightChildTo", y);
                 this.requestRPCTo(x.ID, "setMaxIdInSubtree", yInfo.getMaxIdInSubtree());
+                this.requestRPCTo(x.ID, "setWeight", xNewWeight);
             } else {
                 // change node y
                 this.requestRPCTo(y.ID, "changeRightChildTo", (CBTreeLayer) xInfo.getLeftChild());
@@ -132,11 +158,14 @@ public class RotationLayer extends ClusterLayer {
                     max = xInfo.getLeftChild().getMaxIdInSubtree();
                 }
                 this.requestRPCTo(y.ID, "setMaxIdInSubtree", max);
+                this.requestRPCTo(y.ID, "setWeight", yNewWeight);
 
                 // change node x
                 this.requestRPCTo(x.ID, "changeLeftChildTo", y);
                 this.requestRPCTo(x.ID, "setMinIdInSubtree", yInfo.getMinIdInSubtree());
+                this.requestRPCTo(x.ID, "setWeight", xNewWeight);
             }
+
         } else {
             // forward here
             this.forwardCBNetMessage(y.ID, this.cbnetMessage);
@@ -159,6 +188,8 @@ public class RotationLayer extends ClusterLayer {
         CBTreeLayer y = (CBTreeLayer) yInfo.getNode();
         CBTreeLayer z = (CBTreeLayer) zInfo.getNode();
         CBTreeLayer w = (CBTreeLayer) wInfo.getNode();
+
+        double deltaRank = this.zigDiffRank(yInfo, zInfo);
         
         if (true) {
             // forward message
@@ -171,6 +202,21 @@ public class RotationLayer extends ClusterLayer {
                 this.requestRPCTo(w.ID, "changeRightChildTo", y);
             }
 
+            // calculate the new rank of nodes
+            // type of operation----------------------------------------------------
+            boolean leftZig = (y == zInfo.getLeftChild()) ? true : false;
+
+            RotationLayer b = (RotationLayer) ((leftZig) ? yInfo.getRightChild() : yInfo.getLeftChild());
+
+            long yOldWeight = yInfo.getWeight();
+            long zOldWeight = zInfo.getWeight();
+
+            long bWeight = (b != null) ? b.getWeight() : 0;
+
+            long zNewWeight = zOldWeight - yOldWeight + bWeight;
+            long yNewWeight = yOldWeight - bWeight + zNewWeight;
+            // ---------------------------------------------------------------------
+
             // left zig operetion on node y
             if (zInfo.getLeftChild() == y) {
                 // change node z
@@ -180,10 +226,12 @@ public class RotationLayer extends ClusterLayer {
                     min = yInfo.getRightChild().getMinIdInSubtree();
                 }
                 this.requestRPCTo(z.ID, "setMinIdInSubtree", min);
+                this.requestRPCTo(z.ID, "setWeight", zNewWeight);
 
                 // change node y
                 this.requestRPCTo(y.ID, "changeRightChildTo", z);
                 this.requestRPCTo(y.ID, "setMaxIdInSubtree", zInfo.getMaxIdInSubtree());
+                this.requestRPCTo(y.ID, "setWeight", yNewWeight);
             } else {
                 // change node z
                 this.requestRPCTo(z.ID, "changeRightChildTo", (CBTreeLayer) yInfo.getLeftChild());
@@ -192,10 +240,12 @@ public class RotationLayer extends ClusterLayer {
                     max = yInfo.getLeftChild().getMaxIdInSubtree();
                 }
                 this.requestRPCTo(z.ID, "setMaxIdInSubtree", max);
+                this.requestRPCTo(z.ID, "setWeight", zNewWeight);
 
                 // change node y
                 this.requestRPCTo(y.ID, "changeLeftChildTo", z);
                 this.requestRPCTo(y.ID, "setMinIdInSubtree", zInfo.getMinIdInSubtree());
+                this.requestRPCTo(y.ID, "setWeight", yNewWeight);
             }
         } else {
             // forward 
@@ -224,6 +274,8 @@ public class RotationLayer extends ClusterLayer {
         CBTreeLayer z = (CBTreeLayer) zInfo.getNode();
         CBTreeLayer w = (CBTreeLayer) wInfo.getNode();
 
+        double deltaRank = this.zigZagDiffRank(xInfo, yInfo, zInfo);
+
         if (true) {
             // forward message
             this.forwardCBNetMessage(x.ID, this.cbnetMessage);
@@ -235,6 +287,24 @@ public class RotationLayer extends ClusterLayer {
                 this.requestRPCTo(w.ID, "changeRightChildTo", x);
             }
 
+            //new weights------------------------------------------------------
+            boolean lefZigZag = (y == zInfo.getLeftChild()) ? true : false;
+
+            RotationLayer b = (RotationLayer) (lefZigZag ? xInfo.getLeftChild() : xInfo.getRightChild());
+            RotationLayer c = (RotationLayer) (lefZigZag ? xInfo.getRightChild() : xInfo.getLeftChild());
+
+            long xOldWeight = xInfo.getWeight();
+            long yOldWeight = yInfo.getWeight();
+            long zOldWeight = zInfo.getWeight();
+
+            long bWeight = (b != null) ? b.getWeight() : 0;
+            long cWeight = (c != null) ? c.getWeight() : 0;
+
+            long yNewWeight = yOldWeight - xOldWeight + bWeight;
+            long zNewWeight = zOldWeight - yOldWeight + cWeight;
+            long xNewWeight = xOldWeight - bWeight - cWeight + yNewWeight + zNewWeight;
+            //---------------------------------------------------------------
+
             // deciding between lef or right zigzag operation
             if (y == zInfo.getLeftChild()) {
                 // change node z
@@ -244,6 +314,7 @@ public class RotationLayer extends ClusterLayer {
                     min = xInfo.getRightChild().getMinIdInSubtree();
                 }
                 this.requestRPCTo(z.ID, "setMinIdInSubtree", min);
+                this.requestRPCTo(z.ID, "setWeight", zNewWeight);
 
                 // change node y
                 this.requestRPCTo(y.ID, "changeRightChildTo", (CBTreeLayer) xInfo.getLeftChild());
@@ -252,12 +323,14 @@ public class RotationLayer extends ClusterLayer {
                     max = xInfo.getLeftChild().getMaxIdInSubtree();
                 }
                 this.requestRPCTo(y.ID, "setMaxIdInSubtree", max);
+                this.requestRPCTo(y.ID, "setWeight", yNewWeight);
 
                 // change node x
                 this.requestRPCTo(x.ID, "changeLeftChildTo", y);
                 this.requestRPCTo(x.ID, "setMinIdInSubtree", yInfo.getMinIdInSubtree());
                 this.requestRPCTo(x.ID, "changeRightChildTo", z);
                 this.requestRPCTo(x.ID, "setMaxIdInSubtree", zInfo.getMaxIdInSubtree());
+                this.requestRPCTo(x.ID, "setWeight", xNewWeight);
 
             } else {
 
@@ -268,6 +341,7 @@ public class RotationLayer extends ClusterLayer {
                     max = x.getLeftChild().getMaxIdInSubtree();
                 }
                 this.requestRPCTo(z.ID, "setMaxIdInSubtree", max);
+                this.requestRPCTo(z.ID, "setWeight", zNewWeight);
 
                 // change node y
                 this.requestRPCTo(y.ID, "changeLeftChildTo", (CBTreeLayer) xInfo.getRightChild());
@@ -276,12 +350,14 @@ public class RotationLayer extends ClusterLayer {
                     min = xInfo.getRightChild().getMinIdInSubtree();
                 }
                 this.requestRPCTo(y.ID, "setMinIdInSubtree", min);
+                this.requestRPCTo(y.ID, "setWeight", yNewWeight);
 
                 // change node x
                 this.requestRPCTo(x.ID, "changeRightChildTo", y);
                 this.requestRPCTo(x.ID, "setMaxIdInSubtree", yInfo.getMaxIdInSubtree());
                 this.requestRPCTo(x.ID, "changeLeftChildTo", z);
                 this.requestRPCTo(x.ID, "setMinIdInSubtree", zInfo.getMinIdInSubtree());
+                this.requestRPCTo(x.ID, "setWeight", xNewWeight);
             }
         } else {
             // forward
@@ -325,6 +401,8 @@ public class RotationLayer extends ClusterLayer {
         CBTreeLayer z = (CBTreeLayer) zInfo.getNode();
         CBTreeLayer w = (CBTreeLayer) wInfo.getNode();
 
+        double deltaRank = this.zigDiffRank(yInfo, zInfo);
+
         if (true) {
 
             // forward message
@@ -337,6 +415,21 @@ public class RotationLayer extends ClusterLayer {
                 this.requestRPCTo(w.ID, "changeRightChildTo", y);
             }
 
+            // calculate the new rank of nodes
+            // type of operation----------------------------------------------------
+            boolean leftZig = (y == zInfo.getLeftChild()) ? true : false;
+
+            RotationLayer b = (RotationLayer) ((leftZig) ? yInfo.getRightChild() : yInfo.getLeftChild());
+
+            long yOldWeight = yInfo.getWeight();
+            long zOldWeight = zInfo.getWeight();
+
+            long bWeight = (b != null) ? b.getWeight() : 0;
+
+            long zNewWeight = zOldWeight - yOldWeight + bWeight;
+            long yNewWeight = yOldWeight - bWeight + zNewWeight;
+            // ---------------------------------------------------------------------
+
             // left zig operetion on node y
             if (zInfo.getLeftChild() == y) {
                 // change node z
@@ -346,10 +439,12 @@ public class RotationLayer extends ClusterLayer {
                     min = yInfo.getRightChild().getMinIdInSubtree();
                 }
                 this.requestRPCTo(z.ID, "setMinIdInSubtree", min);
+                this.requestRPCTo(z.ID, "setWeight", zNewWeight);
 
                 // change node y
                 this.requestRPCTo(y.ID, "changeRightChildTo", z);
                 this.requestRPCTo(y.ID, "setMaxIdInSubtree", zInfo.getMaxIdInSubtree());
+                this.requestRPCTo(y.ID, "setWeight", yNewWeight);
             } else {
                 // change node z
                 this.requestRPCTo(z.ID, "changeRightChildTo", (CBTreeLayer) yInfo.getLeftChild());
@@ -358,10 +453,12 @@ public class RotationLayer extends ClusterLayer {
                     max = yInfo.getLeftChild().getMaxIdInSubtree();
                 }
                 this.requestRPCTo(z.ID, "setMaxIdInSubtree", max);
+                this.requestRPCTo(z.ID, "setWeight", zNewWeight);
 
                 // change node y
                 this.requestRPCTo(y.ID, "changeLeftChildTo", z);
                 this.requestRPCTo(y.ID, "setMinIdInSubtree", zInfo.getMinIdInSubtree());
+                this.requestRPCTo(y.ID, "setWeight", yNewWeight);
             }
 
         } else {
@@ -387,6 +484,8 @@ public class RotationLayer extends ClusterLayer {
         CBTreeLayer z = (CBTreeLayer) zInfo.getNode();
         CBTreeLayer w = (CBTreeLayer) wInfo.getNode();
 
+        double deltaRank = this.zigZagDiffRank(xInfo, yInfo, zInfo);
+
         if (true) {
             // forward message
             if (xInfo.getMinIdInSubtree() <= this.cbnetMessage.getDst() && this.cbnetMessage.getDst() < x.ID) {
@@ -403,6 +502,24 @@ public class RotationLayer extends ClusterLayer {
                 this.requestRPCTo(w.ID, "changeRightChildTo", x);
             }
 
+             //new weights------------------------------------------------------
+             boolean lefZigZag = (y == zInfo.getLeftChild()) ? true : false;
+
+             RotationLayer b = (RotationLayer) (lefZigZag ? xInfo.getLeftChild() : xInfo.getRightChild());
+             RotationLayer c = (RotationLayer) (lefZigZag ? xInfo.getRightChild() : xInfo.getLeftChild());
+ 
+             long xOldWeight = xInfo.getWeight();
+             long yOldWeight = yInfo.getWeight();
+             long zOldWeight = zInfo.getWeight();
+ 
+             long bWeight = (b != null) ? b.getWeight() : 0;
+             long cWeight = (c != null) ? c.getWeight() : 0;
+ 
+             long yNewWeight = yOldWeight - xOldWeight + bWeight;
+             long zNewWeight = zOldWeight - yOldWeight + cWeight;
+             long xNewWeight = xOldWeight - bWeight - cWeight + yNewWeight + zNewWeight;
+             //---------------------------------------------------------------
+
             // deciding between lef or right zigzag operation
             if (y == zInfo.getLeftChild()) {
                 // change node z
@@ -412,6 +529,7 @@ public class RotationLayer extends ClusterLayer {
                     min = xInfo.getRightChild().getMinIdInSubtree();
                 }
                 this.requestRPCTo(z.ID, "setMinIdInSubtree", min);
+                this.requestRPCTo(z.ID, "setWeight", zNewWeight);
 
                 // change node y
                 this.requestRPCTo(y.ID, "changeRightChildTo", (CBTreeLayer) xInfo.getLeftChild());
@@ -420,12 +538,14 @@ public class RotationLayer extends ClusterLayer {
                     max = xInfo.getLeftChild().getMaxIdInSubtree();
                 }
                 this.requestRPCTo(y.ID, "setMaxIdInSubtree", max);
+                this.requestRPCTo(y.ID, "setWeight", yNewWeight);
 
                 // change node x
                 this.requestRPCTo(x.ID, "changeLeftChildTo", y);
                 this.requestRPCTo(x.ID, "setMinIdInSubtree", yInfo.getMinIdInSubtree());
                 this.requestRPCTo(x.ID, "changeRightChildTo", z);
                 this.requestRPCTo(x.ID, "setMaxIdInSubtree", zInfo.getMaxIdInSubtree());
+                this.requestRPCTo(x.ID, "setWeight", xNewWeight);
 
             } else {
 
@@ -436,6 +556,7 @@ public class RotationLayer extends ClusterLayer {
                     max = x.getLeftChild().getMaxIdInSubtree();
                 }
                 this.requestRPCTo(z.ID, "setMaxIdInSubtree", max);
+                this.requestRPCTo(z.ID, "setWeight", zNewWeight);
 
                 // change node y
                 this.requestRPCTo(y.ID, "changeLeftChildTo", (CBTreeLayer) xInfo.getRightChild());
@@ -444,12 +565,14 @@ public class RotationLayer extends ClusterLayer {
                     min = xInfo.getRightChild().getMinIdInSubtree();
                 }
                 this.requestRPCTo(y.ID, "setMinIdInSubtree", min);
+                this.requestRPCTo(y.ID, "setWeight", yNewWeight);
 
                 // change node x
                 this.requestRPCTo(x.ID, "changeRightChildTo", y);
                 this.requestRPCTo(x.ID, "setMaxIdInSubtree", yInfo.getMaxIdInSubtree());
                 this.requestRPCTo(x.ID, "changeLeftChildTo", z);
                 this.requestRPCTo(x.ID, "setMinIdInSubtree", zInfo.getMinIdInSubtree());
+                this.requestRPCTo(x.ID, "setWeight", xNewWeight);
             }
         } else {
             // forward
@@ -496,13 +619,13 @@ public class RotationLayer extends ClusterLayer {
 	}
 
     /*
-	            z                  *y
-     	       / \                /   \
-     		  y   d              x     z
-	         / \       ->       / \   / \
-	       *x   c              a   b c   d
-	       / \                    
-	      a   b                   
+			  z					*x
+			 / \               /   \
+			y   d             y     z
+		   / \		   ->    / \   / \
+		  a  *x             a   b c   d
+		     / \
+		    b	c 
 	*/
     private double zigZagDiffRank(CBInfo xInfo, CBInfo yInfo, CBInfo zInfo) {
 		RotationLayer x = (RotationLayer) xInfo.getNode();

@@ -56,12 +56,14 @@ public abstract class RPCLayer extends SynchronizerLayer {
 
         case "setWeight":
             this.setWeight(rpc.getValue());
+            break;
 
         case "incrementWeight":
             this.incrementWeight();
+            break;
 
         default:
-            Tools.fatalError("Wrong procedure called");
+            Tools.fatalError("Wrong procedure called " + rpc.getCommand());
             break;
         }
     }
@@ -78,7 +80,7 @@ public abstract class RPCLayer extends SynchronizerLayer {
         this.sendForwardMessage(id, msg);
     }
 
-    public void requestRPCTo(int id, String command, int n) {
+    public void requestRPCTo(int id, String command, long n) {
         RPCMessage msg = new RPCMessage(command, n);
         this.sendForwardMessage(id, msg);
     }

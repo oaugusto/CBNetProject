@@ -142,7 +142,11 @@ public class ClusterLayer extends CBNetLayer {
                 RequestClusterDownMessage newRequestMessage = new RequestClusterDownMessage(requestMessage);
                 newRequestMessage.shiftPosition();
 
-                if (ID < newRequestMessage.getDst() && newRequestMessage.getDst() <= this.getMaxIdInSubtree()) {
+                if (ID == requestMessage.getDst()) {
+
+                    requestMessage.setFinalNode();
+
+                } else if (ID < newRequestMessage.getDst() && newRequestMessage.getDst() <= this.getMaxIdInSubtree()) {
                     if (this.hasRightChild()) {
                         System.out.println("node " + ID + " forwarding cluster msg down left");
                         this.sendToRightChild(newRequestMessage);
@@ -274,6 +278,16 @@ public class ClusterLayer extends CBNetLayer {
         return table;
     }
 
+    private CBInfo findTarget() {
+        for (AckClusterMessage m : this.queueAckCluster) {
+            if (m.getDst() == m.getInfo().getNode().ID) {
+                return m.getInfo();
+            }
+        }
+
+        return null;
+    }
+
     /**
      * In this time slot all ack message will have arrived If the node has sent
      * message requesting cluster formation verify if the permission was granted.
@@ -282,8 +296,14 @@ public class ClusterLayer extends CBNetLayer {
     public void timeslot6() {
         super.timeslot6();
 
-        // This node has sent request cluster message
-        if (!this.queueAckCluster.isEmpty() && this.isClusterGranted()) {
+        CBInfo target = findTarget();
+
+        if (target != null) {
+
+            this.targetNodeFound(target);
+
+        } else if (!this.queueAckCluster.isEmpty() && this.isClusterGranted()) {
+            // This node has sent request cluster message
             if (this.isClusterUp) {
 
                 this.clusterCompletedBottomUp(this.getClusterSequenceFromAckBufferBottomUp());
@@ -309,6 +329,10 @@ public class ClusterLayer extends CBNetLayer {
 
     public void clusterCompletedTopDown(HashMap<String, CBInfo> cluster) {
         System.out.println("Cluster Down formed at node " + ID);
+    }
+
+    public void targetNodeFound(CBInfo target) {
+        System.out.println("Target Found at node " + ID);
     }
 
     @Override

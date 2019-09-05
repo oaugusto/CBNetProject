@@ -54,7 +54,7 @@ public class CBNetLayer extends RPCLayer {
     }
 
     public void receivedCBNetMessage() {
-
+        System.out.println("Message arrived!!!!");
     }
 
     @Override

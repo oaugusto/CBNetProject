@@ -18,7 +18,7 @@ public class RPCMessage extends Message {
         this.value = -1;
     }
 
-    public RPCMessage(String command, int value) {
+    public RPCMessage(String command, long value) {
         this.command = command;
         this.node = null;
         this.value = value;
@@ -44,7 +44,7 @@ public class RPCMessage extends Message {
         this.node = node;
     }
 
-    public void setValue(int value) {
+    public void setValue(long value) {
         this.value = value;
     }
 

@@ -42,7 +42,7 @@ public class CBNetNode extends RotationLayer {
             first = false;
 
             if (ID == 2) {
-                this.sendCBNetMessage(30, 1.0);
+                this.sendCBNetMessage(26, 1.0);
             }
 
             // if (ID == 5) {
