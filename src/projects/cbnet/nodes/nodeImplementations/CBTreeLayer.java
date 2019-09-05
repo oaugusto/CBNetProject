@@ -29,6 +29,32 @@ public abstract class CBTreeLayer extends BinaryTreeLayer {
         this.weight++;
     }
 
+
+    // TODO : change the way weights are updated
+    public void updateWeights(int from, int to) {
+        CBTreeLayer aux = this;
+
+        if (!aux.isLeastCommonAncestorOf(to)) {
+            while (!aux.isLeastCommonAncestorOf(to)) {
+                aux.incrementWeight();
+                aux = (RotationLayer) aux.getParent();
+			} 
+			
+			aux.incrementWeight();
+        }
+
+        while (aux.ID != to) {
+			aux.incrementWeight();
+			if (aux.ID > to) {
+				aux = (RotationLayer) aux.getLeftChild();
+			} else {
+				aux = (RotationLayer) aux.getRightChild();
+			}
+		}
+		
+		aux.incrementWeight();
+    }
+
     @Override
     public CBInfo getNodeInfo() {
         return new CBInfo(this, (CBTreeLayer) this.getParent(), (CBTreeLayer) this.getLeftChild(),

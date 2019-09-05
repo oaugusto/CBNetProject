@@ -45,6 +45,7 @@ public class CBNetLayer extends RPCLayer {
 
             if (ID == cbmsg.getDst()) {
                 this.receivedCBNetMessage();
+                this.updateWeights(ID, cbmsg.getSrc());
             } else {
                 this.cbnetQueue.add(cbmsg);
                 // System.out.println("Node " + ID + ": received CBNet message");
