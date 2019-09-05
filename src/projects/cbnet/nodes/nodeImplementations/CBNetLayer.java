@@ -8,7 +8,7 @@ import sinalgo.nodes.messages.Message;
 /**
  * CBNetLayer
  */
-public class CBNetLayer extends RPCLayer {
+public abstract class CBNetLayer extends RPCLayer {
 
     private PriorityQueue<CBNetMessage> cbnetQueue;
 
@@ -58,15 +58,6 @@ public class CBNetLayer extends RPCLayer {
         }
     }
 
-    public void receivedCBNetMessage(CBNetMessage msg) {
-        System.out.println("Node " + ID + ": Message arrived from " + msg.getSrc());
-    }
-
-    @Override
-    public void nodeStep() {
-        // TODO Auto-generated method stub
-
-    }
-
+    public abstract void receivedCBNetMessage(CBNetMessage msg);
     
 }

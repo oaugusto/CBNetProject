@@ -8,7 +8,7 @@ import projects.cbnet.nodes.tableEntry.CBInfo;
 /**
  * RotationLayer
  */
-public class RotationLayer extends ClusterLayer {
+public abstract class RotationLayer extends ClusterLayer {
 
     private boolean rotating;
     
@@ -103,7 +103,7 @@ public class RotationLayer extends ClusterLayer {
 	 
 	 */
     private void zigBottomUp(CBInfo xInfo, CBInfo yInfo, CBInfo zInfo) {
-        System.out.println("zig bottom up operation: " + ID);
+        // System.out.println("zig bottom up operation: " + ID);
 
         CBTreeLayer x = (CBTreeLayer) xInfo.getNode();
         CBTreeLayer y = (CBTreeLayer) yInfo.getNode();
@@ -185,7 +185,7 @@ public class RotationLayer extends ClusterLayer {
 	      a   b                   
 	*/
     private void zigZigBottomUp(CBInfo xInfo, CBInfo yInfo, CBInfo zInfo, CBInfo wInfo) {
-        System.out.println("zig zig bottom up operation: " + ID);
+        // System.out.println("zig zig bottom up operation: " + ID);
         
         CBTreeLayer x = (CBTreeLayer) xInfo.getNode();
         CBTreeLayer y = (CBTreeLayer) yInfo.getNode();
@@ -270,7 +270,7 @@ public class RotationLayer extends ClusterLayer {
                b   c 
 	 */
     private void zigZagBottomUp(CBInfo xInfo, CBInfo yInfo, CBInfo zInfo, CBInfo wInfo) {
-        System.out.println("zig zag bottom up operation: " + ID);
+        // System.out.println("zig zag bottom up operation: " + ID);
         
         CBTreeLayer x = (CBTreeLayer) xInfo.getNode();
         CBTreeLayer y = (CBTreeLayer) yInfo.getNode();
@@ -397,7 +397,7 @@ public class RotationLayer extends ClusterLayer {
 		   a   b    
 	*/
     private void zigZigTopDown(CBInfo xInfo, CBInfo yInfo, CBInfo zInfo, CBInfo wInfo) {
-        System.out.println("zig zig top down operation: " + ID);
+        // System.out.println("zig zig top down operation: " + ID);
       
         CBTreeLayer x = (CBTreeLayer) xInfo.getNode();
         CBTreeLayer y = (CBTreeLayer) yInfo.getNode();
@@ -480,7 +480,7 @@ public class RotationLayer extends ClusterLayer {
 	        b   c
 	*/
     private void zigZagTopDown(CBInfo xInfo, CBInfo yInfo, CBInfo zInfo, CBInfo wInfo) {
-        System.out.println("zig zag top down operation: " + ID);
+        // System.out.println("zig zag top down operation: " + ID);
         
         CBTreeLayer x = (CBTreeLayer) xInfo.getNode();
         CBTreeLayer y = (CBTreeLayer) yInfo.getNode();

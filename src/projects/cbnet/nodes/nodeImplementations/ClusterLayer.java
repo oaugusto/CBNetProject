@@ -15,7 +15,7 @@ import sinalgo.nodes.messages.Message;
 /**
  * ClusterLayer
  */
-public class ClusterLayer extends CBNetLayer {
+public abstract class ClusterLayer extends CBNetLayer {
 
     // this priority queue store all request cluster message received
     private PriorityQueue<RequestClusterMessage> queueClusterRequest;
@@ -53,7 +53,7 @@ public class ClusterLayer extends CBNetLayer {
      * @param priority
      */
     public void sendRequestClusterUp(int src, int dst, double priority) {
-        System.out.println("Node " + ID + " sending cluster up");
+        // System.out.println("Node " + ID + " sending cluster up");
         this.isClusterUp = true;
 
         RequestClusterUpMessage msg = new RequestClusterUpMessage(src, dst, 0, priority);
@@ -69,7 +69,7 @@ public class ClusterLayer extends CBNetLayer {
     }
 
     public void sendRequestClusterDown(int src, int dst, double priority) {
-        System.out.println("Node " + ID + " sending cluster down");
+        // System.out.println("Node " + ID + " sending cluster down");
         this.isClusterDown = true;
 
         RequestClusterDownMessage msg = new RequestClusterDownMessage(src, dst, 1, priority);
@@ -148,13 +148,13 @@ public class ClusterLayer extends CBNetLayer {
 
                 } else if (ID < newRequestMessage.getDst() && newRequestMessage.getDst() <= this.getMaxIdInSubtree()) {
                     if (this.hasRightChild()) {
-                        System.out.println("node " + ID + " forwarding cluster msg down left");
+                        // System.out.println("node " + ID + " forwarding cluster msg down left");
                         this.sendToRightChild(newRequestMessage);
                     } else {
                         requestMessage.setFinalNode();
                     }
                 } else if (this.getMinIdInSubtree() <= newRequestMessage.getDst() && newRequestMessage.getDst() < ID) {
-                    System.out.println("node " + ID + " forwarding cluster msg down right");
+                    // System.out.println("node " + ID + " forwarding cluster msg down right");
                     if (this.hasLeftChild()) {
                         this.sendToLeftChild(newRequestMessage);
                     } else {
@@ -323,20 +323,10 @@ public class ClusterLayer extends CBNetLayer {
         this.isClusterUp = false;
     }
 
-    public void clusterCompletedBottomUp(HashMap<String, CBInfo> cluster) {
-        System.out.println("Cluster Up formed at node " + ID);
-    }
+    public abstract void clusterCompletedBottomUp(HashMap<String, CBInfo> cluster);
 
-    public void clusterCompletedTopDown(HashMap<String, CBInfo> cluster) {
-        System.out.println("Cluster Down formed at node " + ID);
-    }
+    public abstract void clusterCompletedTopDown(HashMap<String, CBInfo> cluster);
 
-    public void targetNodeFound(CBInfo target) {
-        System.out.println("Target Found at node " + ID);
-    }
+    public abstract void targetNodeFound(CBInfo target);
 
-    @Override
-    public void nodeStep() {
-
-    }
 }
