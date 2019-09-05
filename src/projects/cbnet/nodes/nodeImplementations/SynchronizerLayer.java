@@ -5,7 +5,7 @@ package projects.cbnet.nodes.nodeImplementations;
  */
 public abstract class SynchronizerLayer extends CBTreeLayer {
 
-    private int MAX_TIMESLOT = 10;
+    private int MAX_TIMESLOT = 11;
     private int timeslot;
     private int round;
 
@@ -68,6 +68,10 @@ public abstract class SynchronizerLayer extends CBTreeLayer {
             timeslot9();
             break;
 
+        case 10:
+            timeslot10();
+            break;
+
         default:
             break;
         }
@@ -115,6 +119,10 @@ public abstract class SynchronizerLayer extends CBTreeLayer {
     public void timeslot9() {
 
     } 
+
+    public void timeslot10() {
+        
+    }
 
     public abstract void nodeStep();
 

@@ -24,7 +24,11 @@ public class CBNetLayer extends RPCLayer {
     }
 
     public CBNetMessage getTopCBNetMessage() {
-        return this.cbnetQueue.poll();
+        return this.cbnetQueue.peek();
+    }
+
+    public void removeTopCBNetMesssage() {
+        this.cbnetQueue.poll();
     }
 
     public void sendCBNetMessage(int dst, double priority) {
@@ -44,17 +48,18 @@ public class CBNetLayer extends RPCLayer {
             CBNetMessage cbmsg = (CBNetMessage) msg;
 
             if (ID == cbmsg.getDst()) {
-                this.receivedCBNetMessage();
+                this.receivedCBNetMessage(cbmsg);
                 this.updateWeights(ID, cbmsg.getSrc());
             } else {
                 this.cbnetQueue.add(cbmsg);
-                // System.out.println("Node " + ID + ": received CBNet message");
             }
+
+            return;
         }
     }
 
-    public void receivedCBNetMessage() {
-        System.out.println("Message arrived!!!!");
+    public void receivedCBNetMessage(CBNetMessage msg) {
+        System.out.println("Node " + ID + ": Message arrived from " + msg.getSrc());
     }
 
     @Override

@@ -1,10 +1,13 @@
 package projects.cbnet.nodes.nodeImplementations;
 
+import java.awt.Color;
+import java.awt.Graphics;
 import java.util.LinkedList;
 import java.util.Queue;
 
 import projects.cbnet.nodes.messages.CompletionMessage;
 import projects.cbnet.nodes.tableEntry.Request;
+import sinalgo.gui.transformation.PositionTransformation;
 import sinalgo.nodes.messages.Message;
 import sinalgo.tools.Tools;
 
@@ -38,62 +41,53 @@ public class CBNetNode extends RotationLayer {
     @Override
     public void updateState() {
 
-        if (first) {
-            first = false;
+        switch (this.state) {
+        case PASSIVE:
 
-            if (ID == 2) {
-                this.sendCBNetMessage(26, 1.0);
-            }
+            break;
 
-            // if (ID == 5) {
-            // this.sendRequestClusterDown(5, 6, 2.0);
-            // }
+        case COMMUNICATING:
+            break;
 
-            // if (ID == 11) {
-            // this.sendRequestClusterUp(11, 30, 1.0);
-            // }
+        default:
+            Tools.fatalError("Invalid CBNetNode state");
+            break;
         }
 
-        super.updateState();
-
-        // switch (this.state) {
-        // case PASSIVE:
-
-        // break;
-
-        // case COMMUNICATING:
-        // break;
-
-        // default:
-        // Tools.fatalError("Invalid CBNetNode state");
-        // break;
-        // }
-
+        super.updateState(); // TODO : change the updateState() 
     }
 
-    // @Override
-    // public void receiveMessage(Message msg) {
-    // super.receiveMessage(msg);
+    @Override
+    public void receiveMessage(Message msg) {
+        super.receiveMessage(msg);
 
-    // if (msg instanceof CompletionMessage) {
+        if (msg instanceof CompletionMessage) {
 
-    // return;
-    // }
-    // }
+            return;
+        }
+    }
 
-    // public void newMessage(int src_splay, int dst_splay, double priority) {
-    // Request splay = new Request(src_splay, dst_splay, priority);
-    // this.activeRequest = splay;
-    // this.newMessage = true;
-    // }
+    public void newMessage(int src_splay, int dst_splay, double priority) {
+        Request splay = new Request(src_splay, dst_splay, priority);
+        this.activeRequest = splay;
+        this.newMessage = true;
+    }
 
-    // public void communicationCompleted() {
-    // // System.out.println("Communication Completed node " + ID);
-    // }
+    public void communicationCompleted() {
+        // System.out.println("Communication Completed node " + ID);
+    }
 
     @Override
     public void nodeStep() {
 
+    }
+
+    public void draw(Graphics g, PositionTransformation pt, boolean highlight) {
+        // String text = this.getWeight() + "";
+        String text = "" + ID;
+
+        // draw the node as a circle with the text inside
+        super.drawNodeAsDiskWithText(g, pt, highlight, text, 12, Color.YELLOW);
     }
 
 }
