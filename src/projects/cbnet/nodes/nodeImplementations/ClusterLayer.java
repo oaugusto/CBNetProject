@@ -23,7 +23,7 @@ public abstract class ClusterLayer extends CBNetLayer {
     // this queue keeps all acks received due to a request cluster operation
     private Queue<AckClusterMessage> queueAckCluster;
 
-    private boolean isClusterUp; // change this
+    private boolean isClusterUp; // TODO : change this
     private boolean isClusterDown;
 
     @Override

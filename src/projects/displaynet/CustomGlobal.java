@@ -7,7 +7,7 @@ import java.util.Random;
 
 import projects.displaynet.nodes.nodeImplementations.BinaryTreeLayer;
 import projects.displaynet.nodes.nodeImplementations.SplayNetApp;
-import projects.displaynet.nodes.timers.TimerExponentialDistribution;
+import projects.displaynet.nodes.timers.TriggerNodeOperation;
 import sinalgo.gui.transformation.PositionTransformation;
 import sinalgo.runtime.AbstractCustomGlobal;
 import sinalgo.runtime.Global;
@@ -85,11 +85,8 @@ public class CustomGlobal extends AbstractCustomGlobal {
     }
 
     public static void generateNextSplayExponential(int src, int dst, double x) {
-        long time = (long) (Global.currentTime + (int) x);
-    
-        TimerExponentialDistribution ted = new TimerExponentialDistribution(src,dst);
+        TriggerNodeOperation ted = new TriggerNodeOperation(src,dst);
         ted.startGlobalTimer(x);
-        
     }
 
     public static void generateNextSplay(double x){

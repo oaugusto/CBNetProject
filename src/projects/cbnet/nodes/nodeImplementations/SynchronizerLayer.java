@@ -1,15 +1,9 @@
 package projects.cbnet.nodes.nodeImplementations;
 
-import projects.cbnet.CustomGlobal;
-import sinalgo.tools.logging.Logging;
-
 /**
- * SynchronizerLayer
+ * SynchronizerLayer TODO : reduce the number of time slots
  */
 public abstract class SynchronizerLayer extends CBTreeLayer {
-
-    // LOG
-    public Logging numCluster = Logging.getLogger("cluster.txt");
 
     private int MAX_TIMESLOT = 11;
     private int timeslot;
@@ -34,8 +28,8 @@ public abstract class SynchronizerLayer extends CBTreeLayer {
         
         switch (this.timeslot) {
         case 0:
-            this.round++; // update round
             updateState();
+            timeslot0();
             break;
 
         case 1:
@@ -76,7 +70,7 @@ public abstract class SynchronizerLayer extends CBTreeLayer {
 
         case 10:
             timeslot10();
-            roundLog();
+            round();
             break;
 
         default:
@@ -88,6 +82,10 @@ public abstract class SynchronizerLayer extends CBTreeLayer {
     }
 
     public void updateState() {
+
+    }
+
+    public void timeslot0() {
 
     }
 
@@ -132,17 +130,12 @@ public abstract class SynchronizerLayer extends CBTreeLayer {
     }
 
     // LOG
-    public void roundLog() {
-        if (ID == 1) {
-            numCluster.logln("" + CustomGlobal.numberClusters);
-        }
+    public void round() {
+        
     }
 
-    public abstract void nodeStep();
+    public void nodeStep() {
 
-    // @Override
-    // public void draw(Graphics g, PositionTransformation pt, boolean highlight) {
-    //     String text = "" + ID;
-    //     super.drawNodeAsDiskWithText(g, pt, highlight, text, 30, Color.WHITE);
-    // }
+    }
+
 }

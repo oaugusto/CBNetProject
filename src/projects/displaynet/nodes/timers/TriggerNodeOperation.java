@@ -8,12 +8,12 @@ import sinalgo.tools.Tools;
 /**
  * TimerExponential
  */
-public class TimerExponentialDistribution extends Timer {
+public class TriggerNodeOperation extends Timer {
 
     public int src;
     public int dst;
 
-    public TimerExponentialDistribution(int src, int dst) {
+    public TriggerNodeOperation(int src, int dst) {
         this.src = src;
         this.dst = dst;
     }

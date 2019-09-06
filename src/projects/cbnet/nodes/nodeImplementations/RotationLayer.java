@@ -2,7 +2,6 @@ package projects.cbnet.nodes.nodeImplementations;
 
 import java.util.HashMap;
 
-import projects.cbnet.CustomGlobal;
 import projects.cbnet.nodes.messages.CBNetMessage;
 import projects.cbnet.nodes.tableEntry.CBInfo;
 
@@ -12,6 +11,7 @@ import projects.cbnet.nodes.tableEntry.CBInfo;
 public abstract class RotationLayer extends ClusterLayer {
 
     private boolean rotating;
+    private boolean routing;
     
     private CBNetMessage cbnetMessage;
 
@@ -22,11 +22,12 @@ public abstract class RotationLayer extends ClusterLayer {
         super.init();
 
         this.rotating = false;
+        this.routing = false;
         this.cbnetMessage = null;
     }
 
     @Override
-    public void updateState() {
+    public void timeslot0() {
         this.tryOperation();
     }
 
@@ -51,8 +52,6 @@ public abstract class RotationLayer extends ClusterLayer {
 
     @Override
     public void clusterCompletedBottomUp(HashMap<String, CBInfo> cluster) {
-        // LOG
-        CustomGlobal.numberClusters++;
 
         this.removeTopCBNetMesssage();
         this.rotateBottomUp(cluster);
@@ -61,8 +60,6 @@ public abstract class RotationLayer extends ClusterLayer {
     
     @Override
     public void clusterCompletedTopDown(HashMap<String, CBInfo> cluster) {
-        // LOG
-        CustomGlobal.numberClusters++;
         
         this.removeTopCBNetMesssage();
         this.rotateTopDown(cluster);
@@ -71,8 +68,6 @@ public abstract class RotationLayer extends ClusterLayer {
     
     @Override
     public void targetNodeFound(CBInfo target) {
-        // LOG
-        CustomGlobal.numberClusters++;
         
         this.removeTopCBNetMesssage();
         this.cbnetMessage.incrementRouting(); // DATA LOG
@@ -81,8 +76,6 @@ public abstract class RotationLayer extends ClusterLayer {
     }
 
     private void rotateBottomUp(HashMap<String, CBInfo> cluster) {
-        this.rotating = true;
-
         CBInfo xInfo = cluster.get("x");
         CBInfo yInfo = cluster.get("y");
         CBInfo zInfo = cluster.get("z");
@@ -125,9 +118,10 @@ public abstract class RotationLayer extends ClusterLayer {
 
         double deltaRank = this.zigDiffRank(xInfo, yInfo);
 
-        // if (deltaRank < this.epsilon) {
         // if (true) {
-        if (false) {
+        // if (false) {
+        if (deltaRank < this.epsilon) {
+            this.rotating = true;
 
             //DATA LOG
             this.cbnetMessage.incrementRotations();
@@ -188,6 +182,8 @@ public abstract class RotationLayer extends ClusterLayer {
             }
 
         } else {
+            this.routing = true;
+
             //DATA LOG
             this.cbnetMessage.incrementRouting();
             // forward here
@@ -214,9 +210,11 @@ public abstract class RotationLayer extends ClusterLayer {
 
         double deltaRank = this.zigDiffRank(yInfo, zInfo);
         
-        // if (deltaRank < this.epsilon) {
         // if (true) {
-        if (false) {
+        // if (false) {
+        if (deltaRank < this.epsilon) {
+            this.rotating = true;
+
             //DATA LOG
             this.cbnetMessage.incrementRotations();
             // forward message
@@ -275,6 +273,8 @@ public abstract class RotationLayer extends ClusterLayer {
                 this.requestRPCTo(y.ID, "setWeight", yNewWeight);
             }
         } else {
+            this.routing = true;
+
             //DATA LOG
             this.cbnetMessage.incrementRouting();
             // forward 
@@ -305,9 +305,11 @@ public abstract class RotationLayer extends ClusterLayer {
 
         double deltaRank = this.zigZagDiffRank(xInfo, yInfo, zInfo);
 
-        // if (deltaRank < this.epsilon) {
         // if (true) {
-        if (false) {
+        // if (false) {
+        if (deltaRank < this.epsilon) {
+            this.rotating = true;
+
             //DATA LOG
             this.cbnetMessage.incrementRotations();
             // forward message
@@ -393,6 +395,8 @@ public abstract class RotationLayer extends ClusterLayer {
                 this.requestRPCTo(x.ID, "setWeight", xNewWeight);
             }
         } else {
+            this.routing = true;
+
             //DATA LOG
             this.cbnetMessage.incrementRotations();
             // forward
@@ -438,9 +442,11 @@ public abstract class RotationLayer extends ClusterLayer {
 
         double deltaRank = this.zigDiffRank(yInfo, zInfo);
 
-        // if (deltaRank < this.epsilon) {
         // if (true) {
-        if (false) {
+        // if (false) {
+        if (deltaRank < this.epsilon) {
+            this.rotating = true;
+            
             //DATA LOG
             this.cbnetMessage.incrementRotations();
             // forward message
@@ -500,6 +506,8 @@ public abstract class RotationLayer extends ClusterLayer {
             }
 
         } else {
+            this.routing = true;
+
             //DATA LOG
             this.cbnetMessage.incrementRouting();
             // forward
@@ -526,9 +534,11 @@ public abstract class RotationLayer extends ClusterLayer {
 
         double deltaRank = this.zigZagDiffRank(xInfo, yInfo, zInfo);
 
-        // if (deltaRank < this.epsilon) {
         // if (true) {
-        if (false) {
+        // if (false) {
+        if (deltaRank < this.epsilon) {
+            this.rotating = true;
+
             //DATA LOG
             this.cbnetMessage.incrementRotations();
             // forward message
@@ -618,6 +628,8 @@ public abstract class RotationLayer extends ClusterLayer {
                 this.requestRPCTo(x.ID, "setWeight", xNewWeight);
             }
         } else {
+            this.routing = true;
+            
             //DATA LOG
             this.cbnetMessage.incrementRouting();
             // forward
@@ -713,12 +725,23 @@ public abstract class RotationLayer extends ClusterLayer {
         this.cbnetMessage = null;
 
         if (this.rotating) {
+
             this.rotationCompleted();
             this.rotating = false;
+
+        } else if (this.routing) {
+
+            this.forwardCompleted();
+            this.routing = false;
+
         }
     }
 
     public void rotationCompleted() {
+
+    }
+
+    public void forwardCompleted() {
 
     }
     

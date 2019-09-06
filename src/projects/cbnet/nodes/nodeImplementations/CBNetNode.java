@@ -2,32 +2,26 @@ package projects.cbnet.nodes.nodeImplementations;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Random;
 
-import projects.cbnet.CustomGlobal;
+import projects.cbnet.DataCollection;
 import projects.cbnet.nodes.messages.CBNetMessage;
-import projects.cbnet.nodes.messages.CompletionMessage;
+import projects.cbnet.nodes.tableEntry.CBInfo;
 import projects.cbnet.nodes.tableEntry.Request;
 import sinalgo.gui.transformation.PositionTransformation;
-import sinalgo.nodes.messages.Message;
 import sinalgo.runtime.Global;
 import sinalgo.tools.Tools;
-import sinalgo.tools.logging.Logging;
 
 /**
  * CBNetNode
  */
 public class CBNetNode extends RotationLayer {
-    
-    // LOGS
-    public Logging rotations_ps = Logging.getLogger("rotations_per_splay.txt");
-    public Logging routing_ps = Logging.getLogger("routing_per_splay.txt");
-    public Logging timeslot_ps = Logging.getLogger("time_slots_per_splay.txt");
-    public Logging time_log = Logging.getLogger("totaltime.txt");
-    public Logging concurrency_log = Logging.getLogger("concurrentReq.txt");
-    
+
+    // LOG
+    private DataCollection data = DataCollection.getInstance();
 
     // to break ties in priority
     private Random rand = new Random();
@@ -40,34 +34,17 @@ public class CBNetNode extends RotationLayer {
 
     private States state;
 
-    // private boolean first = true;
-
     @Override
     public void init() {
         super.init();
-        
+
         this.bufferRequest = new LinkedList<>();
         this.state = States.PASSIVE;
     }
 
     @Override
     public void updateState() {
-
-        // if (first) {
-        //     first = false;
-
-        //     if (ID == 1) {
-        //         this.newMessage(30);
-        //     }
-
-        //     if (ID == 18) {
-        //         this.newMessage(2);
-        //     }
-
-        //     if (ID == 18) {
-        //         this.newMessage(30);
-        //     }
-        // }
+        super.updateState();
 
         switch (this.state) {
         case PASSIVE:
@@ -76,10 +53,8 @@ public class CBNetNode extends RotationLayer {
                 Request rq = this.bufferRequest.poll();
                 this.sendCBNetMessage(rq.dstId, Global.currentTime + rand.nextDouble());
 
-                //LOG
-                CustomGlobal.activeSplays++;
-
                 this.state = States.COMMUNICATING;
+                this.newMessageSent();
             }
 
             break;
@@ -92,23 +67,6 @@ public class CBNetNode extends RotationLayer {
             break;
         }
 
-        super.updateState(); // TODO : change the updateState()
-
-        // LOG
-        concurrency_log.logln("" + CustomGlobal.activeSplays);
-    }
-
-    @Override
-    public void receiveMessage(Message msg) {
-        super.receiveMessage(msg);
-
-        if (msg instanceof CompletionMessage) {
-            this.state = States.PASSIVE;
-
-            // LOG
-            CustomGlobal.completedRequests++;
-            return;
-        }
     }
 
     public void newMessage(int dst) {
@@ -117,23 +75,58 @@ public class CBNetNode extends RotationLayer {
     }
 
     @Override
-    public void receivedCBNetMessage(CBNetMessage msg) {
-        System.out.println("Node " + ID + ": message received from " + msg.getSrc());
-        this.sendDirect(new CompletionMessage(), Tools.getNodeByID(msg.getSrc()));
-        // LOG
-        CustomGlobal.activeSplays--;
-        this.rotations_ps.logln("" + msg.getRotations());
-        this.routing_ps.logln("" + msg.getRouting());
+    public void ackCBNetMessageReceived() {
+        this.state = States.PASSIVE;
+        this.communicationCompleted();
     }
 
     public void communicationCompleted() {
-        // System.out.println("Communication Completed node " + ID);
+
+    }
+
+    // LOG --------------------------------------------------------------
+    public void newMessageSent() {
+        this.data.incrementActiveSplays();
     }
 
     @Override
-    public void nodeStep() {
-        // useless
+    public void receivedCBNetMessage(CBNetMessage msg) {
+        // System.out.println("Node " + ID + ": message received from " + msg.getSrc());
+        this.data.incrementCompletedRequests();
+        this.data.addRotations(msg.getRotations());
+        this.data.addRouting(msg.getRouting());
+        this.data.decrementActiveSplays();
     }
+
+    @Override
+    public void clusterCompletedBottomUp(HashMap<String, CBInfo> cluster) {
+        super.clusterCompletedBottomUp(cluster);
+        this.data.incrementActiveClusters();
+    }
+
+    @Override
+    public void clusterCompletedTopDown(HashMap<String, CBInfo> cluster) {
+        super.clusterCompletedTopDown(cluster);
+        this.data.incrementActiveClusters();
+    }
+
+    @Override
+    public void targetNodeFound(CBInfo target) {
+        super.targetNodeFound(target);
+        this.data.incrementActiveClusters();
+    }
+
+    @Override
+    public void round() {
+        super.round();
+        if (ID == 1) {
+            this.data.addNumOfActiveSplays();
+            this.data.addNumOfActiveClusters();
+            this.data.resetActiveClusters();
+        }
+    }
+
+    // GUI --------------------------------------------------------------
 
     public void draw(Graphics g, PositionTransformation pt, boolean highlight) {
         // String text = this.getWeight() + "";

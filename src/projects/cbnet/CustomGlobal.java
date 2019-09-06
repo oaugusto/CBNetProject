@@ -6,44 +6,46 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import projects.cbnet.nodes.nodeImplementations.CBNetNode;
-import projects.cbnet.nodes.timers.TimerExponentialDistribution;
+import projects.cbnet.nodes.timers.TriggerNodeOperation;
 import projects.displaynet.RequestQueue;
 import projects.displaynet.TreeConstructor;
 import projects.displaynet.nodes.nodeImplementations.BinaryTreeLayer;
 import sinalgo.gui.transformation.PositionTransformation;
 import sinalgo.runtime.AbstractCustomGlobal;
-import sinalgo.runtime.Global;
 import sinalgo.tools.Tools;
 import sinalgo.tools.Tuple;
 
 public class CustomGlobal extends AbstractCustomGlobal {
 
-    // LOG
-    public static long activeSplays = 0;
-    public static long numberClusters = 0;
-
     // final condition
-    public static long MAX_REQ;
-    public static long completedRequests = 0;
+    public long MAX_REQ;
 
-    // simulation config
+    // simulation
     public int numNodes;
     public ArrayList<BinaryTreeLayer> tree = null;
     public BinaryTreeLayer controlNode = null;
     public TreeConstructor treeTopology = null;
-    // public static RequestQueue rqueue = new RequestQueue("inputs/datasetC_pairs_small.txt", " ");
-    public static RequestQueue rqueue = new RequestQueue("inputs/tor_128_flow.txt", " ");
+    // public RequestQueue requestQueue = new RequestQueue("inputs/tor_512_flow.txt", " ");
+    public RequestQueue requestQueue = new RequestQueue("inputs/datasetC_pairs_small.txt", " ");
 
     // control execution
-    public static boolean isSequencial = true;
+    public static boolean isSequencial = false;
     public static boolean mustGenerate = true;
 
     public Random random = new Random();
     public double lambda = 0.15;
 
+    // LOG
+    DataCollection data = DataCollection.getInstance();
+
     @Override
     public boolean hasTerminated() {
-        return completedRequests >= MAX_REQ;
+        if (this.data.getCompletedRequests() >= MAX_REQ) {
+            data.printRotationData();
+            data.printRoutingData();
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -52,9 +54,9 @@ public class CustomGlobal extends AbstractCustomGlobal {
         /*
          * read input data and configure the simulation
          */
-        this.numNodes = this.rqueue.getNumberOfNodes();
+        this.numNodes = this.requestQueue.getNumberOfNodes();
         // MAX_REQ = this.rqueue.getNumberOfRequests();
-        MAX_REQ = 23;
+        MAX_REQ = 1000;
 
         /*
          * create the nodes and constructs the tree topology
@@ -81,54 +83,49 @@ public class CustomGlobal extends AbstractCustomGlobal {
     }
 
     public static void activateNextSplay(int src, int dst) {
-						
-        CBNetNode srcnode = (CBNetNode)Tools.getNodeByID(src);	
+        CBNetNode srcnode = (CBNetNode) Tools.getNodeByID(src);
         srcnode.newMessage(dst);
-	
     }
 
-    public static void generateNextSplayExponential(int src, int dst, double x) {
-        long time = (long) (Global.currentTime + (int) x);
-    
-        TimerExponentialDistribution ted = new TimerExponentialDistribution(src,dst);
+    public void generateNextSplayExponential(int src, int dst) {
+        double u = random.nextDouble();
+        double x = Math.log(1 - u) / (-lambda);
+
+        x = (int) x;
+        if (x <= 0) {
+            x = 1;
+        }
+
+        TriggerNodeOperation ted = new TriggerNodeOperation(src, dst);
         ted.startGlobalTimer(x);
-        
     }
 
-    public static void generateNextSplay(double x){
-        //initialize only one splay
-        if(rqueue.hasNextRequest()){
-            Tuple<Integer, Integer> r = rqueue.getNextRequest();
-                    
-            generateNextSplayExponential(r.first, r.second, x);
+    public void generateNextSplay() {
+        // initialize only one splay
+        if (requestQueue.hasNextRequest()) {
+            Tuple<Integer, Integer> r = requestQueue.getNextRequest();
+
+            generateNextSplayExponential(r.first, r.second);
         }
     }
-    
+
     @Override
     public void preRound() {
         this.treeTopology.setPositions();
-        // LOG
-        numberClusters = 0;
 
-        if(isSequencial == true){			
-            if(activeSplays < 1){
-                if(rqueue.hasNextRequest()){
-                    Tuple<Integer, Integer> r = rqueue.getNextRequest();
+        if (isSequencial == true) {
+            if (data.getNumbugerOfActiveSplays() < 1) {
+                if (requestQueue.hasNextRequest()) {
+                    Tuple<Integer, Integer> r = requestQueue.getNextRequest();
                     activateNextSplay(r.first, r.second);
-                    System.out.println("src: " + r.first + " dst: " + r.second);
+                    // System.out.println("src: " + r.first + " dst: " + r.second);
+
+                    this.data.incrementActiveSplays();
                 }
             }
         } else if (mustGenerate == true) { // CHANGE BATCH HERE!
-            double u = random.nextDouble();
-            double x = Math.log(1 - u) / (-lambda);
-            x = (int) x;
-            if (x <= 0) {
-                x = 1;
-            }
             mustGenerate = false;
-
-            generateNextSplay(x);
-
+            generateNextSplay();
         }
 
     }

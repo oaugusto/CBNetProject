@@ -3,7 +3,9 @@ package projects.cbnet.nodes.nodeImplementations;
 import java.util.PriorityQueue;
 
 import projects.cbnet.nodes.messages.CBNetMessage;
+import projects.cbnet.nodes.messages.CompletionMessage;
 import sinalgo.nodes.messages.Message;
+import sinalgo.tools.Tools;
 
 /**
  * CBNetLayer
@@ -50,14 +52,25 @@ public abstract class CBNetLayer extends RPCLayer {
             if (ID == cbmsg.getDst()) {
                 this.receivedCBNetMessage(cbmsg);
                 this.updateWeights(ID, cbmsg.getSrc());
+
+                // ack message
+                this.sendDirect(new CompletionMessage(), Tools.getNodeByID(cbmsg.getSrc()));
+
             } else {
                 this.cbnetQueue.add(cbmsg);
             }
+
+            return;
+        } else if (msg instanceof CompletionMessage) {
+            this.ackCBNetMessageReceived();
 
             return;
         }
     }
 
     public abstract void receivedCBNetMessage(CBNetMessage msg);
+
+    
+    public abstract void ackCBNetMessageReceived();
     
 }
