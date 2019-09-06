@@ -28,7 +28,7 @@ public abstract class RotationLayer extends ClusterLayer {
 
     @Override
     public void clusterCompleted(HashMap<String, NodeInfo> cluster) {
-        System.out.println("Node " + ID + ": cluster completed");
+        // System.out.println("Node " + ID + ": cluster completed");
         this.rotate(cluster);
     }
 

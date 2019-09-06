@@ -117,8 +117,7 @@ public class CBNetNode extends RotationLayer {
     }
 
     @Override
-    public void round() {
-        super.round();
+    public void posRound() {
         if (ID == 1) {
             this.data.addNumOfActiveSplays();
             this.data.addNumOfActiveClusters();

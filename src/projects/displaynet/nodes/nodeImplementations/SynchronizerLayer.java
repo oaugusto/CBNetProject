@@ -1,10 +1,5 @@
 package projects.displaynet.nodes.nodeImplementations;
 
-import java.awt.Color;
-import java.awt.Graphics;
-
-import sinalgo.gui.transformation.PositionTransformation;
-
 /**
  * SynchronizerNode Implements timeslots system to coordenate operations. The
  * node initiate the timeslot in 0 and go ...
@@ -13,13 +8,13 @@ public abstract class SynchronizerLayer extends BinaryTreeLayer {
 
     private int MAX_TIMESLOT = 10;
     private int timeslot;
-    private int round;
+    private long round;
 
     public int getCurrentTimeSlot() {
         return this.timeslot;
     }
 
-    public int getCurrentRound() {
+    public long getCurrentRound() {
         return this.round;
     }
 
@@ -34,7 +29,6 @@ public abstract class SynchronizerLayer extends BinaryTreeLayer {
         
         switch (this.timeslot) {
         case 0:
-            this.round++; // update round
             updateState();
             break;
 
@@ -72,6 +66,9 @@ public abstract class SynchronizerLayer extends BinaryTreeLayer {
 
         case 9:
             timeslot9();
+            posRound();
+
+            this.round++;
             break;
 
         default:
@@ -122,12 +119,10 @@ public abstract class SynchronizerLayer extends BinaryTreeLayer {
 
     } 
 
-    public abstract void nodeStep();
+    public void posRound() {
 
-    // @Override
-    // public void draw(Graphics g, PositionTransformation pt, boolean highlight) {
-    //     String text = "" + ID;
-    //     super.drawNodeAsDiskWithText(g, pt, highlight, text, 30, Color.WHITE);
-    // }
+    }
+
+    public abstract void nodeStep();
 
 }

@@ -7,13 +7,13 @@ public abstract class SynchronizerLayer extends CBTreeLayer {
 
     private int MAX_TIMESLOT = 11;
     private int timeslot;
-    private int round;
+    private long round;
 
     public int getCurrentTimeSlot() {
         return this.timeslot;
     }
 
-    public int getCurrentRound() {
+    public long getCurrentRound() {
         return this.round;
     }
 
@@ -70,7 +70,9 @@ public abstract class SynchronizerLayer extends CBTreeLayer {
 
         case 10:
             timeslot10();
-            round();
+            posRound();
+
+            this.round++;
             break;
 
         default:
@@ -130,7 +132,7 @@ public abstract class SynchronizerLayer extends CBTreeLayer {
     }
 
     // LOG
-    public void round() {
+    public void posRound() {
         
     }
 
