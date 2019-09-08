@@ -8,6 +8,21 @@ import projects.displaynet.nodes.tableEntry.Request;
  */
 public class SplayNetApp extends HandShakeLayer {
 
+    private boolean first = true;
+
+    @Override
+    public void init() {
+        super.init();
+
+         if (first) {
+            first = false;
+
+            if (ID == 3) {
+                this.newSplayOperation(29);;
+            }
+        }
+    }
+
     public void newSplayOperation(int dst) {
         Request rq = new Request(ID, dst);
         this.myMsgBuffer.add(rq);

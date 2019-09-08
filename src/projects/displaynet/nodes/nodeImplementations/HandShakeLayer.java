@@ -85,11 +85,12 @@ public class HandShakeLayer extends SplayNetNode {
         }
     }
 
-    // @Override
-    // public void communicationCompleted() {
-    // this.isSplayCompleted = true;
-    // this.splayCompleted();
-    // }
+    @Override
+    public void communicationCompleted(Request request) {
+        super.communicationCompleted(request);
+        this.isSplayCompleted = true;
+        this.splayCompleted();
+    }
 
     public void splayCompleted() {
 
@@ -97,7 +98,6 @@ public class HandShakeLayer extends SplayNetNode {
 
     @Override
     public void nodeStep() {
-        super.nodeStep();
 
         switch (this.state_handshake) {
         case IDLE:
@@ -236,7 +236,6 @@ public class HandShakeLayer extends SplayNetNode {
                 // "[" + Global.currentTime + "] " + ID + ": State:" + state_handshake + " splay
                 // completec");
                 // TODO
-                // CustomGlobal.completedSplay++;
                 // reset to first state
                 this.currentSplay_handshake = null;
                 this.state_handshake = State_handshake.IDLE;

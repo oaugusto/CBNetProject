@@ -1,12 +1,21 @@
 package projects.displaynet.nodes.nodeImplementations;
 
+import java.util.HashMap;
+
+import projects.displaynet.DataCollection;
+import projects.displaynet.nodes.messages.CompletionMessage;
+import projects.displaynet.nodes.tableEntry.NodeInfo;
 import projects.displaynet.nodes.tableEntry.Request;
+import sinalgo.nodes.messages.Message;
 import sinalgo.tools.Tools;
 
 /**
  * SplayNetNode
  */
-public class SplayNetNode extends RotationLayer {
+public abstract class SplayNetNode extends RotationLayer {
+
+    // LOG
+    private DataCollection data = DataCollection.getInstance();
 
     public enum States {
         PASSIVE, ACTIVE, COMMUNICATING
@@ -20,8 +29,6 @@ public class SplayNetNode extends RotationLayer {
     public boolean newRequest;
     public Request activeSplay;
 
-
-    boolean first = true;
 
     @Override
     public void init() {
@@ -45,7 +52,7 @@ public class SplayNetNode extends RotationLayer {
             this.state = States.PASSIVE;
             this.unblockRotations();
             this.clearClusterRequest();
-            this.communicationCompleted();
+            this.activeSplay = null;
 
         case PASSIVE:
             if (this.newRequest) {
@@ -57,6 +64,9 @@ public class SplayNetNode extends RotationLayer {
                     this.blockRotations();
                     this.state = States.COMMUNICATING;
                     // communicate for one round
+                    this.data.incrementActiveClusters();
+                    CompletionMessage cmpMessage = new CompletionMessage(this.activeSplay);
+                    this.sendForwardMessage(this.activeSplay.dstId, cmpMessage);
 
                 } else if (!this.isLeastCommonAncestorOf(this.activeSplay.dstId)) {
 
@@ -74,6 +84,9 @@ public class SplayNetNode extends RotationLayer {
                 this.blockRotations();
                 this.state = States.COMMUNICATING;
                 // communicate for one round
+                this.data.incrementActiveClusters();
+                CompletionMessage cmpMessage = new CompletionMessage(this.activeSplay);
+                this.sendForwardMessage(this.activeSplay.dstId, cmpMessage);
 
             } else if (!this.isLeastCommonAncestorOf(this.activeSplay.dstId)) {
                 this.tryRotation();
@@ -87,10 +100,26 @@ public class SplayNetNode extends RotationLayer {
         }
     }
 
+    @Override
+    public void receiveMessage(Message msg) {
+        super.receiveMessage(msg);
+        
+        if (msg instanceof CompletionMessage) {
+            CompletionMessage cmpMessage = (CompletionMessage) msg;
+
+            this.communicationCompleted(cmpMessage.getRequest());
+
+            return;
+        }
+    }
+
     public void newSplay(int src_splay, int dst_splay, double priority) {
         this.newRequest = true;
         Request splay = new Request(src_splay, dst_splay, priority);
         this.activeSplay = splay;
+
+        // LOG
+        this.data.incrementActiveSplays();
     }
 
     private boolean checkCompletion() {
@@ -108,18 +137,39 @@ public class SplayNetNode extends RotationLayer {
         this.clearClusterRequest();
     }
 
+
+    // LOG ------------------------------------------------------
+
+    @Override
+    public void clusterCompleted(HashMap<String, NodeInfo> cluster) {
+        super.clusterCompleted(cluster);
+        this.data.incrementActiveClusters();
+    }
+
     @Override
     public void rotationCompleted() {
-        // collect data here
+        this.activeSplay.numOfRotations++;
     }
 
-    public void communicationCompleted() {
-        System.out.println("Node " + ID + ": Comunication completed");
+    public void communicationCompleted(Request request) {
+        // System.out.println("Node " + ID + ": Comunication completed");
+        
+        if (ID <request.srcId) {
+            this.data.decrementActiveSplays();
+            this.data.addRotations(request.numOfRotations + this.activeSplay.numOfRotations);
+            this.data.addRouting(1);
+        }
+
     }
 
     @Override
-    public void nodeStep() {
-
+    public void posRound() {
+        if (ID == 1) {
+            this.data.addNumOfActiveSplays();
+            this.data.addNumOfActiveClusters();
+            this.data.resetActiveClusters();
+        }
     }
 
+   
 }

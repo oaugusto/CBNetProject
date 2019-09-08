@@ -29,7 +29,7 @@ public class CustomGlobal extends AbstractCustomGlobal {
     public ArrayList<BinaryTreeLayer> tree = null;
     public BinaryTreeLayer controlNode = null;
     public TreeConstructor treeTopology = null;
-    public static RequestQueue rqueue = new RequestQueue("inputs/datasetC_pairs_small.txt", " ");
+    // public static RequestQueue rqueue = new RequestQueue("inputs/datasetC_pairs_small.txt", " ");
 
     // control execution
     public static boolean isSequencial = true;
@@ -40,11 +40,19 @@ public class CustomGlobal extends AbstractCustomGlobal {
 
     @Override
     public boolean hasTerminated() {
-        return completedRequests >= MAX_REQ;
+        // return completedRequests >= MAX_REQ;
+        return false;
     }
 
     @Override
     public void preRun() {
+
+
+        /*
+         * read input data and configure the simulation
+         */
+        // this.numNodes = this.rqueue.getNumberOfNodes();
+        // MAX_REQ = this.rqueue.getNumberOfRequests();
 
         /*
          * create the nodes and constructs the tree topology
@@ -69,60 +77,54 @@ public class CustomGlobal extends AbstractCustomGlobal {
         this.treeTopology.setBalancedTree();
         this.treeTopology.setPositions();
 
-        /*
-         * read input data and configure the simulation
-         */
-        this.numNodes = this.rqueue.getNumberOfNodes();
-        MAX_REQ = this.rqueue.getNumberOfRequests();
-
     }
 
-    public static void activateNextSplay(int src, int dst) {
+    // public static void activateNextSplay(int src, int dst) {
 						
-        SplayNetApp srcnode = (SplayNetApp)Tools.getNodeByID(src);	
-        srcnode.newSplayOperation(dst);
+    //     SplayNetApp srcnode = (SplayNetApp)Tools.getNodeByID(src);	
+    //     srcnode.newSplayOperation(dst);
             
-    }
+    // }
 
-    public static void generateNextSplayExponential(int src, int dst, double x) {
-        TriggerNodeOperation ted = new TriggerNodeOperation(src,dst);
-        ted.startGlobalTimer(x);
-    }
+    // public static void generateNextSplayExponential(int src, int dst, double x) {
+    //     TriggerNodeOperation ted = new TriggerNodeOperation(src,dst);
+    //     ted.startGlobalTimer(x);
+    // }
 
-    public static void generateNextSplay(double x){
+    // public static void generateNextSplay(double x){
         
-        if(rqueue.hasNextRequest()){
-            Tuple<Integer, Integer> r = rqueue.getNextRequest();
+    //     if(rqueue.hasNextRequest()){
+    //         Tuple<Integer, Integer> r = rqueue.getNextRequest();
                     
-            generateNextSplayExponential(r.first, r.second, x);
-        }
-    }
+    //         generateNextSplayExponential(r.first, r.second, x);
+    //     }
+    // }
     
     @Override
     public void preRound() {
         this.treeTopology.setPositions();
         // LOG
-        numberClusters = 0;
+        // numberClusters = 0;
 
-        if(isSequencial == true){			
-            if(activeSplays < 1){
-                if(rqueue.hasNextRequest()){
-                    Tuple<Integer, Integer> r = rqueue.getNextRequest();
-                    activateNextSplay(r.first, r.second);
-                }
-            }
-        } else if (mustGenerate == true) { // CHANGE BATCH HERE!
-            double u = random.nextDouble();
-            double x = Math.log(1 - u) / (-lambda);
-            x = (int) x;
-            if (x <= 0) {
-                x = 1;
-            }
-            mustGenerate = false;
+        // if(isSequencial == true){			
+        //     if(activeSplays < 1){
+        //         if(rqueue.hasNextRequest()){
+        //             Tuple<Integer, Integer> r = rqueue.getNextRequest();
+        //             activateNextSplay(r.first, r.second);
+        //         }
+        //     }
+        // } else if (mustGenerate == true) { // CHANGE BATCH HERE!
+        //     double u = random.nextDouble();
+        //     double x = Math.log(1 - u) / (-lambda);
+        //     x = (int) x;
+        //     if (x <= 0) {
+        //         x = 1;
+        //     }
+        //     mustGenerate = false;
 
-            generateNextSplay(x);
+        //     generateNextSplay(x);
 
-        }
+        // }
 
     }
 
