@@ -35,6 +35,7 @@ public abstract class CBNetLayer extends RPCLayer {
 
     public void sendCBNetMessage(int dst, double priority) {
         CBNetMessage msg = new CBNetMessage(ID, dst, priority);
+        msg.initialTime = this.getCurrentRound();
         this.cbnetQueue.add(msg);
     }
 
@@ -51,10 +52,10 @@ public abstract class CBNetLayer extends RPCLayer {
 
             if (ID == cbmsg.getDst()) {
                 this.receivedCBNetMessage(cbmsg);
-                this.updateWeights(ID, cbmsg.getSrc());
+                this.updateWeights(ID, cbmsg.getSrc()); // dangerous
 
                 // ack message
-                this.sendDirect(new CompletionMessage(), Tools.getNodeByID(cbmsg.getSrc()));
+                this.sendDirect(new CompletionMessage(cbmsg), Tools.getNodeByID(cbmsg.getSrc()));
 
             } else {
                 this.cbnetQueue.add(cbmsg);
@@ -62,7 +63,8 @@ public abstract class CBNetLayer extends RPCLayer {
 
             return;
         } else if (msg instanceof CompletionMessage) {
-            this.ackCBNetMessageReceived();
+            CompletionMessage completionMessage = (CompletionMessage) msg;
+            this.ackCBNetMessageReceived(completionMessage.getCbnetMessage());
 
             return;
         }
@@ -71,6 +73,6 @@ public abstract class CBNetLayer extends RPCLayer {
     public abstract void receivedCBNetMessage(CBNetMessage msg);
 
     
-    public abstract void ackCBNetMessageReceived();
+    public abstract void ackCBNetMessageReceived(CBNetMessage msg);
     
 }

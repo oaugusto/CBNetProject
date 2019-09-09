@@ -15,6 +15,9 @@ public class CBNetMessage extends Message implements Comparable<CBNetMessage> {
     private long rotations;
     private long routing;
 
+    public long initialTime;
+    public long finalTime;
+
     public CBNetMessage(int src, int dst, double priority) {
         this.src = src;
         this.dst = dst;

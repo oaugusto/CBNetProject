@@ -12,7 +12,6 @@ import projects.splaynet.DataCollection;
  */
 public class SplayNetApp extends HandShakeLayer {
 
-    private int numOfRotations = 0;
     private DataCollection data  = DataCollection.getInstance();
 
     public void newSplayOperation(int dst) {
@@ -21,12 +20,10 @@ public class SplayNetApp extends HandShakeLayer {
 
         this.data.incrementActiveSplays();
     }
-        
+    
     @Override
     public void newSplayStarted(Request request) {
         super.newSplayStarted(request);
-
-        this.numOfRotations = 0;
     }
 
     @Override
@@ -39,8 +36,6 @@ public class SplayNetApp extends HandShakeLayer {
     @Override
     public void rotationCompleted() {
         super.rotationCompleted();
-
-        this.numOfRotations++;
     }
     
     @Override
@@ -54,11 +49,15 @@ public class SplayNetApp extends HandShakeLayer {
     @Override
     public void communicationCompleted(Request request) {
         super.communicationCompleted(request);
+        Request activeRequest = this.getActiveSplay();
 
-        if (request.srcId < ID) {
+        if (activeRequest.dstId < ID) {
             this.data.decrementActiveSplays();
-            this.data.addRotations(this.numOfRotations + request.numOfRotations);
+            this.data.addRotations(activeRequest.numOfRotations + request.numOfRotations);
             this.data.addRouting(1);
+            this.data.addThroughput(this.getCurrentRound());
+            this.data.addRoundsPerSplay(request.finalTime - request.initialTime);;
+            this.data.incrementCompletedRequests();
         }
     }
 

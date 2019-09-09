@@ -8,8 +8,11 @@ public class Request implements Comparable<Request> {
 	public int dstId;
 	public double priority;
 
-	public int numOfRotations;
-	public int numOfRouting;
+	public long numOfRotations;
+	public long numOfRouting;
+
+	public long initialTime;
+	public long finalTime;
 	
 	public Request() {
 		this.srcId = 0;

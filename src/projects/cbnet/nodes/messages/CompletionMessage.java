@@ -10,6 +10,12 @@ public class CompletionMessage extends Message {
     private int src;
     private int dst;
 
+    private CBNetMessage cbnetMessage;
+
+    public CompletionMessage(CBNetMessage msg) {
+        this.cbnetMessage = msg;
+    }
+
     /**
      * @return the src
      */
@@ -24,6 +30,12 @@ public class CompletionMessage extends Message {
         return dst;
     }
 
+    /**
+     * @return the cbnetMessage
+     */
+    public CBNetMessage getCbnetMessage() {
+        return cbnetMessage;
+    }
 
     /**
      * @param src the src to set
@@ -37,6 +49,13 @@ public class CompletionMessage extends Message {
      */
     public void setDst(int dst) {
         this.dst = dst;
+    }
+
+    /**
+     * @param cbnetMessage the cbnetMessage to set
+     */
+    public void setCbnetMessage(CBNetMessage cbnetMessage) {
+        this.cbnetMessage = cbnetMessage;
     }
 
     @Override

@@ -8,10 +8,10 @@
         <dimensions value="2" />
 
         <!--Length of the deployment field along the x-axis.-->
-        <dimX value="10000" />
+        <dimX value="1000" />
 
         <!--Length of the deployment field along the y-axis.-->
-        <dimY value="10000" />
+        <dimY value="1000" />
 
         <!--Length of the deployment field along the z-axis.-->
         <dimZ value="0" />
@@ -68,7 +68,7 @@
         <useSameSeedAsInPreviousRun value="false" />
 
         <!--If set to true, and useSameSeedAsInPreviousRun is set to false,  the random number generators of the framework uses the specified fixed seed.-->
-        <useFixedSeed value="false" />
+        <useFixedSeed value="true" />
 
         <!--The seed to be used by the random number generators if useFixedSeed is set to true.-->
         <fixedSeed value="77654767234" />

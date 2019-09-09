@@ -27,7 +27,7 @@ public class HandShakeLayer extends SplayNetNode {
     private State_handshake state_handshake;
 
     // to break ties in priority
-    private Random rand = new Random();
+    private Random rand = Tools.getRandomNumberGenerator();
 
     // current splay operation
     public Request currentSplay_handshake; // splay operation from myself or peer
@@ -89,11 +89,6 @@ public class HandShakeLayer extends SplayNetNode {
     public void communicationCompleted(Request request) {
         super.communicationCompleted(request);
         this.isSplayCompleted = true;
-        this.splayCompleted();
-    }
-
-    public void splayCompleted() {
-
     }
 
     @Override

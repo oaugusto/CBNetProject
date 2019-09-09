@@ -1,5 +1,7 @@
 package projects.cbnet;
 
+import projects.cbnet.nodes.nodeImplementations.CBNetApp;
+import sinalgo.tools.Tools;
 import sinalgo.tools.logging.Logging;
 import sinalgo.tools.statistics.DataSeries;
 
@@ -18,10 +20,11 @@ public class DataCollection {
     // LOGS
     private Logging rotations_per_splay = Logging.getLogger("cbnet/rotations_per_splay.txt");
     private Logging routing_per_splay = Logging.getLogger("cbnet/routing_per_splay.txt");
-    private Logging timeslot_per_splay = Logging.getLogger("cbnet/time_slots_per_splay.txt");
+    private Logging rounds_per_splay = Logging.getLogger("cbnet/rounds_per_splay.txt");
     private Logging total_time_log = Logging.getLogger("cbnet/total_time.txt");
     private Logging concurrency_log = Logging.getLogger("cbnet/concurrent_req.txt");
     private Logging num_of_cluster = Logging.getLogger("cbnet/clusters.txt");
+    private Logging throughput_log = Logging.getLogger("cbnet/throughput.txt");
 
     private DataCollection() {
 
@@ -61,6 +64,19 @@ public class DataCollection {
 
     public void addNumOfActiveClusters() {
         this.num_of_cluster.logln("" + this.activeClusters);
+    }
+
+    public void addTotalTime() {
+        CBNetApp node = (CBNetApp) Tools.getNodeByID(1);
+        this.total_time_log.logln("" + node.getCurrentRound());
+    }
+
+    public void addThroughput(long num) {
+        this.throughput_log.logln("" + num);
+    }
+
+    public void addRoundsPerSplay(long num) {
+        this.rounds_per_splay.logln("" + num);
     }
 
     public void incrementActiveSplays() {

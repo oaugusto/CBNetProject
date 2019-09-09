@@ -8,8 +8,8 @@ import java.util.Queue;
 import projects.cbnet.nodes.messages.controlMessage.AckClusterMessage;
 import projects.cbnet.nodes.messages.controlMessage.RequestClusterUpMessage;
 import projects.cbnet.nodes.messages.controlMessage.RequestClusterDownMessage;
+import projects.cbnet.nodes.messages.controlMessage.RequestClusterMessage;
 import projects.cbnet.nodes.tableEntry.CBInfo;
-import projects.displaynet.nodes.messages.controlMessages.RequestClusterMessage;
 import sinalgo.nodes.messages.Message;
 
 /**
@@ -52,11 +52,11 @@ public abstract class ClusterLayer extends CBNetLayer {
      * @param dst
      * @param priority
      */
-    public void sendRequestClusterUp(int src, int dst, double priority) {
+    public void sendRequestClusterUp(int currentNode, int src, int dst, double priority) {
         // System.out.println("Node " + ID + " sending cluster up");
         this.isClusterUp = true;
 
-        RequestClusterUpMessage msg = new RequestClusterUpMessage(src, dst, 0, priority);
+        RequestClusterUpMessage msg = new RequestClusterUpMessage(currentNode, src, dst, 0, priority);
 
         // add cluster request to buffer
         this.queueClusterRequest.add(msg);
@@ -68,11 +68,11 @@ public abstract class ClusterLayer extends CBNetLayer {
         this.sendToParent(m);
     }
 
-    public void sendRequestClusterDown(int src, int dst, double priority) {
+    public void sendRequestClusterDown(int currentNode, int src, int dst, double priority) {
         // System.out.println("Node " + ID + " sending cluster down");
         this.isClusterDown = true;
 
-        RequestClusterDownMessage msg = new RequestClusterDownMessage(src, dst, 1, priority);
+        RequestClusterDownMessage msg = new RequestClusterDownMessage(currentNode, src, dst, 1, priority);
         this.queueClusterRequest.add(msg);
 
         RequestClusterDownMessage toParent = new RequestClusterDownMessage(msg);
@@ -195,7 +195,7 @@ public abstract class ClusterLayer extends CBNetLayer {
                 ack.setFinalNode();
             }
 
-            this.sendForwardMessage(rq.getSrc(), ack);
+            this.sendForwardMessage(rq.getCurrentNode(), ack);
 
         }
     }

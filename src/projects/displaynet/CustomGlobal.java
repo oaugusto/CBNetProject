@@ -7,52 +7,54 @@ import java.util.Random;
 
 import projects.displaynet.nodes.nodeImplementations.BinaryTreeLayer;
 import projects.displaynet.nodes.nodeImplementations.DiSplayNetApp;
-import projects.displaynet.nodes.timers.TriggerNodeOperation;
+import projects.displaynet.nodes.nodeImplementations.SplayNetNode;
 import sinalgo.gui.transformation.PositionTransformation;
 import sinalgo.runtime.AbstractCustomGlobal;
-import sinalgo.runtime.Global;
 import sinalgo.tools.Tools;
 import sinalgo.tools.Tuple;
 
 public class CustomGlobal extends AbstractCustomGlobal {
 
-    // LOG
-    public static long activeSplays = 0;
-    public static long numberClusters = 0;
-
     // final condition
-    public static long MAX_REQ;
-    public static long completedRequests = 0;
+    public long MAX_REQ;
 
-    // simulation config
+    // simulation
     public int numNodes = 30;
     public ArrayList<BinaryTreeLayer> tree = null;
     public BinaryTreeLayer controlNode = null;
     public TreeConstructor treeTopology = null;
-    // public static RequestQueue rqueue = new RequestQueue("inputs/datasetC_pairs_small.txt", " ");
+    public RequestQueue requestQueue = new RequestQueue("inputs/tor_512_flow.txt", " ");
+    // public RequestQueue requestQueue = new RequestQueue("inputs/datasetC_pairs_small.txt", " ");
 
     // control execution
-    public static boolean isSequencial = true;
+    public static boolean isSequencial = false;
     public static boolean mustGenerate = true;
 
-    public Random random = new Random();
+    public Random random = Tools.getRandomNumberGenerator();
     public double lambda = 0.15;
+
+    // LOG
+    DataCollection data = DataCollection.getInstance();
 
     @Override
     public boolean hasTerminated() {
-        // return completedRequests >= MAX_REQ;
+        if (this.data.getCompletedRequests() >= MAX_REQ) {
+            this.data.addTotalTime();
+            this.data.printRotationData();
+            this.data.printRoutingData();
+            return true;
+        }
         return false;
     }
 
     @Override
     public void preRun() {
 
-
         /*
          * read input data and configure the simulation
          */
-        // this.numNodes = this.rqueue.getNumberOfNodes();
-        // MAX_REQ = this.rqueue.getNumberOfRequests();
+        this.numNodes = this.requestQueue.getNumberOfNodes();
+        MAX_REQ = this.requestQueue.getNumberOfRequests();
 
         /*
          * create the nodes and constructs the tree topology
@@ -65,7 +67,7 @@ public class CustomGlobal extends AbstractCustomGlobal {
             this.tree.add(n);
         }
 
-        this.controlNode = new DiSplayNetApp() {
+        this.controlNode = new SplayNetNode() {
             public void draw(Graphics g, PositionTransformation pt, boolean highlight) {
                 String text = "ControlNode";
                 super.drawNodeAsDiskWithText(g, pt, highlight, text, 10, Color.YELLOW);
@@ -77,55 +79,20 @@ public class CustomGlobal extends AbstractCustomGlobal {
         this.treeTopology.setBalancedTree();
         this.treeTopology.setPositions();
 
+
+        /*
+         *  initiate sigma buffers with message 
+         */
+        while (this.requestQueue.hasNextRequest()) {
+            Tuple<Integer, Integer> r = requestQueue.getNextRequest();
+            DiSplayNetApp node = (DiSplayNetApp) Tools.getNodeByID(r.first);
+            node.newSplayOperation(r.second);
+        }
+
     }
 
-    // public static void activateNextSplay(int src, int dst) {
-						
-    //     SplayNetApp srcnode = (SplayNetApp)Tools.getNodeByID(src);	
-    //     srcnode.newSplayOperation(dst);
-            
-    // }
-
-    // public static void generateNextSplayExponential(int src, int dst, double x) {
-    //     TriggerNodeOperation ted = new TriggerNodeOperation(src,dst);
-    //     ted.startGlobalTimer(x);
-    // }
-
-    // public static void generateNextSplay(double x){
-        
-    //     if(rqueue.hasNextRequest()){
-    //         Tuple<Integer, Integer> r = rqueue.getNextRequest();
-                    
-    //         generateNextSplayExponential(r.first, r.second, x);
-    //     }
-    // }
-    
     @Override
     public void preRound() {
         this.treeTopology.setPositions();
-        // LOG
-        // numberClusters = 0;
-
-        // if(isSequencial == true){			
-        //     if(activeSplays < 1){
-        //         if(rqueue.hasNextRequest()){
-        //             Tuple<Integer, Integer> r = rqueue.getNextRequest();
-        //             activateNextSplay(r.first, r.second);
-        //         }
-        //     }
-        // } else if (mustGenerate == true) { // CHANGE BATCH HERE!
-        //     double u = random.nextDouble();
-        //     double x = Math.log(1 - u) / (-lambda);
-        //     x = (int) x;
-        //     if (x <= 0) {
-        //         x = 1;
-        //     }
-        //     mustGenerate = false;
-
-        //     generateNextSplay(x);
-
-        // }
-
     }
-
 }

@@ -2,14 +2,11 @@ package projects.cbnet.nodes.nodeImplementations;
 
 import java.awt.Color;
 import java.awt.Graphics;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Random;
 
-import projects.cbnet.DataCollection;
 import projects.cbnet.nodes.messages.CBNetMessage;
-import projects.cbnet.nodes.tableEntry.CBInfo;
 import projects.cbnet.nodes.tableEntry.Request;
 import sinalgo.gui.transformation.PositionTransformation;
 import sinalgo.runtime.Global;
@@ -20,11 +17,8 @@ import sinalgo.tools.Tools;
  */
 public class CBNetNode extends RotationLayer {
 
-    // LOG
-    private DataCollection data = DataCollection.getInstance();
-
     // to break ties in priority
-    private Random rand = new Random();
+    private Random rand = Tools.getRandomNumberGenerator();
 
     private Queue<Request> bufferRequest;
 
@@ -70,59 +64,28 @@ public class CBNetNode extends RotationLayer {
     }
 
     public void newMessage(int dst) {
-        Request splay = new Request(ID, dst, 0.0);
+        Request splay = new Request(ID, dst);
         this.bufferRequest.add(splay);
     }
 
     @Override
-    public void ackCBNetMessageReceived() {
+    public void ackCBNetMessageReceived(CBNetMessage msg) {
         this.state = States.PASSIVE;
-        this.communicationCompleted();
+        msg.finalTime = this.getCurrentRound();
+        this.communicationCompleted(msg);
     }
 
-    public void communicationCompleted() {
-
-    }
-
-    // LOG --------------------------------------------------------------
     public void newMessageSent() {
-        this.data.incrementActiveSplays();
+        
+    }
+
+    public void communicationCompleted(CBNetMessage msg) {
+
     }
 
     @Override
     public void receivedCBNetMessage(CBNetMessage msg) {
         // System.out.println("Node " + ID + ": message received from " + msg.getSrc());
-        this.data.incrementCompletedRequests();
-        this.data.addRotations(msg.getRotations());
-        this.data.addRouting(msg.getRouting());
-        this.data.decrementActiveSplays();
-    }
-
-    @Override
-    public void clusterCompletedBottomUp(HashMap<String, CBInfo> cluster) {
-        super.clusterCompletedBottomUp(cluster);
-        this.data.incrementActiveClusters();
-    }
-
-    @Override
-    public void clusterCompletedTopDown(HashMap<String, CBInfo> cluster) {
-        super.clusterCompletedTopDown(cluster);
-        this.data.incrementActiveClusters();
-    }
-
-    @Override
-    public void targetNodeFound(CBInfo target) {
-        super.targetNodeFound(target);
-        this.data.incrementActiveClusters();
-    }
-
-    @Override
-    public void posRound() {
-        if (ID == 1) {
-            this.data.addNumOfActiveSplays();
-            this.data.addNumOfActiveClusters();
-            this.data.resetActiveClusters();
-        }
     }
 
     // GUI --------------------------------------------------------------

@@ -69,7 +69,7 @@ public abstract class RotationLayer extends ClusterLayer {
 	 
 	 */
     private void zig(NodeInfo xInfo, NodeInfo yInfo, NodeInfo zInfo) {
-        System.out.println("zig operation: " + ID);
+        // System.out.println("zig operation: " + ID);
         BinaryTreeLayer x = xInfo.getNode();
         BinaryTreeLayer y = yInfo.getNode();
         BinaryTreeLayer z = zInfo.getNode();
@@ -121,7 +121,7 @@ public abstract class RotationLayer extends ClusterLayer {
            a   b                   c   d
    */
     private void zigZig(NodeInfo xInfo, NodeInfo yInfo, NodeInfo zInfo, NodeInfo wInfo) {
-        System.out.println("zig zig operation: " + ID);
+        // System.out.println("zig zig operation: " + ID);
         BinaryTreeLayer x = xInfo.getNode();
         BinaryTreeLayer y = yInfo.getNode();
         BinaryTreeLayer z = zInfo.getNode();
@@ -199,7 +199,7 @@ public abstract class RotationLayer extends ClusterLayer {
                b   c 
 	 */
     private void zigZag(NodeInfo xInfo, NodeInfo yInfo, NodeInfo zInfo, NodeInfo wInfo) {
-        System.out.println("zig zag operation: " + ID);
+        // System.out.println("zig zag operation: " + ID);
         BinaryTreeLayer x = xInfo.getNode();
         BinaryTreeLayer y = yInfo.getNode();
         BinaryTreeLayer z = zInfo.getNode();

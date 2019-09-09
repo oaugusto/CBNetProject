@@ -29,8 +29,13 @@ public abstract class SplayNetNode extends RotationLayer {
         this.activeSplay = null;
     }
 
+    public Request getActiveSplay() {
+        return activeSplay;
+    }
+
     public void newSplay(int src, int dst, double priority) {
         this.activeSplay = new Request(src, dst, priority);
+        this.activeSplay.initialTime = this.getCurrentRound();
     }
 
     @Override
@@ -50,6 +55,9 @@ public abstract class SplayNetNode extends RotationLayer {
         case PASSIVE:
             if (this.activeSplay != null) {
 
+                // event
+                this.newSplayStarted(this.activeSplay);
+
                 if (this.checkCompletion() == true) {
 
                     this.blockRotations();
@@ -59,14 +67,12 @@ public abstract class SplayNetNode extends RotationLayer {
                     // event
                     this.communicationClusterFormed(this.activeSplay);
 
-                } else if (!this.isLeastCommonAncestorOf(this.activeSplay.dstId)) {
-
+                } else {
                     this.state = States.ACTIVE;
                     this.setOperation(this.activeSplay.srcId, this.activeSplay.dstId, this.activeSplay.priority);
-                    this.tryRotation();
-
-                    // event
-                    this.newSplayStarted(this.activeSplay);
+                    if (!this.isLeastCommonAncestorOf(this.activeSplay.dstId)) {
+                        this.tryRotation();
+                    }
                 }
             }
             break;
@@ -101,7 +107,7 @@ public abstract class SplayNetNode extends RotationLayer {
     @Override
     public void receiveMessage(Message msg) {
         super.receiveMessage(msg);
-        
+
         if (msg instanceof CompletionMessage) {
             CompletionMessage cmpMessage = (CompletionMessage) msg;
 
@@ -132,18 +138,16 @@ public abstract class SplayNetNode extends RotationLayer {
         this.activeSplay.numOfRotations++;
     }
 
-    public void newSplayStarted(Request request) {
+    public void newSplayStarted(Request currentRequest) {
 
     }
 
-    public void communicationClusterFormed(Request request) {
+    public void communicationClusterFormed(Request currentRequest) {
 
     }
 
-    public void communicationCompleted(Request request) {
-
+    public void communicationCompleted(Request peerRequest) {
+        this.activeSplay.finalTime = this.getCurrentRound(); 
     }
 
-
-   
 }

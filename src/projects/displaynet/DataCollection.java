@@ -1,5 +1,7 @@
 package projects.displaynet;
 
+import projects.displaynet.nodes.nodeImplementations.DiSplayNetApp;
+import sinalgo.tools.Tools;
 import sinalgo.tools.logging.Logging;
 import sinalgo.tools.statistics.DataSeries;
 
@@ -18,10 +20,11 @@ public class DataCollection {
     // LOGS
     private Logging rotations_per_splay = Logging.getLogger("displaynet/rotations_per_splay.txt");
     private Logging routing_per_splay = Logging.getLogger("displaynet/routing_per_splay.txt");
-    private Logging timeslot_per_splay = Logging.getLogger("displaynet/time_slots_per_splay.txt");
+    private Logging rounds_per_splay = Logging.getLogger("displaynet/rounds_per_splay.txt");
     private Logging total_time_log = Logging.getLogger("displaynet/total_time.txt");
     private Logging concurrency_log = Logging.getLogger("displaynet/concurrent_req.txt");
     private Logging num_of_cluster = Logging.getLogger("displaynet/clusters.txt");
+    private Logging throughput_log = Logging.getLogger("displaynet/throughput.txt");
 
     private DataCollection() {
 
@@ -61,6 +64,19 @@ public class DataCollection {
 
     public void addNumOfActiveClusters() {
         this.num_of_cluster.logln("" + this.activeClusters);
+    }
+
+    public void addTotalTime() {
+        DiSplayNetApp node = (DiSplayNetApp) Tools.getNodeByID(1);
+        this.total_time_log.logln("" + node.getCurrentRound());
+    }
+
+    public void addThroughput(long num) {
+        this.throughput_log.logln("" + num);
+    }
+
+    public void addRoundsPerSplay(long num) {
+        this.rounds_per_splay.logln("" + num);
     }
 
     public void incrementActiveSplays() {

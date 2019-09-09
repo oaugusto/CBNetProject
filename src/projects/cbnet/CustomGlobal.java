@@ -5,8 +5,7 @@ import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.Random;
 
-import projects.cbnet.nodes.nodeImplementations.CBNetNode;
-import projects.cbnet.nodes.timers.TriggerNodeOperation;
+import projects.cbnet.nodes.nodeImplementations.CBNetApp;
 import projects.displaynet.RequestQueue;
 import projects.displaynet.TreeConstructor;
 import projects.displaynet.nodes.nodeImplementations.BinaryTreeLayer;
@@ -21,18 +20,18 @@ public class CustomGlobal extends AbstractCustomGlobal {
     public long MAX_REQ;
 
     // simulation
-    public int numNodes;
+    public int numNodes = 30;
     public ArrayList<BinaryTreeLayer> tree = null;
     public BinaryTreeLayer controlNode = null;
     public TreeConstructor treeTopology = null;
-    // public RequestQueue requestQueue = new RequestQueue("inputs/tor_512_flow.txt", " ");
-    public RequestQueue requestQueue = new RequestQueue("inputs/datasetC_pairs_small.txt", " ");
+    public RequestQueue requestQueue = new RequestQueue("inputs/tor_256_flow.txt", " ");
+    // public RequestQueue requestQueue = new RequestQueue("inputs/datasetC_pairs_small.txt", " ");
 
     // control execution
-    public static boolean isSequencial = false;
+    public static boolean isSequencial = true;
     public static boolean mustGenerate = true;
 
-    public Random random = new Random();
+    public Random random = Tools.getRandomNumberGenerator();
     public double lambda = 0.15;
 
     // LOG
@@ -41,8 +40,9 @@ public class CustomGlobal extends AbstractCustomGlobal {
     @Override
     public boolean hasTerminated() {
         if (this.data.getCompletedRequests() >= MAX_REQ) {
-            data.printRotationData();
-            data.printRoutingData();
+            this.data.addTotalTime();
+            this.data.printRotationData();
+            this.data.printRoutingData();
             return true;
         }
         return false;
@@ -55,8 +55,8 @@ public class CustomGlobal extends AbstractCustomGlobal {
          * read input data and configure the simulation
          */
         this.numNodes = this.requestQueue.getNumberOfNodes();
-        // MAX_REQ = this.rqueue.getNumberOfRequests();
-        MAX_REQ = 1000;
+        MAX_REQ = this.requestQueue.getNumberOfRequests();
+        // MAX_REQ = 50000;
 
         /*
          * create the nodes and constructs the tree topology
@@ -64,12 +64,12 @@ public class CustomGlobal extends AbstractCustomGlobal {
         this.tree = new ArrayList<BinaryTreeLayer>();
 
         for (int i = 0; i < numNodes; i++) {
-            CBNetNode n = new CBNetNode();
+            CBNetApp n = new CBNetApp();
             n.finishInitializationWithDefaultModels(true);
             this.tree.add(n);
         }
 
-        this.controlNode = new CBNetNode() {
+        this.controlNode = new CBNetApp() {
             public void draw(Graphics g, PositionTransformation pt, boolean highlight) {
                 String text = "ControlNode";
                 super.drawNodeAsDiskWithText(g, pt, highlight, text, 10, Color.YELLOW);
@@ -80,54 +80,20 @@ public class CustomGlobal extends AbstractCustomGlobal {
         this.treeTopology = new TreeConstructor(controlNode, this.tree);
         this.treeTopology.setBalancedTree();
         this.treeTopology.setPositions();
-    }
 
-    public static void activateNextSplay(int src, int dst) {
-        CBNetNode srcnode = (CBNetNode) Tools.getNodeByID(src);
-        srcnode.newMessage(dst);
-    }
-
-    public void generateNextSplayExponential(int src, int dst) {
-        double u = random.nextDouble();
-        double x = Math.log(1 - u) / (-lambda);
-
-        x = (int) x;
-        if (x <= 0) {
-            x = 1;
-        }
-
-        TriggerNodeOperation ted = new TriggerNodeOperation(src, dst);
-        ted.startGlobalTimer(x);
-    }
-
-    public void generateNextSplay() {
-        // initialize only one splay
-        if (requestQueue.hasNextRequest()) {
+        /*
+         *  initiate sigma buffers with message 
+         */
+        while (this.requestQueue.hasNextRequest()) {
             Tuple<Integer, Integer> r = requestQueue.getNextRequest();
-
-            generateNextSplayExponential(r.first, r.second);
+            CBNetApp node = (CBNetApp) Tools.getNodeByID(r.first);
+            node.newMessage(r.second);
         }
     }
 
     @Override
     public void preRound() {
         this.treeTopology.setPositions();
-
-        if (isSequencial == true) {
-            if (data.getNumbugerOfActiveSplays() < 1) {
-                if (requestQueue.hasNextRequest()) {
-                    Tuple<Integer, Integer> r = requestQueue.getNextRequest();
-                    activateNextSplay(r.first, r.second);
-                    // System.out.println("src: " + r.first + " dst: " + r.second);
-
-                    this.data.incrementActiveSplays();
-                }
-            }
-        } else if (mustGenerate == true) { // CHANGE BATCH HERE!
-            mustGenerate = false;
-            generateNextSplay();
-        }
-
     }
 
 }

@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import projects.displaynet.RequestQueue;
 import projects.displaynet.TreeConstructor;
 import projects.displaynet.nodes.nodeImplementations.BinaryTreeLayer;
+import projects.displaynet.nodes.nodeImplementations.SplayNetNode;
 import projects.splaynet.nodes.nodeImplementations.SplayNetApp;
 import sinalgo.gui.transformation.PositionTransformation;
 import sinalgo.runtime.AbstractCustomGlobal;
@@ -23,14 +24,19 @@ public class CustomGlobal extends AbstractCustomGlobal {
     public ArrayList<BinaryTreeLayer> tree = null;
     public BinaryTreeLayer controlNode = null;
     public TreeConstructor treeTopology = null;
-    public RequestQueue rqueue = new RequestQueue("inputs/tor_128_flow.txt", " ");
+    public RequestQueue requestQueue = new RequestQueue("inputs/tor_256_flow.txt", " ");
 
     // LOG
     DataCollection data = DataCollection.getInstance();
 
     @Override
     public boolean hasTerminated() {
-        // return completedRequests >= MAX_REQ;
+        if (this.data.getCompletedRequests() >= MAX_REQ) {
+            this.data.addTotalTime();
+            this.data.printRotationData();
+            this.data.printRoutingData();
+            return true;
+        }
         return false;
     }
 
@@ -41,8 +47,8 @@ public class CustomGlobal extends AbstractCustomGlobal {
         /*
          * read input data and configure the simulation
          */
-        this.numNodes = this.rqueue.getNumberOfNodes();
-        MAX_REQ = this.rqueue.getNumberOfRequests();
+        this.numNodes = this.requestQueue.getNumberOfNodes();
+        MAX_REQ = this.requestQueue.getNumberOfRequests();
 
 
         /*
@@ -56,7 +62,7 @@ public class CustomGlobal extends AbstractCustomGlobal {
             this.tree.add(n);
         }
 
-        this.controlNode = new SplayNetApp() {
+        this.controlNode = new SplayNetNode() {
             public void draw(Graphics g, PositionTransformation pt, boolean highlight) {
                 String text = "ControlNode";
                 super.drawNodeAsDiskWithText(g, pt, highlight, text, 10, Color.YELLOW);
@@ -79,11 +85,10 @@ public class CustomGlobal extends AbstractCustomGlobal {
     public void preRound() {
         this.treeTopology.setPositions();
     
-        // // System.out.println(this.data.getNumbugerOfActiveSplays());
+        // System.out.println(this.data.getNumbugerOfActiveSplays());
         if(this.data.getNumbugerOfActiveSplays() < 1){
-            if(rqueue.hasNextRequest()){
-                Tuple<Integer, Integer> r = rqueue.getNextRequest();
-                System.out.println("src: " + r.first + " dst: " + r.second);
+            if(requestQueue.hasNextRequest()){
+                Tuple<Integer, Integer> r = requestQueue.getNextRequest();
                 activateNextSplay(r.first, r.second);
             }
         }

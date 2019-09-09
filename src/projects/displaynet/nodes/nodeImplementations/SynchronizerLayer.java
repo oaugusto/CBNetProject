@@ -6,7 +6,7 @@ package projects.displaynet.nodes.nodeImplementations;
  */
 public abstract class SynchronizerLayer extends BinaryTreeLayer {
 
-    private int MAX_TIMESLOT = 13;
+    private int MAX_TIMESLOT = 14;
     private int timeslot;
     private long round;
 
@@ -42,42 +42,46 @@ public abstract class SynchronizerLayer extends BinaryTreeLayer {
             break;
 
         case 3:
-            updateState();
+            nodeStep();
             break;
 
         case 4:
-            timeslot1();
+            updateState();
             break;
 
         case 5:
-            timeslot2();
+            timeslot1();
             break;
 
         case 6:
-            timeslot3();
+            timeslot2();
             break;
 
         case 7:
-            timeslot4();
+            timeslot3();
             break;
 
         case 8:
-            timeslot5();
+            timeslot4();
             break;
 
         case 9:
-            timeslot6();
+            timeslot5();
             break;
 
         case 10:
-            timeslot7();
+            timeslot6();
             break;
 
         case 11:
-            timeslot8();
+            timeslot7();
             break;
 
         case 12:
+            timeslot8();
+            break;
+
+        case 13:
             timeslot9();
             posRound();
 
@@ -87,9 +91,8 @@ public abstract class SynchronizerLayer extends BinaryTreeLayer {
         default:
             break;
         }
-        this.timeslot = (this.timeslot + 1) % MAX_TIMESLOT;
 
-        this.nodeStep();
+        this.timeslot = (this.timeslot + 1) % MAX_TIMESLOT;
     }
 
     public void updateState() {
