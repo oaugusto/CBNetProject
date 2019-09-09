@@ -276,6 +276,8 @@ public abstract class RotationLayer extends ClusterLayer {
         }
     }
 
-    public abstract void rotationCompleted();
+    public void rotationCompleted() {
+        
+    }
 
 }

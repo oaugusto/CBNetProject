@@ -6,22 +6,7 @@ import projects.displaynet.nodes.tableEntry.Request;
 /**
  * SplayNetApp
  */
-public class SplayNetApp extends HandShakeLayer {
-
-    private boolean first = true;
-
-    @Override
-    public void init() {
-        super.init();
-
-         if (first) {
-            first = false;
-
-            if (ID == 3) {
-                this.newSplayOperation(29);;
-            }
-        }
-    }
+public class DiSplayNetApp extends HandShakeLayer {
 
     public void newSplayOperation(int dst) {
         Request rq = new Request(ID, dst);

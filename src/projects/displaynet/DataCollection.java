@@ -16,12 +16,12 @@ public class DataCollection {
     private long completedRequests = 0;
 
     // LOGS
-    private Logging rotations_per_splay = Logging.getLogger("rotations_per_splay.txt");
-    private Logging routing_per_splay = Logging.getLogger("routing_per_splay.txt");
-    private Logging timeslot_per_splay = Logging.getLogger("time_slots_per_splay.txt");
-    private Logging total_time_log = Logging.getLogger("total_time.txt");
-    private Logging concurrency_log = Logging.getLogger("concurrent_req.txt");
-    private Logging num_of_cluster = Logging.getLogger("clusters.txt");
+    private Logging rotations_per_splay = Logging.getLogger("displaynet/rotations_per_splay.txt");
+    private Logging routing_per_splay = Logging.getLogger("displaynet/routing_per_splay.txt");
+    private Logging timeslot_per_splay = Logging.getLogger("displaynet/time_slots_per_splay.txt");
+    private Logging total_time_log = Logging.getLogger("displaynet/total_time.txt");
+    private Logging concurrency_log = Logging.getLogger("displaynet/concurrent_req.txt");
+    private Logging num_of_cluster = Logging.getLogger("displaynet/clusters.txt");
 
     private DataCollection() {
 

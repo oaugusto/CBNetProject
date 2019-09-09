@@ -1,10 +1,6 @@
 package projects.displaynet.nodes.nodeImplementations;
 
-import java.util.HashMap;
-
-import projects.displaynet.DataCollection;
 import projects.displaynet.nodes.messages.CompletionMessage;
-import projects.displaynet.nodes.tableEntry.NodeInfo;
 import projects.displaynet.nodes.tableEntry.Request;
 import sinalgo.nodes.messages.Message;
 import sinalgo.tools.Tools;
@@ -14,34 +10,31 @@ import sinalgo.tools.Tools;
  */
 public abstract class SplayNetNode extends RotationLayer {
 
-    // LOG
-    private DataCollection data = DataCollection.getInstance();
-
-    public enum States {
+    private enum States {
         PASSIVE, ACTIVE, COMMUNICATING
     }
 
     // keep current state of the node
-    public States state;
+    private States state;
 
     // keeps track of every splay a node participate as source or destination. once
     // a splay is completed, it is assigned null value
-    public boolean newRequest;
-    public Request activeSplay;
-
+    private Request activeSplay;
 
     @Override
     public void init() {
         super.init();
 
         this.state = States.PASSIVE;
-        this.newRequest = false;
         this.activeSplay = null;
+    }
+
+    public void newSplay(int src, int dst, double priority) {
+        this.activeSplay = new Request(src, dst, priority);
     }
 
     @Override
     public void updateState() {
-        super.updateState();
 
         /*
          * Update current state in time slot 0
@@ -55,18 +48,16 @@ public abstract class SplayNetNode extends RotationLayer {
             this.activeSplay = null;
 
         case PASSIVE:
-            if (this.newRequest) {
-
-                this.newRequest = false;
+            if (this.activeSplay != null) {
 
                 if (this.checkCompletion() == true) {
 
                     this.blockRotations();
                     this.state = States.COMMUNICATING;
-                    // communicate for one round
-                    this.data.incrementActiveClusters();
-                    CompletionMessage cmpMessage = new CompletionMessage(this.activeSplay);
-                    this.sendForwardMessage(this.activeSplay.dstId, cmpMessage);
+                    this.sendCompletionMessage(this.activeSplay.dstId, this.activeSplay);
+
+                    // event
+                    this.communicationClusterFormed(this.activeSplay);
 
                 } else if (!this.isLeastCommonAncestorOf(this.activeSplay.dstId)) {
 
@@ -74,6 +65,8 @@ public abstract class SplayNetNode extends RotationLayer {
                     this.setOperation(this.activeSplay.srcId, this.activeSplay.dstId, this.activeSplay.priority);
                     this.tryRotation();
 
+                    // event
+                    this.newSplayStarted(this.activeSplay);
                 }
             }
             break;
@@ -83,10 +76,10 @@ public abstract class SplayNetNode extends RotationLayer {
 
                 this.blockRotations();
                 this.state = States.COMMUNICATING;
-                // communicate for one round
-                this.data.incrementActiveClusters();
-                CompletionMessage cmpMessage = new CompletionMessage(this.activeSplay);
-                this.sendForwardMessage(this.activeSplay.dstId, cmpMessage);
+                this.sendCompletionMessage(this.activeSplay.dstId, this.activeSplay);
+
+                // event
+                this.communicationClusterFormed(this.activeSplay);
 
             } else if (!this.isLeastCommonAncestorOf(this.activeSplay.dstId)) {
                 this.tryRotation();
@@ -100,6 +93,11 @@ public abstract class SplayNetNode extends RotationLayer {
         }
     }
 
+    public void sendCompletionMessage(int dst, Request rq) {
+        CompletionMessage cmpMessage = new CompletionMessage(rq);
+        this.sendForwardMessage(dst, cmpMessage);
+    }
+
     @Override
     public void receiveMessage(Message msg) {
         super.receiveMessage(msg);
@@ -111,15 +109,6 @@ public abstract class SplayNetNode extends RotationLayer {
 
             return;
         }
-    }
-
-    public void newSplay(int src_splay, int dst_splay, double priority) {
-        this.newRequest = true;
-        Request splay = new Request(src_splay, dst_splay, priority);
-        this.activeSplay = splay;
-
-        // LOG
-        this.data.incrementActiveSplays();
     }
 
     private boolean checkCompletion() {
@@ -137,39 +126,24 @@ public abstract class SplayNetNode extends RotationLayer {
         this.clearClusterRequest();
     }
 
-
-    // LOG ------------------------------------------------------
-
-    @Override
-    public void clusterCompleted(HashMap<String, NodeInfo> cluster) {
-        super.clusterCompleted(cluster);
-        this.data.incrementActiveClusters();
-    }
-
     @Override
     public void rotationCompleted() {
+        super.rotationCompleted();
         this.activeSplay.numOfRotations++;
     }
 
+    public void newSplayStarted(Request request) {
+
+    }
+
+    public void communicationClusterFormed(Request request) {
+
+    }
+
     public void communicationCompleted(Request request) {
-        // System.out.println("Node " + ID + ": Comunication completed");
-        
-        if (ID <request.srcId) {
-            this.data.decrementActiveSplays();
-            this.data.addRotations(request.numOfRotations + this.activeSplay.numOfRotations);
-            this.data.addRouting(1);
-        }
 
     }
 
-    @Override
-    public void posRound() {
-        if (ID == 1) {
-            this.data.addNumOfActiveSplays();
-            this.data.addNumOfActiveClusters();
-            this.data.resetActiveClusters();
-        }
-    }
 
    
 }

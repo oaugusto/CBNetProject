@@ -1,7 +1,7 @@
 package projects.displaynet.nodes.timers;
 
 import projects.displaynet.CustomGlobal;
-import projects.displaynet.nodes.nodeImplementations.SplayNetApp;
+import projects.displaynet.nodes.nodeImplementations.DiSplayNetApp;
 import sinalgo.nodes.timers.Timer;
 import sinalgo.tools.Tools;
 
@@ -21,7 +21,7 @@ public class TriggerNodeOperation extends Timer {
     @Override
     public void fire() {
 
-        SplayNetApp srcnode = (SplayNetApp) Tools.getNodeByID(src);
+        DiSplayNetApp srcnode = (DiSplayNetApp) Tools.getNodeByID(src);
         srcnode.newSplayOperation(dst);
 
         CustomGlobal.mustGenerate = true;

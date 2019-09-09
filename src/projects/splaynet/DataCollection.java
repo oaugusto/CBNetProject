@@ -1,4 +1,4 @@
-package projects.cbnet;
+package projects.splaynet;
 
 import sinalgo.tools.logging.Logging;
 import sinalgo.tools.statistics.DataSeries;
@@ -16,12 +16,12 @@ public class DataCollection {
     private long completedRequests = 0;
 
     // LOGS
-    private Logging rotations_per_splay = Logging.getLogger("cbnet/rotations_per_splay.txt");
-    private Logging routing_per_splay = Logging.getLogger("cbnet/routing_per_splay.txt");
-    private Logging timeslot_per_splay = Logging.getLogger("cbnet/time_slots_per_splay.txt");
-    private Logging total_time_log = Logging.getLogger("cbnet/total_time.txt");
-    private Logging concurrency_log = Logging.getLogger("cbnet/concurrent_req.txt");
-    private Logging num_of_cluster = Logging.getLogger("cbnet/clusters.txt");
+    private Logging rotations_per_splay = Logging.getLogger("splaynet/rotations_per_splay.txt");
+    private Logging routing_per_splay = Logging.getLogger("splaynet/routing_per_splay.txt");
+    private Logging timeslot_per_splay = Logging.getLogger("splaynet/time_slots_per_splay.txt");
+    private Logging total_time_log = Logging.getLogger("splaynet/total_time.txt");
+    private Logging concurrency_log = Logging.getLogger("splaynet/concurrent_req.txt");
+    private Logging num_of_cluster = Logging.getLogger("splaynet/clusters.txt");
 
     private DataCollection() {
 

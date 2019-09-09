@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import projects.displaynet.nodes.nodeImplementations.BinaryTreeLayer;
-import projects.displaynet.nodes.nodeImplementations.SplayNetApp;
+import projects.displaynet.nodes.nodeImplementations.DiSplayNetApp;
 import projects.displaynet.nodes.timers.TriggerNodeOperation;
 import sinalgo.gui.transformation.PositionTransformation;
 import sinalgo.runtime.AbstractCustomGlobal;
@@ -60,12 +60,12 @@ public class CustomGlobal extends AbstractCustomGlobal {
         this.tree = new ArrayList<BinaryTreeLayer>();
 
         for (int i = 0; i < numNodes; i++) {
-            SplayNetApp n = new SplayNetApp();
+            DiSplayNetApp n = new DiSplayNetApp();
             n.finishInitializationWithDefaultModels(true);
             this.tree.add(n);
         }
 
-        this.controlNode = new SplayNetApp() {
+        this.controlNode = new DiSplayNetApp() {
             public void draw(Graphics g, PositionTransformation pt, boolean highlight) {
                 String text = "ControlNode";
                 super.drawNodeAsDiskWithText(g, pt, highlight, text, 10, Color.YELLOW);
