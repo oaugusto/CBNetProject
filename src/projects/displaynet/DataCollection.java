@@ -76,9 +76,8 @@ public class DataCollection {
         this.num_of_cluster.logln("" + this.activeClusters);
     }
 
-    public void addTotalTime() {
-        DiSplayNetApp node = (DiSplayNetApp) Tools.getNodeByID(1);
-        this.total_time_log.logln("" + node.getCurrentRound());
+    public void addTotalTime(long num) {
+        this.total_time_log.logln("" + num);
     }
 
     public void addThroughput(long num) {

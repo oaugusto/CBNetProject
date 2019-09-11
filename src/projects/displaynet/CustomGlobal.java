@@ -39,7 +39,8 @@ public class CustomGlobal extends AbstractCustomGlobal {
     @Override
     public boolean hasTerminated() {
         if (this.data.getCompletedRequests() >= MAX_REQ) {
-            this.data.addTotalTime();
+            DiSplayNetApp node = (DiSplayNetApp) Tools.getNodeByID(1);
+            this.data.addTotalTime(node.getCurrentRound());
             this.data.printRotationData();
             this.data.printRoutingData();
             return true;
