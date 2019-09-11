@@ -4,11 +4,13 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.util.ArrayList;
 
+import projects.displaynet.DataCollection;
 import projects.displaynet.RequestQueue;
 import projects.displaynet.TreeConstructor;
 import projects.displaynet.nodes.nodeImplementations.BinaryTreeLayer;
 import projects.displaynet.nodes.nodeImplementations.SplayNetNode;
 import projects.splaynet.nodes.nodeImplementations.SplayNetApp;
+import sinalgo.configuration.Configuration;
 import sinalgo.gui.transformation.PositionTransformation;
 import sinalgo.runtime.AbstractCustomGlobal;
 import sinalgo.tools.Tools;
@@ -24,7 +26,7 @@ public class CustomGlobal extends AbstractCustomGlobal {
     public ArrayList<BinaryTreeLayer> tree = null;
     public BinaryTreeLayer controlNode = null;
     public TreeConstructor treeTopology = null;
-    public RequestQueue requestQueue = new RequestQueue("inputs/tor_256_flow.txt", " ");
+    public RequestQueue requestQueue;
 
     // LOG
     DataCollection data = DataCollection.getInstance();
@@ -44,9 +46,31 @@ public class CustomGlobal extends AbstractCustomGlobal {
     public void preRun() {
 
 
+        String input = "";
+        String output = "";
+
+        try {
+
+            if (Configuration.hasParameter("input")) {
+                input = Configuration.getStringParameter("input");
+            }
+
+            if (Configuration.hasParameter("output")) {
+                output = Configuration.getStringParameter("output");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Missing configuration parameters");
+        }        
+
+        // Set Log Path
+        this.data.setPath(output);
+
         /*
          * read input data and configure the simulation
          */
+        this.requestQueue = new RequestQueue(input, " ");
         this.numNodes = this.requestQueue.getNumberOfNodes();
         MAX_REQ = this.requestQueue.getNumberOfRequests();
 

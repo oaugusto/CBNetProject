@@ -1,13 +1,15 @@
-package projects.displaynet;
+package projects.semisplaynet;
 
 import java.awt.Color;
 import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.Random;
 
+import projects.displaynet.DataCollection;
+import projects.displaynet.RequestQueue;
+import projects.displaynet.TreeConstructor;
 import projects.displaynet.nodes.nodeImplementations.BinaryTreeLayer;
-import projects.displaynet.nodes.nodeImplementations.DiSplayNetApp;
-import projects.displaynet.nodes.nodeImplementations.SplayNetNode;
+import projects.semisplaynet.nodes.nodeImplementations.CBNetApp;
 import sinalgo.configuration.Configuration;
 import sinalgo.gui.transformation.PositionTransformation;
 import sinalgo.runtime.AbstractCustomGlobal;
@@ -27,7 +29,7 @@ public class CustomGlobal extends AbstractCustomGlobal {
     public RequestQueue requestQueue;
 
     // control execution
-    public static boolean isSequencial = false;
+    public static boolean isSequencial = true;
     public static boolean mustGenerate = true;
 
     public Random random = Tools.getRandomNumberGenerator();
@@ -84,12 +86,12 @@ public class CustomGlobal extends AbstractCustomGlobal {
         this.tree = new ArrayList<BinaryTreeLayer>();
 
         for (int i = 0; i < numNodes; i++) {
-            DiSplayNetApp n = new DiSplayNetApp();
+            CBNetApp n = new CBNetApp();
             n.finishInitializationWithDefaultModels(true);
             this.tree.add(n);
         }
 
-        this.controlNode = new SplayNetNode() {
+        this.controlNode = new CBNetApp() {
             public void draw(Graphics g, PositionTransformation pt, boolean highlight) {
                 String text = "ControlNode";
                 super.drawNodeAsDiskWithText(g, pt, highlight, text, 10, Color.YELLOW);
@@ -101,20 +103,20 @@ public class CustomGlobal extends AbstractCustomGlobal {
         this.treeTopology.setBalancedTree();
         this.treeTopology.setPositions();
 
-
         /*
-         *  initiate sigma buffers with message 
+         * initiate sigma buffers with message
          */
         while (this.requestQueue.hasNextRequest()) {
             Tuple<Integer, Integer> r = this.requestQueue.getNextRequest();
-            DiSplayNetApp node = (DiSplayNetApp) Tools.getNodeByID(r.first);
-            node.newSplayOperation(r.second);
+            CBNetApp node = (CBNetApp) Tools.getNodeByID(r.first);
+            node.newMessage(r.second);
         }
-
+       
     }
 
     @Override
     public void preRound() {
         this.treeTopology.setPositions();
     }
+
 }

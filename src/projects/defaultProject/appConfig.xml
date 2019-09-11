@@ -3,7 +3,7 @@
 	<ProjectSelector windowWidth="1922" windowHeight="1057" lastChosenProject="displaynet" windowPosX="-1" windowPosY="0" isMaximized="false" selectedTab="1" />
 	<GUI windowWidth="1922" windowHeight="1057" windowPosX="1919" windowPosY="0" isMaximized="false" ControlPanelExpandSimulation="true" ControlPanelShowFullViewPanel="false" ControlPanelShowTextPanel="true" ControlPanelShowProjectControl="true" RunOperationIsLimited="false" helpWindowWidth="500" helpWindowHeight="500" helpWindowPosX="200" helpWindowPosY="200" helpWindowIsMaximized="false" />
 	<RandomSeed seedFromPreviousRun="77654767234" />
-	<App lastSelectedFileDirectory="" checkForUpdatesAtStartup="false" updateCheckTimeStamp="0" runCmdLineArgs="-project splaynet " />
+	<App lastSelectedFileDirectory="" checkForUpdatesAtStartup="false" updateCheckTimeStamp="0" runCmdLineArgs="-project seqsemisplaynet -overwrite input=input/projectorDS/tor_128.txt output=tests " />
 	<GenNodesDlg numNodes="100" />
 </sinalgo>
 

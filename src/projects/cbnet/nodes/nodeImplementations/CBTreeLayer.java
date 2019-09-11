@@ -37,7 +37,7 @@ public abstract class CBTreeLayer extends BinaryTreeLayer {
         if (!aux.isLeastCommonAncestorOf(to)) {
             while (!aux.isLeastCommonAncestorOf(to)) {
                 aux.incrementWeight();
-                aux = (RotationLayer) aux.getParent();
+                aux = (CBTreeLayer) aux.getParent();
 			} 
 			
 			aux.incrementWeight();
@@ -46,9 +46,9 @@ public abstract class CBTreeLayer extends BinaryTreeLayer {
         while (aux.ID != to) {
 			aux.incrementWeight();
 			if (aux.ID > to) {
-				aux = (RotationLayer) aux.getLeftChild();
+				aux = (CBTreeLayer) aux.getLeftChild();
 			} else {
-				aux = (RotationLayer) aux.getRightChild();
+				aux = (CBTreeLayer) aux.getRightChild();
 			}
 		}
 		

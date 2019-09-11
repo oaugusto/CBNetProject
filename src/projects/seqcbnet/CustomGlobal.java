@@ -1,13 +1,15 @@
-package projects.displaynet;
+package projects.seqcbnet;
 
 import java.awt.Color;
 import java.awt.Graphics;
 import java.util.ArrayList;
-import java.util.Random;
 
+import projects.cbnet.nodes.nodeImplementations.CBNetNode;
+import projects.displaynet.DataCollection;
+import projects.displaynet.RequestQueue;
+import projects.displaynet.TreeConstructor;
 import projects.displaynet.nodes.nodeImplementations.BinaryTreeLayer;
-import projects.displaynet.nodes.nodeImplementations.DiSplayNetApp;
-import projects.displaynet.nodes.nodeImplementations.SplayNetNode;
+import projects.seqcbnet.nodes.nodeImplementation.CBNetApp;
 import sinalgo.configuration.Configuration;
 import sinalgo.gui.transformation.PositionTransformation;
 import sinalgo.runtime.AbstractCustomGlobal;
@@ -19,22 +21,15 @@ public class CustomGlobal extends AbstractCustomGlobal {
     // final condition
     public long MAX_REQ;
 
-    // simulation
+    // simulation config
     public int numNodes = 30;
     public ArrayList<BinaryTreeLayer> tree = null;
     public BinaryTreeLayer controlNode = null;
     public TreeConstructor treeTopology = null;
     public RequestQueue requestQueue;
 
-    // control execution
-    public static boolean isSequencial = false;
-    public static boolean mustGenerate = true;
-
-    public Random random = Tools.getRandomNumberGenerator();
-    public double lambda = 0.15;
-
     // LOG
-    DataCollection data = DataCollection.getInstance();
+    public DataCollection data = DataCollection.getInstance();
 
     @Override
     public boolean hasTerminated() {
@@ -78,18 +73,19 @@ public class CustomGlobal extends AbstractCustomGlobal {
         this.numNodes = this.requestQueue.getNumberOfNodes();
         MAX_REQ = this.requestQueue.getNumberOfRequests();
 
+
         /*
          * create the nodes and constructs the tree topology
          */
         this.tree = new ArrayList<BinaryTreeLayer>();
 
         for (int i = 0; i < numNodes; i++) {
-            DiSplayNetApp n = new DiSplayNetApp();
+            CBNetApp n = new CBNetApp();
             n.finishInitializationWithDefaultModels(true);
             this.tree.add(n);
         }
 
-        this.controlNode = new SplayNetNode() {
+        this.controlNode = new CBNetNode() {
             public void draw(Graphics g, PositionTransformation pt, boolean highlight) {
                 String text = "ControlNode";
                 super.drawNodeAsDiskWithText(g, pt, highlight, text, 10, Color.YELLOW);
@@ -101,20 +97,26 @@ public class CustomGlobal extends AbstractCustomGlobal {
         this.treeTopology.setBalancedTree();
         this.treeTopology.setPositions();
 
+    }
 
-        /*
-         *  initiate sigma buffers with message 
-         */
-        while (this.requestQueue.hasNextRequest()) {
-            Tuple<Integer, Integer> r = this.requestQueue.getNextRequest();
-            DiSplayNetApp node = (DiSplayNetApp) Tools.getNodeByID(r.first);
-            node.newSplayOperation(r.second);
+    public void activateNextSplay(int src, int dst) {
+        CBNetApp srcnode = (CBNetApp)Tools.getNodeByID(src);	
+        srcnode.newMessage(dst);
+
+        this.data.incrementActiveSplays();
+    }
+    
+    @Override
+    public void preRound() {
+        this.treeTopology.setPositions();
+    
+        if(this.data.getNumbugerOfActiveSplays() < 1){
+            if(requestQueue.hasNextRequest()){
+                Tuple<Integer, Integer> r = requestQueue.getNextRequest();
+                this.activateNextSplay(r.first, r.second);
+            }
         }
 
     }
 
-    @Override
-    public void preRound() {
-        this.treeTopology.setPositions();
-    }
 }

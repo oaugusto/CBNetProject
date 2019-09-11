@@ -1,4 +1,4 @@
-package projects.cbnet.nodes.nodeImplementations;
+package projects.semisplaynet.nodes.nodeImplementations;
 
 import java.util.HashMap;
 

@@ -17,18 +17,28 @@ public class DataCollection {
 
     private long completedRequests = 0;
 
-    // LOGS
-    private Logging rotations_per_splay = Logging.getLogger("displaynet/rotations_per_splay.txt");
-    private Logging routing_per_splay = Logging.getLogger("displaynet/routing_per_splay.txt");
-    private Logging rounds_per_splay = Logging.getLogger("displaynet/rounds_per_splay.txt");
-    private Logging total_time_log = Logging.getLogger("displaynet/total_time.txt");
-    private Logging concurrency_log = Logging.getLogger("displaynet/concurrent_req.txt");
-    private Logging num_of_cluster = Logging.getLogger("displaynet/clusters.txt");
-    private Logging throughput_log = Logging.getLogger("displaynet/throughput.txt");
+   // LOGS
+   private Logging rotations_per_splay;
+   private Logging routing_per_splay;
+   private Logging rounds_per_splay;
+   private Logging total_time_log;
+   private Logging concurrency_log;
+   private Logging num_of_cluster;
+   private Logging throughput_log;
 
-    private DataCollection() {
+   private DataCollection() {
 
-    }
+   }
+
+   public void setPath(String path) {
+       rotations_per_splay = Logging.getLogger(path + "/rotations_per_splay.txt");
+       routing_per_splay = Logging.getLogger(path + "/routing_per_splay.txt");
+       rounds_per_splay = Logging.getLogger(path + "/rounds_per_splay.txt");
+       total_time_log = Logging.getLogger(path + "/total_time.txt");
+       concurrency_log = Logging.getLogger(path + "/concurrent_req.txt");
+       num_of_cluster = Logging.getLogger(path + "/clusters.txt");
+       throughput_log = Logging.getLogger(path + "/throughput.txt");
+   }
 
     public static DataCollection getInstance() {
         if (single_instance == null) {

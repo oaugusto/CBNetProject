@@ -1,8 +1,9 @@
-package projects.cbnet.nodes.nodeImplementations;
+package projects.seqcbnet.nodes.nodeImplementation;
 
 import java.util.HashMap;
 
 import projects.cbnet.nodes.messages.CBNetMessage;
+import projects.cbnet.nodes.nodeImplementations.CBNetNode;
 import projects.cbnet.nodes.tableEntry.CBInfo;
 import projects.displaynet.DataCollection;
 
@@ -17,8 +18,6 @@ public class CBNetApp extends CBNetNode {
     @Override
     public void newMessageSent() {
         super.newMessageSent();
-
-        this.data.incrementActiveSplays();
     }
 
     @Override

@@ -2,10 +2,10 @@ package projects.splaynet.nodes.nodeImplementations;
 
 import java.util.HashMap;
 
+import projects.displaynet.DataCollection;
 import projects.displaynet.nodes.nodeImplementations.HandShakeLayer;
 import projects.displaynet.nodes.tableEntry.NodeInfo;
 import projects.displaynet.nodes.tableEntry.Request;
-import projects.splaynet.DataCollection;
 
 /**
  * SplayNetNode

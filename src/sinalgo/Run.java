@@ -192,18 +192,19 @@ public class Run {
 		String javaVersion = System.getProperty("java.vm.version");
 		javaVersion = javaVersion.replace('.', '#');
 		String[] versionParts = javaVersion.split("#"); // can't split with '.', as regex 
-		if(versionParts.length < 2) {
-			System.err.println("You may have an invalid Java version: " + javaVersion);
-		} else {
-			try {
-				int v = Integer.parseInt(versionParts[1]);
-				if(v < 5) {
-					System.err.println("You may have an invalid Java version: " + javaVersion + ". The application requires version 1.5 or more recent.");
-				}
-			} catch(NumberFormatException e) {
-				System.err.println("You may have an invalid Java version: " + javaVersion + ". The application requires version 1.5 or more recent.");				
-			}
-		}
+		// TODO
+		// if(versionParts.length < 2) {
+		// 	System.err.println("You may have an invalid Java version: " + javaVersion);
+		// } else {
+		// 	try {
+		// 		int v = Integer.parseInt(versionParts[1]);
+		// 		if(v < 5) {
+		// 			System.err.println("You may have an invalid Java version: " + javaVersion + ". The application requires version 1.5 or more recent.");
+		// 		}
+		// 	} catch(NumberFormatException e) {
+		// 		System.err.println("You may have an invalid Java version: " + javaVersion + ". The application requires version 1.5 or more recent.");				
+		// 	}
+		// }
 	}
 	
 	/**

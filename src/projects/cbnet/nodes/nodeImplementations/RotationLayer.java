@@ -98,10 +98,16 @@ public abstract class RotationLayer extends ClusterLayer {
 
     }
 
-    /*
-     * DONE z z / / y *x / \ / \ x c -> a y / \ / \ a b b c
-     * 
-     */
+    /* DONE
+                  z                     z
+                 /                    /
+                y                   *x
+              /   \               /   \
+            *x     c     ->      a     y
+            / \                       / \
+           a   b                     b   c
+	 
+	 */
     private void zigBottomUp(CBInfo xInfo, CBInfo yInfo, CBInfo zInfo) {
         // System.out.println("zig bottom up operation: " + ID);
 
@@ -184,9 +190,15 @@ public abstract class RotationLayer extends ClusterLayer {
         }
     }
 
-    /*
-     * DONE z *y / \ / \ y d x z / \ -> / \ / \ x c a b c d / \ a b
-     */
+     /* DONE
+	            z                  *y
+     	       / \                /   \
+     		  y   d              x     z
+	         / \       ->       / \   / \
+	       *x   c              a   b c   d
+	       / \                    
+	      a   b                   
+	*/
     private void zigZigBottomUp(CBInfo xInfo, CBInfo yInfo, CBInfo zInfo, CBInfo wInfo) {
         // System.out.println("zig zig bottom up operation: " + ID);
 
@@ -270,9 +282,17 @@ public abstract class RotationLayer extends ClusterLayer {
 
     }
 
-    /*
-     * DONE w w / / z *x / \ / \ y d y z / \ -> / \ / \ a x* a b c d / \ b c
-     */
+    /* DONE
+                   w                  w
+                  /                  /
+                 z				   *x
+                / \               /   \
+               y   d             y     z
+              / \		  ->    / \   / \
+             a   x*            a   b c   d
+                / \
+               b   c 
+	 */
     private void zigZagBottomUp(CBInfo xInfo, CBInfo yInfo, CBInfo zInfo, CBInfo wInfo) {
         // System.out.println("zig zag bottom up operation: " + ID);
 
@@ -401,9 +421,15 @@ public abstract class RotationLayer extends ClusterLayer {
         }
     }
 
-    /*
-     * DONE z y / \ / \ y d -> *x z / \ / \ / \ x c a b c d / \ a b
-     */
+     /* DONE
+	      	    *z                    y
+		        / \                 /   \
+		       y   d      ->      *x     z
+		      / \                 / \   / \
+		     x   c               a   b c   d
+		    / \
+		   a   b    
+	*/
     private void zigZigTopDown(CBInfo xInfo, CBInfo yInfo, CBInfo zInfo, CBInfo wInfo) {
         // System.out.println("zig zig top down operation: " + ID);
 
@@ -487,9 +513,15 @@ public abstract class RotationLayer extends ClusterLayer {
         }
     }
 
-    /*
-     * DONE z x / \ -> / \ y d y z / \ / \ / \ a x a *b *c d / \ b c
-     */
+    /* DONE
+	         *z                     x
+	         / \        ->        /   \
+	        y   d                y     z
+	       / \                  / \   / \
+	      a   x                a  *b *c  d
+	         / \
+	        b   c
+	*/
     private void zigZagTopDown(CBInfo xInfo, CBInfo yInfo, CBInfo zInfo, CBInfo wInfo) {
         // System.out.println("zig zag top down operation: " + ID);
 
@@ -608,8 +640,12 @@ public abstract class RotationLayer extends ClusterLayer {
     }
 
     /*
-     * y x / \ / \ x c -> a y / \ / \ a b b c
-     */
+              y                   x
+            /   \               /   \
+           x     c     ->      a     y
+          / \                       / \
+         a   b                     b   c
+    */
     public double zigDiffRank(CBInfo xInfo, CBInfo yInfo) {
         RotationLayer x = (RotationLayer) xInfo.getNode();
         RotationLayer y = (RotationLayer) yInfo.getNode();
@@ -638,8 +674,14 @@ public abstract class RotationLayer extends ClusterLayer {
     }
 
     /*
-     * z *x / \ / \ y d y z / \ -> / \ / \ a *x a b c d / \ b c
-     */
+			  z					*x
+			 / \               /   \
+			y   d             y     z
+		   / \		   ->    / \   / \
+		  a  *x             a   b c   d
+		     / \
+		    b	c 
+	*/
     private double zigZagDiffRank(CBInfo xInfo, CBInfo yInfo, CBInfo zInfo) {
         RotationLayer x = (RotationLayer) xInfo.getNode();
         RotationLayer y = (RotationLayer) yInfo.getNode();

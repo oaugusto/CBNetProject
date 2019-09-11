@@ -6,9 +6,11 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import projects.cbnet.nodes.nodeImplementations.CBNetApp;
+import projects.displaynet.DataCollection;
 import projects.displaynet.RequestQueue;
 import projects.displaynet.TreeConstructor;
 import projects.displaynet.nodes.nodeImplementations.BinaryTreeLayer;
+import sinalgo.configuration.Configuration;
 import sinalgo.gui.transformation.PositionTransformation;
 import sinalgo.runtime.AbstractCustomGlobal;
 import sinalgo.tools.Tools;
@@ -24,8 +26,7 @@ public class CustomGlobal extends AbstractCustomGlobal {
     public ArrayList<BinaryTreeLayer> tree = null;
     public BinaryTreeLayer controlNode = null;
     public TreeConstructor treeTopology = null;
-    public RequestQueue requestQueue = new RequestQueue("inputs/tor_256_flow.txt", " ");
-    // public RequestQueue requestQueue = new RequestQueue("inputs/datasetC_pairs_small.txt", " ");
+    public RequestQueue requestQueue;
 
     // control execution
     public static boolean isSequencial = true;
@@ -51,12 +52,33 @@ public class CustomGlobal extends AbstractCustomGlobal {
     @Override
     public void preRun() {
 
+        String input = "";
+        String output = "";
+
+        try {
+
+            if (Configuration.hasParameter("input")) {
+                input = Configuration.getStringParameter("input");
+            }
+
+            if (Configuration.hasParameter("output")) {
+                output = Configuration.getStringParameter("output");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Missing configuration parameters");
+        }        
+
+        // Set Log Path
+        this.data.setPath(output);
+
         /*
          * read input data and configure the simulation
          */
+        this.requestQueue = new RequestQueue(input, " ");
         this.numNodes = this.requestQueue.getNumberOfNodes();
         MAX_REQ = this.requestQueue.getNumberOfRequests();
-        // MAX_REQ = 50000;
 
         /*
          * create the nodes and constructs the tree topology
@@ -82,13 +104,14 @@ public class CustomGlobal extends AbstractCustomGlobal {
         this.treeTopology.setPositions();
 
         /*
-         *  initiate sigma buffers with message 
+         * initiate sigma buffers with message
          */
         while (this.requestQueue.hasNextRequest()) {
-            Tuple<Integer, Integer> r = requestQueue.getNextRequest();
+            Tuple<Integer, Integer> r = this.requestQueue.getNextRequest();
             CBNetApp node = (CBNetApp) Tools.getNodeByID(r.first);
             node.newMessage(r.second);
         }
+        
     }
 
     @Override
