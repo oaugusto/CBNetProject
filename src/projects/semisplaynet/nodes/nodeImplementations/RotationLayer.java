@@ -177,6 +177,7 @@ public abstract class RotationLayer extends ClusterLayer {
 
         // DATA LOG
         this.cbnetMessage.incrementRotations();
+        this.cbnetMessage.incrementRouting();
         // forward message
         this.forwardCBNetMessage(y.ID, this.cbnetMessage);
 
@@ -245,6 +246,7 @@ public abstract class RotationLayer extends ClusterLayer {
         this.rotating = true;
 
         // DATA LOG
+        this.cbnetMessage.incrementRotations();
         this.cbnetMessage.incrementRotations();
         // forward message
         this.forwardCBNetMessage(x.ID, this.cbnetMessage);
@@ -362,6 +364,7 @@ public abstract class RotationLayer extends ClusterLayer {
 
         // DATA LOG
         this.cbnetMessage.incrementRotations();
+        this.cbnetMessage.incrementRouting();
         // forward message
         this.forwardCBNetMessage(x.ID, this.cbnetMessage);
 
@@ -431,6 +434,7 @@ public abstract class RotationLayer extends ClusterLayer {
         this.rotating = true;
 
         // DATA LOG
+        this.cbnetMessage.incrementRotations();
         this.cbnetMessage.incrementRotations();
         // forward message
         if (xInfo.getMinIdInSubtree() <= this.cbnetMessage.getDst() && this.cbnetMessage.getDst() < x.ID) {

@@ -10,12 +10,14 @@ import projects.displaynet.nodes.tableEntry.NodeInfo;
 public abstract class RotationLayer extends ClusterLayer {
 
     private boolean rotating;
+    private boolean isZigOperation; // for logging
 
     @Override
     public void init() {
         super.init();
 
         this.rotating = false;
+        this.isZigOperation = false;
     }
 
     public void setOperation(int src, int dst, double priority) {
@@ -40,8 +42,8 @@ public abstract class RotationLayer extends ClusterLayer {
         NodeInfo zInfo = cluster.get("z");
 
         if (cluster.size() == 3) {
+            this.isZigOperation = true; // logging            
             this.zig(xInfo, yInfo, zInfo);
-
         } else {
             NodeInfo wInfo = cluster.get("w");
             BinaryTreeLayer x = xInfo.getNode();
@@ -271,9 +273,18 @@ public abstract class RotationLayer extends ClusterLayer {
         this.clearRPCQueue();
 
         if (this.rotating) {
-            this.rotationCompleted();
+            if (this.isZigOperation) {
+                this.zigCompleted();
+                this.isZigOperation = false;
+            } else {
+                this.rotationCompleted();
+            }
             this.rotating = false;
         }
+    }
+
+    public void zigCompleted() {
+
     }
 
     public void rotationCompleted() {

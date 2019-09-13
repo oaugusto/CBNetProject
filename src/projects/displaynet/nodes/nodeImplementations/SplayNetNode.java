@@ -133,8 +133,15 @@ public abstract class SplayNetNode extends RotationLayer {
     }
 
     @Override
-    public void rotationCompleted() {
+    public void zigCompleted() { // single rotation
+        super.zigCompleted();
+        this.activeSplay.numOfRotations++;
+    }
+
+    @Override
+    public void rotationCompleted() { // double rotation
         super.rotationCompleted();
+        this.activeSplay.numOfRotations++;
         this.activeSplay.numOfRotations++;
     }
 
