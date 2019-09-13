@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sinalgo>
+	<ProjectSelector windowWidth="600" windowHeight="400" lastChosenProject="" windowPosX="50" windowPosY="50" isMaximized="false" selectedTab="1" />
+	<GUI windowWidth="941" windowHeight="1053" windowPosX="2887" windowPosY="-9" isMaximized="false" ControlPanelExpandSimulation="true" ControlPanelShowFullViewPanel="true" ControlPanelShowTextPanel="true" ControlPanelShowProjectControl="true" RunOperationIsLimited="false" helpWindowWidth="500" helpWindowHeight="500" helpWindowPosX="200" helpWindowPosY="200" helpWindowIsMaximized="false" />
+	<RandomSeed seedFromPreviousRun="7641320433749858948" />
+	<App lastSelectedFileDirectory="" checkForUpdatesAtStartup="true" updateCheckTimeStamp="1568382222386" runCmdLineArgs="-batch -project cbnet -overwrite input=input/normalDS/1024-6.4-std.txt output=output/cbnet/normal/1024/6.4/1 AutoStart=true " />
+	<GenNodesDlg numNodes="100" />
+</sinalgo>
+

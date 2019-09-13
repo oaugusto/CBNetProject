@@ -1,10 +1,10 @@
 #!/usr/bin/perl
 
 $project="$ARGV[0]";
-$input="input/randomwalkDS";
-$output="output/$project/randomwalkDS";
+$input_file="input/randomwalkDS";
+$output="output/$project/randomwalk";
 $numNodes = 128; # number of rounds to perform per simulation
-$numSimulations = $ARGV[1];
+$numSimulations = 1;
 
 @walks = (4, 16, 32);
 @flows = (1, 4, 16);
@@ -15,12 +15,12 @@ for($g = 1; $g <= $numSimulations; $g+=1) {
             for my $j (@flows) {
                 print "java -cp binaries/bin:binaries/jdom.jar sinalgo.Run -batch " .
                 "-project $project " .                                                      
-                "-overwrite input=$input/$numNodes-nodes-$i-walkLength-$j-numberOfConcurrentFlows-input.txt output=$output/$numNodes/$i/$j/$g " .  
+                "-overwrite input=$input_file/$numNodes-nodes-$i-walkLength-$j-numberOfConcurrentFlows-input.txt output=$output/$numNodes/$i/$j/$g " .  
                 "AutoStart=true\n";
 
                 system("java -cp binaries/bin:binaries/jdom.jar sinalgo.Run -batch " .
                 "-project $project " .                                                      
-                "-overwrite input=$input/$numNodes-nodes-$i-walkLength-$j-numberOfConcurrentFlows-input.txt output=$output/$numNodes/$i/$j/$g " .  
+                "-overwrite input=$input_file/$numNodes-nodes-$i-walkLength-$j-numberOfConcurrentFlows-input.txt output=$output/$numNodes/$i/$j/$g " .  
                 "AutoStart=true > /dev/null");                                              
             }
         }
