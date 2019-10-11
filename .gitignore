@@ -2,4 +2,4 @@ binaries/bin/
 *.class
 input/*
 logs/
-!input/tor_128.txt
+!input/projectorDS
