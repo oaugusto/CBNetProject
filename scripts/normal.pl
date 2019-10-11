@@ -4,7 +4,7 @@ $project="$ARGV[0]";
 $input_file="input/normalDS";
 $output="output/$project/normal";
 $numNodes = 128; # number of rounds to perform per simulation
-$numSimulations = 1;
+$numSimulations = 10;
 
 @std = (0.2, 0.8, 1.6, 3.2, 6.4);
 

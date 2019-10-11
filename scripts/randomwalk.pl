@@ -4,7 +4,7 @@ $project="$ARGV[0]";
 $input_file="input/randomwalkDS";
 $output="output/$project/randomwalk";
 $numNodes = 128; # number of rounds to perform per simulation
-$numSimulations = 1;
+$numSimulations = 10;
 
 @walks = (4, 16, 32);
 @flows = (1, 4, 16);

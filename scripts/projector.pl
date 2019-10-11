@@ -4,7 +4,7 @@ $project="$ARGV[0]";
 $input_file="input/projectorDS";
 $output="output/$project/projector";
 $numNodes = 128; # number of rounds to perform per simulation
-$numSimulations = 1;
+$numSimulations = 10;
 
 for($g=1; $g<=$numSimulations; $g+=1) {
     for($numNodes=128; $numNodes<=1024; $numNodes*=2) {
