@@ -29,13 +29,13 @@ public class DataCollection {
     }
 
     public void setPath(String path) {
-        rotations_per_splay = Logging.getLogger(path + "/rotations_per_splay.txt", true);
-        routing_per_splay = Logging.getLogger(path + "/routing_per_splay.txt", true);
-        rounds_per_splay = Logging.getLogger(path + "/rounds_per_splay.txt", true);
-        total_time_log = Logging.getLogger(path + "/total_time.txt", true);
-        concurrency_log = Logging.getLogger(path + "/concurrent_req.txt", true);
-        num_of_cluster = Logging.getLogger(path + "/clusters.txt", true);
-        throughput_log = Logging.getLogger(path + "/throughput.txt", true);
+        rotations_per_splay = Logging.getLogger(path + "/rotations_per_splay.txt");
+        routing_per_splay = Logging.getLogger(path + "/routing_per_splay.txt");
+        rounds_per_splay = Logging.getLogger(path + "/rounds_per_splay.txt");
+        total_time_log = Logging.getLogger(path + "/total_time.txt");
+        concurrency_log = Logging.getLogger(path + "/concurrent_req.txt");
+        num_of_cluster = Logging.getLogger(path + "/clusters.txt");
+        throughput_log = Logging.getLogger(path + "/throughput.txt");
     }
 
     public static DataCollection getInstance() {
@@ -53,12 +53,12 @@ public class DataCollection {
 
     public void addRotations(long num) {
         this.rotationData.addSample(num);
-        this.rotations_per_splay.log(num + " ");
+        this.rotations_per_splay.logln(num + "");
     }
 
     public void addRouting(long num) {
         this.routingData.addSample(num);
-        this.routing_per_splay.log(num + " ");
+        this.routing_per_splay.logln(num + "");
     }
 
     public void resetCollection() {
@@ -67,11 +67,11 @@ public class DataCollection {
     }
 
     public void addNumOfActiveSplays() {
-        this.concurrency_log.log(this.activeSplays + " ");
+        this.concurrency_log.logln(this.activeSplays + "");
     }
 
     public void addNumOfActiveClusters() {
-        this.num_of_cluster.log(this.activeClusters + " ");
+        this.num_of_cluster.logln(this.activeClusters + "");
     }
 
     public void addTotalTime(long num) {
@@ -79,11 +79,11 @@ public class DataCollection {
     }
 
     public void addThroughput(long num) {
-        this.throughput_log.log(num + " ");
+        this.throughput_log.logln(num + "");
     }
 
     public void addRoundsPerSplay(long num) {
-        this.rounds_per_splay.log(num + " ");
+        this.rounds_per_splay.logln(num + "");
     }
 
     public void incrementActiveSplays() {
@@ -120,16 +120,6 @@ public class DataCollection {
 
     public long getCompletedRequests() {
         return completedRequests;
-    }
-
-    public void finishCollection() {
-        rotations_per_splay.logln();
-        routing_per_splay.logln();
-        rounds_per_splay.logln();
-        total_time_log.logln();
-        concurrency_log.logln();
-        num_of_cluster.logln();
-        throughput_log.logln();
     }
 
     public void printRotationData() {

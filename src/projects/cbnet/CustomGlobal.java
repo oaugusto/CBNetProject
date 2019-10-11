@@ -42,11 +42,7 @@ public class CustomGlobal extends AbstractCustomGlobal {
     public boolean hasTerminated() {
         if (this.data.getCompletedRequests() >= MAX_REQ) {
             CBNetApp node = (CBNetApp) Tools.getNodeByID(1);
-            this.data.addTotalTime(node.getCurrentRound());
-
-            // push collection to new line in files
-            this.data.finishCollection();
-            
+            this.data.addTotalTime(node.getCurrentRound());            
             this.data.printRotationData();
             this.data.printRoutingData();
             return true;

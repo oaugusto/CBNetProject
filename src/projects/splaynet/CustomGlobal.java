@@ -36,10 +36,6 @@ public class CustomGlobal extends AbstractCustomGlobal {
         if (this.data.getCompletedRequests() >= MAX_REQ) {
             SplayNetApp node = (SplayNetApp) Tools.getNodeByID(1);
             this.data.addTotalTime(node.getCurrentRound());
-
-            // push collection to new line in files
-            this.data.finishCollection();
-
             this.data.printRotationData();
             this.data.printRoutingData();
             return true;
