@@ -2,8 +2,8 @@
 <sinalgo>
 	<ProjectSelector windowWidth="600" windowHeight="400" lastChosenProject="" windowPosX="50" windowPosY="50" isMaximized="false" selectedTab="1" />
 	<GUI windowWidth="1922" windowHeight="1057" windowPosX="1919" windowPosY="0" isMaximized="false" ControlPanelExpandSimulation="true" ControlPanelShowFullViewPanel="true" ControlPanelShowTextPanel="true" ControlPanelShowProjectControl="true" RunOperationIsLimited="false" helpWindowWidth="500" helpWindowHeight="500" helpWindowPosX="200" helpWindowPosY="200" helpWindowIsMaximized="false" />
-	<RandomSeed seedFromPreviousRun="8531114033528977932" />
-	<App lastSelectedFileDirectory="" checkForUpdatesAtStartup="true" updateCheckTimeStamp="1569436384325" runCmdLineArgs="-project splaynet -overwrite input=input/randomwalkDS/128-nodes-4-walkLength-1-numberOfConcurrentFlows-input.txt output=test/ " />
+	<RandomSeed seedFromPreviousRun="494959344817735728" />
+	<App lastSelectedFileDirectory="" checkForUpdatesAtStartup="true" updateCheckTimeStamp="1570818795564" runCmdLineArgs="-batch -project displaynet -overwrite input=input/projectorDS/1024/1_tor_1024.txt output=output/displaynet/projector/1024/ AutoStart=true " />
 	<GenNodesDlg numNodes="100" />
 </sinalgo>
 
