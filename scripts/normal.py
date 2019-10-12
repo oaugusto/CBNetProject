@@ -15,7 +15,7 @@ if not os.path.exists(log_file):
 log = set(line.rstrip() for line in open(log_file))
 
 # open log file for append and create a lock variable
-file = open("scripts/logs/projectorLog.txt", "a+")
+file = open("scripts/logs/normalLog.txt", "a+")
 file_lock = threading.Lock()
 
 projects = ["cbnet", "seqcbnet", "splaynet", "displaynet", "semisplaynet", "seqsemisplaynet", "simplenet", "seqsimplenet"]
@@ -47,6 +47,7 @@ class myThread (threading.Thread):
 def execute(commands):
     for command in commands:
         print(command)
+        os.system(command)
 
         file_lock.acquire()
         file.write(command + "\n")

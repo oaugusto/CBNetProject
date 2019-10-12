@@ -47,6 +47,7 @@ class myThread (threading.Thread):
 def execute(commands):
     for command in commands:
         print(command)
+        os.system(command)
 
         file_lock.acquire()
         file.write(command + "\n")
