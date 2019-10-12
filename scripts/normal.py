@@ -6,7 +6,7 @@ import threading
 import numpy
 
 # this file keep all completed experiments
-log_file = "scripts/logs/projectorLog.txt"
+log_file = "scripts/logs/normalLog.txt"
 
 if not os.path.exists(log_file):
     os.mknod(log_file)
@@ -22,8 +22,8 @@ projects = ["cbnet", "seqcbnet", "splaynet", "displaynet", "semisplaynet", "seqs
 #project = sys.argv[1]
 
 # parameters of simulation
-numNodes = [128, 256, 512, 1024]
-numSimulations = 30
+numNodes = [128, 1024]
+std = [0.2, 0.8, 1.6, 3.2, 6.4]
 
 #number of threads to simulation
 numThreads = 10
@@ -61,9 +61,9 @@ for project in projects:
 
     # generate all possibles inputs for simulation
     for n in numNodes:
-        for i in range(1, numSimulations + 1):
-            input = 'input/projectorDS/{}/{}_tor_{}.txt'.format(n, i, n)
-            output = 'output/projector/{}/{}/{}'.format(project, n, i)
+        for s in std:
+            input = 'input/normalDS/{}/{}-{}-std.txt'.format(n, n, s)
+            output = 'output/normal/{}/{}/{}'.format(project, n, s)
             cmd = '{} {} -overwrite input={} output={} AutoStart=true > /dev/null'.format(command, project, input, output)
 
             # not executed yet
@@ -101,3 +101,4 @@ for project in projects:
 
 
 print("Simulation Completed")
+                    

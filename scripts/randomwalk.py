@@ -6,7 +6,7 @@ import threading
 import numpy
 
 # this file keep all completed experiments
-log_file = "scripts/logs/projectorLog.txt"
+log_file = "scripts/logs/randomwalkLog.txt"
 
 if not os.path.exists(log_file):
     os.mknod(log_file)
@@ -22,8 +22,9 @@ projects = ["cbnet", "seqcbnet", "splaynet", "displaynet", "semisplaynet", "seqs
 #project = sys.argv[1]
 
 # parameters of simulation
-numNodes = [128, 256, 512, 1024]
-numSimulations = 30
+numNodes = [128, 1024]
+walkLength = [4, 16, 32]
+numFlows = [1, 4, 16]
 
 #number of threads to simulation
 numThreads = 10
@@ -61,14 +62,15 @@ for project in projects:
 
     # generate all possibles inputs for simulation
     for n in numNodes:
-        for i in range(1, numSimulations + 1):
-            input = 'input/projectorDS/{}/{}_tor_{}.txt'.format(n, i, n)
-            output = 'output/projector/{}/{}/{}'.format(project, n, i)
-            cmd = '{} {} -overwrite input={} output={} AutoStart=true > /dev/null'.format(command, project, input, output)
+        for w in walkLength:
+            for f in numFlows:
+                input = 'input/normalDS/{}/{}-nodes-{}-walkLength-{}-numberOfConcurrentFlows-input.txt'.format(n, n, w, f)
+                output = 'output/normal/{}/{}/{}/{}'.format(project, n, w, f)
+                cmd = '{} {} -overwrite input={} output={} AutoStart=true > /dev/null'.format(command, project, input, output)
 
-            # not executed yet
-            if cmd not in log:
-                commands.append(cmd)
+                # not executed yet
+                if cmd not in log:
+                    commands.append(cmd)
 
     numCommands = len(commands)
 
