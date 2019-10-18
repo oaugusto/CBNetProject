@@ -4,9 +4,9 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.util.ArrayList;
 
-import projects.displaynet.DataCollection;
-import projects.displaynet.RequestQueue;
-import projects.displaynet.TreeConstructor;
+import projects.defaultProject.DataCollection;
+import projects.defaultProject.RequestQueue;
+import projects.defaultProject.TreeConstructor;
 import projects.displaynet.nodes.nodeImplementations.BinaryTreeLayer;
 import projects.semisplaynet.nodes.nodeImplementations.CBNetNode;
 import projects.seqsemisplaynet.nodes.nodeImplementation.CBNetApp;

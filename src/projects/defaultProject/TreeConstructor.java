@@ -1,4 +1,4 @@
-package projects.displaynet;
+package projects.defaultProject;
 
 import java.util.ArrayList;
 import java.util.Collections;

@@ -4,7 +4,7 @@ import java.util.HashMap;
 
 import projects.cbnet.nodes.messages.CBNetMessage;
 import projects.cbnet.nodes.tableEntry.CBInfo;
-import projects.displaynet.DataCollection;
+import projects.defaultProject.DataCollection;
 import projects.simplenet.nodes.nodeImplementations.CBNetNode;
 
 /**

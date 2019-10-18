@@ -6,9 +6,9 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import projects.cbnet.nodes.nodeImplementations.CBNetApp;
-import projects.displaynet.DataCollection;
-import projects.displaynet.RequestQueue;
-import projects.displaynet.TreeConstructor;
+import projects.defaultProject.DataCollection;
+import projects.defaultProject.RequestQueue;
+import projects.defaultProject.TreeConstructor;
 import projects.displaynet.nodes.nodeImplementations.BinaryTreeLayer;
 import sinalgo.configuration.Configuration;
 import sinalgo.gui.transformation.PositionTransformation;

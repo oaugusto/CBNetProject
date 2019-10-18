@@ -1,14 +1,11 @@
 package projects.seqcbnet.nodes.nodeImplementation;
 
-import java.awt.Color;
-import java.awt.Graphics;
 import java.util.HashMap;
 
 import projects.cbnet.nodes.messages.CBNetMessage;
 import projects.cbnet.nodes.nodeImplementations.CBNetNode;
 import projects.cbnet.nodes.tableEntry.CBInfo;
-import projects.displaynet.DataCollection;
-import sinalgo.gui.transformation.PositionTransformation;
+import projects.defaultProject.DataCollection;
 
 /**
  * CBNetApp

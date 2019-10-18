@@ -5,9 +5,9 @@ import java.awt.Graphics;
 import java.util.ArrayList;
 
 import projects.cbnet.nodes.nodeImplementations.CBNetNode;
-import projects.displaynet.DataCollection;
-import projects.displaynet.RequestQueue;
-import projects.displaynet.TreeConstructor;
+import projects.defaultProject.DataCollection;
+import projects.defaultProject.RequestQueue;
+import projects.defaultProject.TreeConstructor;
 import projects.displaynet.nodes.nodeImplementations.BinaryTreeLayer;
 import projects.seqcbnet.nodes.nodeImplementation.CBNetApp;
 import sinalgo.configuration.Configuration;

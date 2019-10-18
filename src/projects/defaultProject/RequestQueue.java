@@ -1,4 +1,4 @@
-package projects.displaynet;
+package projects.defaultProject;
 
 import java.io.BufferedReader;
 import java.io.FileReader;

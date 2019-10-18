@@ -5,6 +5,9 @@ import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.Random;
 
+import projects.defaultProject.DataCollection;
+import projects.defaultProject.RequestQueue;
+import projects.defaultProject.TreeConstructor;
 import projects.displaynet.nodes.nodeImplementations.BinaryTreeLayer;
 import projects.displaynet.nodes.nodeImplementations.DiSplayNetApp;
 import projects.displaynet.nodes.nodeImplementations.SplayNetNode;

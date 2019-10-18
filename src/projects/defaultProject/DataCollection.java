@@ -1,4 +1,4 @@
-package projects.displaynet;
+package projects.defaultProject;
 
 import sinalgo.tools.logging.Logging;
 import sinalgo.tools.statistics.DataSeries;

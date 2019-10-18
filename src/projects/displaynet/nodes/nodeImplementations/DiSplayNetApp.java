@@ -2,7 +2,7 @@ package projects.displaynet.nodes.nodeImplementations;
 
 import java.util.HashMap;
 
-import projects.displaynet.DataCollection;
+import projects.defaultProject.DataCollection;
 import projects.displaynet.nodes.tableEntry.NodeInfo;
 import projects.displaynet.nodes.tableEntry.Request;
 
