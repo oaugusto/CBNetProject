@@ -10,8 +10,8 @@ import sinalgo.tools.Tools;
 
 public class TreeConstructor {
 
-	private BinaryTreeLayer controlNode;
-	private ArrayList<BinaryTreeLayer> tree;
+	protected BinaryTreeLayer controlNode;
+	protected ArrayList<BinaryTreeLayer> tree;
 
 	public TreeConstructor(BinaryTreeLayer controlNode, ArrayList<BinaryTreeLayer> tree) {
 		this.controlNode = controlNode;
