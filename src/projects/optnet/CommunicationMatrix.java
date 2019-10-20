@@ -68,7 +68,7 @@ public class CommunicationMatrix {
 
         for (int i = 0; i < this.length; i++) {
             for (int j = 0; j < this.length; j++) {
-                frequencyMatrix[i][j] = this.communicationMatrix[i][j] / this.totalMatrix;
+                frequencyMatrix[i][j] = this.communicationMatrix[i][j] / (double) this.totalMatrix;
             }
         }
 

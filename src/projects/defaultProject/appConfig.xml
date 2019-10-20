@@ -2,7 +2,7 @@
 <sinalgo>
 	<ProjectSelector windowWidth="941" windowHeight="1053" lastChosenProject="" windowPosX="967" windowPosY="-9" isMaximized="false" selectedTab="1" />
 	<GUI windowWidth="941" windowHeight="882" windowPosX="262" windowPosY="-18" isMaximized="true" ControlPanelExpandSimulation="true" ControlPanelShowFullViewPanel="true" ControlPanelShowTextPanel="true" ControlPanelShowProjectControl="true" RunOperationIsLimited="false" helpWindowWidth="500" helpWindowHeight="500" helpWindowPosX="200" helpWindowPosY="200" helpWindowIsMaximized="false" />
-	<RandomSeed seedFromPreviousRun="3220690560920241806" />
+	<RandomSeed seedFromPreviousRun="4845477622523611368" />
 	<App lastSelectedFileDirectory="" checkForUpdatesAtStartup="true" updateCheckTimeStamp="1571611786520" runCmdLineArgs="-project optnet -overwrite input=input/projectorDS/128/1_tor_128.txt output=test " />
 	<GenNodesDlg numNodes="100" />
 </sinalgo>
