@@ -23,6 +23,7 @@ public class DataCollection {
     private Logging concurrency_log;
     private Logging num_of_cluster;
     private Logging throughput_log;
+    private Logging operations_log;
 
     private DataCollection() {
 
@@ -36,6 +37,7 @@ public class DataCollection {
         concurrency_log = Logging.getLogger(path + "/concurrent_req.txt");
         num_of_cluster = Logging.getLogger(path + "/clusters.txt");
         throughput_log = Logging.getLogger(path + "/throughput.txt");
+        operations_log = Logging.getLogger(path + "/operations.txt");
     }
 
     public static DataCollection getInstance() {
@@ -129,6 +131,13 @@ public class DataCollection {
         System.out.println("Standard Deviation: " + this.rotationData.getStandardDeviation());
         System.out.println("Min: " + this.rotationData.getMinimum());
         System.out.println("Max: " + this.rotationData.getMaximum());
+
+        this.operations_log.logln("rotation," + 
+                            this.rotationData.getSum() + "," + 
+                            this.rotationData.getMean() + "," + 
+                            this.rotationData.getStandardDeviation() + "," +
+                            this.rotationData.getMinimum() + "," +
+                            this.rotationData.getMaximum());
     }
 
     public void printRoutingData() {
@@ -138,5 +147,12 @@ public class DataCollection {
         System.out.println("Standard Deviation: " + this.routingData.getStandardDeviation());
         System.out.println("Min: " + this.routingData.getMinimum());
         System.out.println("Max: " + this.routingData.getMaximum());
+
+        this.operations_log.logln("routing," + 
+                            this.routingData.getSum() + "," + 
+                            this.routingData.getMean() + "," + 
+                            this.routingData.getStandardDeviation()+ "," +
+                            this.routingData.getMinimum() + "," +
+                            this.routingData.getMaximum());
     }
 }
