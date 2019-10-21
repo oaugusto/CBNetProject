@@ -36,13 +36,12 @@ public class CustomGlobal extends AbstractCustomGlobal {
 
     @Override
     public boolean hasTerminated() {
-        // if (this.data.getCompletedRequests() >= MAX_REQ) {
-        //     OptNode node = (OptNode) Tools.getNodeByID(1);
-        //     this.data.addTotalTime(node.getCurrentRound());            
-        //     this.data.printRotationData();
-        //     this.data.printRoutingData();
-        //     return true;
-        // }
+        if (this.data.getCompletedRequests() >= MAX_REQ) {
+            OptNode node = (OptNode) Tools.getNodeByID(1);        
+            this.data.printRotationData();
+            this.data.printRoutingData();
+            return true;
+        }
         return false;
     }
 
@@ -105,11 +104,11 @@ public class CustomGlobal extends AbstractCustomGlobal {
         /*
          * initiate sigma buffers with message
          */
-        // while (this.requestQueue.hasNextRequest()) {
-        //     Tuple<Integer, Integer> r = this.requestQueue.getNextRequest();
-        //     CBNetApp node = (CBNetApp) Tools.getNodeByID(r.first);
-        //     node.newMessage(r.second);
-        // }
+        while (this.requestQueue.hasNextRequest()) {
+            Tuple<Integer, Integer> r = this.requestQueue.getNextRequest();
+            OptNode node = (OptNode) Tools.getNodeByID(r.first);
+            node.newMessage(r.second);
+        }
         
     }
 

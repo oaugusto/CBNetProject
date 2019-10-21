@@ -5,11 +5,10 @@ import sinalgo.nodes.messages.Message;
 /**
  * CBNetMessage
  */
-public class OptMessage extends Message implements Comparable<OptMessage> {
+public class OptMessage extends Message {
 
     private int src;
     private int dst;
-    private double priority;
 
     // collect data variable
     private long rotations;
@@ -18,10 +17,9 @@ public class OptMessage extends Message implements Comparable<OptMessage> {
     public long initialTime;
     public long finalTime;
 
-    public OptMessage(int src, int dst, double priority) {
+    public OptMessage(int src, int dst) {
         this.src = src;
         this.dst = dst;
-        this.priority = priority;
 
         // collect
         this.rotations = 0;
@@ -43,13 +41,6 @@ public class OptMessage extends Message implements Comparable<OptMessage> {
     }
 
     /**
-     * @return the priority
-     */
-    public double getPriority() {
-        return priority;
-    }
-
-    /**
      * @param src the src to set
      */
     public void setSrc(int src) {
@@ -61,13 +52,6 @@ public class OptMessage extends Message implements Comparable<OptMessage> {
      */
     public void setDst(int dst) {
         this.dst = dst;
-    }
-
-    /**
-     * @param priority the priority to set
-     */
-    public void setPriority(double priority) {
-        this.priority = priority;
     }
 
     @Override
@@ -97,15 +81,4 @@ public class OptMessage extends Message implements Comparable<OptMessage> {
         this.routing++;
     }
 
-    @Override
-    public int compareTo(OptMessage o) {
-            int value = Double.compare(this.priority, o.priority);
-            if (value == 0) { // In case tie, compare the id of the source node
-                return this.dst - o.dst;
-            } else {
-                return value;
-            }
-        }
-
-    
 }
