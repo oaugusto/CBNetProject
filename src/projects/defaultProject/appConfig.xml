@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <sinalgo>
-	<ProjectSelector windowWidth="941" windowHeight="1053" lastChosenProject="" windowPosX="967" windowPosY="-9" isMaximized="false" selectedTab="1" />
-	<GUI windowWidth="941" windowHeight="882" windowPosX="1919" windowPosY="0" isMaximized="true" ControlPanelExpandSimulation="true" ControlPanelShowFullViewPanel="true" ControlPanelShowTextPanel="true" ControlPanelShowProjectControl="true" RunOperationIsLimited="false" helpWindowWidth="500" helpWindowHeight="500" helpWindowPosX="200" helpWindowPosY="200" helpWindowIsMaximized="false" />
-	<RandomSeed seedFromPreviousRun="7303369617194928596" />
-	<App lastSelectedFileDirectory="" checkForUpdatesAtStartup="true" updateCheckTimeStamp="1571611786520" runCmdLineArgs="-batch -project seqsemisplaynet -overwrite input=input/projectorDS/128/1_tor_128.txt output=seqsemisplaynet/projector AutoStart=true " />
+	<ProjectSelector windowWidth="600" windowHeight="400" lastChosenProject="" windowPosX="50" windowPosY="50" isMaximized="false" selectedTab="1" />
+	<GUI windowWidth="800" windowHeight="600" windowPosX="50" windowPosY="50" isMaximized="false" ControlPanelExpandSimulation="true" ControlPanelShowFullViewPanel="true" ControlPanelShowTextPanel="true" ControlPanelShowProjectControl="true" RunOperationIsLimited="true" helpWindowWidth="500" helpWindowHeight="500" helpWindowPosX="200" helpWindowPosY="200" helpWindowIsMaximized="false" />
+	<RandomSeed seedFromPreviousRun="-8375741199894077551" />
+	<App lastSelectedFileDirectory="" checkForUpdatesAtStartup="true" updateCheckTimeStamp="1571672870663" runCmdLineArgs="-batch -project semisplaynet -overwrite input=input/hpcDS/cesar_mocfe.csv output=semisplaynet/hpc/cesar_mocfe AutoStart=true " />
 	<GenNodesDlg numNodes="100" />
 </sinalgo>
 
