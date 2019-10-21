@@ -2,8 +2,8 @@
 <sinalgo>
 	<ProjectSelector windowWidth="941" windowHeight="1053" lastChosenProject="" windowPosX="967" windowPosY="-9" isMaximized="false" selectedTab="1" />
 	<GUI windowWidth="941" windowHeight="882" windowPosX="1919" windowPosY="0" isMaximized="true" ControlPanelExpandSimulation="true" ControlPanelShowFullViewPanel="true" ControlPanelShowTextPanel="true" ControlPanelShowProjectControl="true" RunOperationIsLimited="false" helpWindowWidth="500" helpWindowHeight="500" helpWindowPosX="200" helpWindowPosY="200" helpWindowIsMaximized="false" />
-	<RandomSeed seedFromPreviousRun="2852549515680848737" />
-	<App lastSelectedFileDirectory="" checkForUpdatesAtStartup="true" updateCheckTimeStamp="1571611786520" runCmdLineArgs="-project optnet -overwrite input=input/projectorDS/128/1_tor_128.txt output=test " />
+	<RandomSeed seedFromPreviousRun="7303369617194928596" />
+	<App lastSelectedFileDirectory="" checkForUpdatesAtStartup="true" updateCheckTimeStamp="1571611786520" runCmdLineArgs="-batch -project seqsemisplaynet -overwrite input=input/projectorDS/128/1_tor_128.txt output=seqsemisplaynet/projector AutoStart=true " />
 	<GenNodesDlg numNodes="100" />
 </sinalgo>
 
