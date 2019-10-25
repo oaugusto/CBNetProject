@@ -12,7 +12,7 @@ import java.io.IOException;
 public class CommunicationMatrix {
 
     private int length; //the size of communication matrix
-    private int[][] communicationMatrix;
+    private double[][] communicationMatrix;
     private int totalMatrix; // the sum of entire matrix
 
     public CommunicationMatrix(String file) {
@@ -29,7 +29,7 @@ public class CommunicationMatrix {
             }
 
             // create matrix and initialize with 0
-            this.communicationMatrix = new int[this.length][this.length];
+            this.communicationMatrix = new double[this.length][this.length];
             for (int i = 0; i < this.length; i++) {
                 for (int j = 0; j < this.length; j++) {
                     this.communicationMatrix[i][j] = 0;
@@ -59,7 +59,7 @@ public class CommunicationMatrix {
         return this.totalMatrix;
     }
 
-    public int getValueAt(int i, int j) {
+    public double getValueAt(int i, int j) {
         return this.communicationMatrix[i][j];
     }
 
@@ -71,6 +71,17 @@ public class CommunicationMatrix {
                 frequencyMatrix[i][j] = this.communicationMatrix[i][j] / (double) this.totalMatrix;
             }
         }
+
+        double total = 0;
+        for (int i = 0; i < this.length; i++) {
+            for (int j = 0; j < this.length; j++) {
+                total += communicationMatrix[i][j];
+            }
+        }
+
+        System.out.println(this.length);
+        System.out.println(this.totalMatrix);
+        System.out.println(total);
 
         return frequencyMatrix;
     }

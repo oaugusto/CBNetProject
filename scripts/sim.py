@@ -24,7 +24,7 @@ projects = ["cbnet", "seqcbnet", "splaynet", "displaynet", "semisplaynet", "seqs
 java = 'java'
 classpath = 'binaries/bin:binaries/jdom.jar'
 program = 'sinalgo.Run'
-args = ['-batch', "-project"]
+args = ['-batch', '-project']
 command = '{} -cp {} {} {}'.format(java, classpath, program, ' '.join(args))
 
 #input args

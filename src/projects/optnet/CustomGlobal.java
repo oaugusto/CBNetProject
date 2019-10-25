@@ -72,7 +72,7 @@ public class CustomGlobal extends AbstractCustomGlobal {
         /*
          * read input data and configure the simulation
          */
-        this.requestQueue = new RequestQueue(input, " ");
+        this.requestQueue = new RequestQueue(input);
         this.numNodes = this.requestQueue.getNumberOfNodes();
         MAX_REQ = this.requestQueue.getNumberOfRequests();
 
@@ -114,7 +114,7 @@ public class CustomGlobal extends AbstractCustomGlobal {
 
     @Override
     public void preRound() {
-        //this.treeTopology.setPositions();
+        this.treeTopology.setPositions();
     }
 
 }
