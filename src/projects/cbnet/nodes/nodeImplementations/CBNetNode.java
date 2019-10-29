@@ -12,10 +12,14 @@ import sinalgo.gui.transformation.PositionTransformation;
 import sinalgo.runtime.Global;
 import sinalgo.tools.Tools;
 
+import projects.defaultProject.DataCollection;
+
 /**
  * CBNetNode
  */
 public class CBNetNode extends RotationLayer {
+
+    private DataCollection data = DataCollection.getInstance();
 
     // to break ties in priority
     private Random rand = Tools.getRandomNumberGenerator();
@@ -49,6 +53,8 @@ public class CBNetNode extends RotationLayer {
 
                 this.state = States.COMMUNICATING;
                 this.newMessageSent();
+                //Log
+                this.data.addSequence(rq.srcId - 1, rq.dstId - 1);
             }
 
             break;

@@ -10,151 +10,152 @@ import sinalgo.tools.Tools;
  */
 public abstract class SplayNetNode extends RotationLayer {
 
-    private enum States {
-        PASSIVE, ACTIVE, COMMUNICATING
-    }
+  private enum States {
+    PASSIVE, ACTIVE, COMMUNICATING
+  }
 
-    // keep current state of the node
-    private States state;
+  // keep current state of the node
+  private States state;
 
-    // keeps track of every splay a node participate as source or destination. once
-    // a splay is completed, it is assigned null value
-    private Request activeSplay;
+  // keeps track of every splay a node participate as source or destination. once
+  // a splay is completed, it is assigned null value
+  private Request activeSplay;
 
-    @Override
-    public void init() {
-        super.init();
+  @Override
+  public void init() {
+    super.init();
 
+    this.state = States.PASSIVE;
+    this.activeSplay = null;
+  }
+
+  public Request getActiveSplay() {
+    return activeSplay;
+  }
+
+  public void newSplay(int src, int dst, double priority) {
+    this.activeSplay = new Request(src, dst, priority);
+    this.activeSplay.initialTime = this.getCurrentRound();
+  }
+
+  @Override
+  public void updateState() {
+
+    /*
+     * Update current state in time slot 0
+     */
+    switch (this.state) {
+
+      case COMMUNICATING:
         this.state = States.PASSIVE;
-        this.activeSplay = null;
-    }
-
-    public Request getActiveSplay() {
-        return activeSplay;
-    }
-
-    public void newSplay(int src, int dst, double priority) {
-        this.activeSplay = new Request(src, dst, priority);
-        this.activeSplay.initialTime = this.getCurrentRound();
-    }
-
-    @Override
-    public void updateState() {
-
-        /*
-         * Update current state in time slot 0
-         */
-        switch (this.state) {
-
-        case COMMUNICATING:
-            this.state = States.PASSIVE;
-            this.unblockRotations();
-            this.clearClusterRequest();
-            this.activeSplay = null;
-
-        case PASSIVE:
-            if (this.activeSplay != null) {
-
-                // event
-                this.newSplayStarted(this.activeSplay);
-
-                if (this.checkCompletion() == true) {
-
-                    this.blockRotations();
-                    this.state = States.COMMUNICATING;
-                    this.sendCompletionMessage(this.activeSplay.dstId, this.activeSplay);
-
-                    // event
-                    this.communicationClusterFormed(this.activeSplay);
-
-                } else {
-                    this.state = States.ACTIVE;
-                    this.setOperation(this.activeSplay.srcId, this.activeSplay.dstId, this.activeSplay.priority);
-                    if (!this.isLeastCommonAncestorOf(this.activeSplay.dstId)) {
-                        this.tryRotation();
-                    }
-                }
-            }
-            break;
-
-        case ACTIVE:
-            if (this.checkCompletion() == true) {
-
-                this.blockRotations();
-                this.state = States.COMMUNICATING;
-                this.sendCompletionMessage(this.activeSplay.dstId, this.activeSplay);
-
-                // event
-                this.communicationClusterFormed(this.activeSplay);
-
-            } else if (!this.isLeastCommonAncestorOf(this.activeSplay.dstId)) {
-                this.tryRotation();
-            }
-
-            break;
-
-        default:
-            Tools.fatalError("Non-existing splay state");
-            break;
-        }
-    }
-
-    public void sendCompletionMessage(int dst, Request rq) {
-        CompletionMessage cmpMessage = new CompletionMessage(rq);
-        this.sendForwardMessage(dst, cmpMessage);
-    }
-
-    @Override
-    public void receiveMessage(Message msg) {
-        super.receiveMessage(msg);
-
-        if (msg instanceof CompletionMessage) {
-            CompletionMessage cmpMessage = (CompletionMessage) msg;
-
-            this.communicationCompleted(cmpMessage.getRequest());
-
-            return;
-        }
-    }
-
-    private boolean checkCompletion() {
-        if (this.isNeighbor(this.activeSplay.dstId)) {
-            return true;
-        }
-        return false;
-    }
-
-    private void blockRotations() {
-        this.setOperation(Integer.MIN_VALUE, Integer.MIN_VALUE, Double.MIN_VALUE);
-    }
-
-    private void unblockRotations() {
+        this.unblockRotations();
         this.clearClusterRequest();
+        this.activeSplay = null;
+
+      case PASSIVE:
+        if (this.activeSplay != null) {
+
+          // event
+          this.newSplayStarted(this.activeSplay);
+
+          if (this.checkCompletion() == true) {
+
+            this.blockRotations();
+            this.state = States.COMMUNICATING;
+            this.sendCompletionMessage(this.activeSplay.dstId, this.activeSplay);
+
+            // event
+            this.communicationClusterFormed(this.activeSplay);
+
+          } else {
+            this.state = States.ACTIVE;
+            this.setOperation(this.activeSplay.srcId, this.activeSplay.dstId,
+                this.activeSplay.priority);
+            if (!this.isLeastCommonAncestorOf(this.activeSplay.dstId)) {
+              this.tryRotation();
+            }
+          }
+        }
+        break;
+
+      case ACTIVE:
+        if (this.checkCompletion() == true) {
+
+          this.blockRotations();
+          this.state = States.COMMUNICATING;
+          this.sendCompletionMessage(this.activeSplay.dstId, this.activeSplay);
+
+          // event
+          this.communicationClusterFormed(this.activeSplay);
+
+        } else if (!this.isLeastCommonAncestorOf(this.activeSplay.dstId)) {
+          this.tryRotation();
+        }
+
+        break;
+
+      default:
+        Tools.fatalError("Non-existing splay state");
+        break;
     }
+  }
 
-    @Override
-    public void zigCompleted() { // single rotation
-        super.zigCompleted();
-        this.activeSplay.numOfRotations++;
+  public void sendCompletionMessage(int dst, Request rq) {
+    CompletionMessage cmpMessage = new CompletionMessage(rq);
+    this.sendForwardMessage(dst, cmpMessage);
+  }
+
+  @Override
+  public void receiveMessage(Message msg) {
+    super.receiveMessage(msg);
+
+    if (msg instanceof CompletionMessage) {
+      CompletionMessage cmpMessage = (CompletionMessage) msg;
+
+      this.communicationCompleted(cmpMessage.getRequest());
+
+      return;
     }
+  }
 
-    @Override
-    public void rotationCompleted() { // double rotation
-        super.rotationCompleted();
-        this.activeSplay.numOfRotations++;
-        this.activeSplay.numOfRotations++;
+  private boolean checkCompletion() {
+    if (this.isNeighbor(this.activeSplay.dstId)) {
+      return true;
     }
+    return false;
+  }
 
-    public void newSplayStarted(Request currentRequest) {
+  private void blockRotations() {
+    this.setOperation(Integer.MIN_VALUE, Integer.MIN_VALUE, Double.MIN_VALUE);
+  }
 
-    }
+  private void unblockRotations() {
+    this.clearClusterRequest();
+  }
 
-    public void communicationClusterFormed(Request currentRequest) {
+  @Override
+  public void zigCompleted() { // single rotation
+    super.zigCompleted();
+    this.activeSplay.numOfRotations++;
+  }
 
-    }
+  @Override
+  public void rotationCompleted() { // double rotation
+    super.rotationCompleted();
+    this.activeSplay.numOfRotations++;
+    this.activeSplay.numOfRotations++;
+  }
 
-    public void communicationCompleted(Request peerRequest) {
-        this.activeSplay.finalTime = this.getCurrentRound(); 
-    }
+  public void newSplayStarted(Request currentRequest) {
+
+  }
+
+  public void communicationClusterFormed(Request currentRequest) {
+
+  }
+
+  public void communicationCompleted(Request peerRequest) {
+    this.activeSplay.finalTime = this.getCurrentRound();
+  }
 
 }

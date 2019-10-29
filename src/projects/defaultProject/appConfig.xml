@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <sinalgo>
 	<ProjectSelector windowWidth="1922" windowHeight="1057" lastChosenProject="" windowPosX="-1" windowPosY="0" isMaximized="false" selectedTab="1" />
-	<GUI windowWidth="941" windowHeight="882" windowPosX="1919" windowPosY="-22" isMaximized="true" ControlPanelExpandSimulation="true" ControlPanelShowFullViewPanel="true" ControlPanelShowTextPanel="true" ControlPanelShowProjectControl="true" RunOperationIsLimited="false" helpWindowWidth="500" helpWindowHeight="500" helpWindowPosX="200" helpWindowPosY="200" helpWindowIsMaximized="false" />
-	<RandomSeed seedFromPreviousRun="5854626027835070934" />
-	<App lastSelectedFileDirectory="" checkForUpdatesAtStartup="true" updateCheckTimeStamp="1571948253340" runCmdLineArgs="-project displaynet -overwrite input=input/projectorDS/tor_128.txt output=test " />
+	<GUI windowWidth="941" windowHeight="882" windowPosX="1919" windowPosY="0" isMaximized="true" ControlPanelExpandSimulation="true" ControlPanelShowFullViewPanel="true" ControlPanelShowTextPanel="true" ControlPanelShowProjectControl="true" RunOperationIsLimited="false" helpWindowWidth="500" helpWindowHeight="500" helpWindowPosX="200" helpWindowPosY="200" helpWindowIsMaximized="false" />
+	<RandomSeed seedFromPreviousRun="6583607822839577876" />
+	<App lastSelectedFileDirectory="" checkForUpdatesAtStartup="true" updateCheckTimeStamp="1572347185238" runCmdLineArgs="-project displaynet -overwrite input=input/projectorDS/tor_512.txt output=test " />
 	<GenNodesDlg numNodes="100" />
 </sinalgo>
 

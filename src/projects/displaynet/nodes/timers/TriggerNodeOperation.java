@@ -10,21 +10,21 @@ import sinalgo.tools.Tools;
  */
 public class TriggerNodeOperation extends Timer {
 
-    public int src;
-    public int dst;
+  public int src;
+  public int dst;
 
-    public TriggerNodeOperation(int src, int dst) {
-        this.src = src;
-        this.dst = dst;
-    }
+  public TriggerNodeOperation(int src, int dst) {
+    this.src = src;
+    this.dst = dst;
+  }
 
-    @Override
-    public void fire() {
+  @Override
+  public void fire() {
 
-        DiSplayNetApp srcnode = (DiSplayNetApp) Tools.getNodeByID(src);
-        srcnode.newSplayOperation(dst);
+    DiSplayNetApp srcnode = (DiSplayNetApp) Tools.getNodeByID(src);
+    srcnode.newSplayOperation(dst);
 
-        CustomGlobal.mustGenerate = true;
-    }
-    
+    CustomGlobal.mustGenerate = true;
+  }
+
 }

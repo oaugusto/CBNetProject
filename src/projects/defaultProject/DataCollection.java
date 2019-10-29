@@ -5,154 +5,160 @@ import sinalgo.tools.statistics.DataSeries;
 
 public class DataCollection {
 
-    private static DataCollection single_instance = null;
+  private static DataCollection single_instance = null;
 
-    private DataSeries rotationData = new DataSeries();
-    private DataSeries routingData = new DataSeries();
+  private DataSeries rotationData = new DataSeries();
+  private DataSeries routingData = new DataSeries();
 
-    private long activeSplays = 0;
-    private long activeClusters = 0;
+  private long activeSplays = 0;
+  private long activeClusters = 0;
 
-    private long completedRequests = 0;
+  private long completedRequests = 0;
 
-    // LOGS
-    private Logging rotations_per_splay;
-    private Logging routing_per_splay;
-    private Logging rounds_per_splay;
-    private Logging total_time_log;
-    private Logging concurrency_log;
-    private Logging num_of_cluster;
-    private Logging throughput_log;
-    private Logging operations_log;
+  // LOGS
+  private Logging rotations_per_splay;
+  private Logging routing_per_splay;
+  private Logging rounds_per_splay;
+  private Logging total_time_log;
+  private Logging concurrency_log;
+  private Logging num_of_cluster;
+  private Logging throughput_log;
+  private Logging operations_log;
+  private Logging sequence_log;
 
-    private DataCollection() {
+  private DataCollection() {
 
+  }
+
+  public void setPath(String path) {
+    rotations_per_splay = Logging.getLogger(path + "/rotations_per_splay.txt");
+    routing_per_splay = Logging.getLogger(path + "/routing_per_splay.txt");
+    rounds_per_splay = Logging.getLogger(path + "/rounds_per_splay.txt");
+    total_time_log = Logging.getLogger(path + "/total_time.txt");
+    concurrency_log = Logging.getLogger(path + "/concurrent_req.txt");
+    num_of_cluster = Logging.getLogger(path + "/clusters.txt");
+    throughput_log = Logging.getLogger(path + "/throughput.txt");
+    operations_log = Logging.getLogger(path + "/operations.txt");
+    sequence_log = Logging.getLogger(path + "/sequence.txt");
+  }
+
+  public static DataCollection getInstance() {
+    if (single_instance == null) {
+      single_instance = new DataCollection();
     }
 
-    public void setPath(String path) {
-        rotations_per_splay = Logging.getLogger(path + "/rotations_per_splay.txt");
-        routing_per_splay = Logging.getLogger(path + "/routing_per_splay.txt");
-        rounds_per_splay = Logging.getLogger(path + "/rounds_per_splay.txt");
-        total_time_log = Logging.getLogger(path + "/total_time.txt");
-        concurrency_log = Logging.getLogger(path + "/concurrent_req.txt");
-        num_of_cluster = Logging.getLogger(path + "/clusters.txt");
-        throughput_log = Logging.getLogger(path + "/throughput.txt");
-        operations_log = Logging.getLogger(path + "/operations.txt");
-    }
+    return single_instance;
+  }
 
-    public static DataCollection getInstance() {
-        if (single_instance == null) {
-            single_instance = new DataCollection();
-        }
+  public void initCollection() {
+    this.activeSplays = 0;
+    this.activeClusters = 0;
+  }
 
-        return single_instance;
-    }
+  public void addRotations(long num) {
+    this.rotationData.addSample(num);
+    this.rotations_per_splay.logln(num + "");
+  }
 
-    public void initCollection() {
-        this.activeSplays = 0;
-        this.activeClusters = 0;
-    }
+  public void addRouting(long num) {
+    this.routingData.addSample(num);
+    this.routing_per_splay.logln(num + "");
+  }
 
-    public void addRotations(long num) {
-        this.rotationData.addSample(num);
-        this.rotations_per_splay.logln(num + "");
-    }
+  public void resetCollection() {
+    this.rotationData.reset();
+    this.routingData.reset();
+  }
 
-    public void addRouting(long num) {
-        this.routingData.addSample(num);
-        this.routing_per_splay.logln(num + "");
-    }
+  public void addNumOfActiveSplays() {
+    this.concurrency_log.logln(this.activeSplays + "");
+  }
 
-    public void resetCollection() {
-        this.rotationData.reset();
-        this.routingData.reset();
-    }
+  public void addNumOfActiveClusters() {
+    this.num_of_cluster.logln(this.activeClusters + "");
+  }
 
-    public void addNumOfActiveSplays() {
-        this.concurrency_log.logln(this.activeSplays + "");
-    }
+  public void addTotalTime(long num) {
+    this.total_time_log.logln(num + "");
+  }
 
-    public void addNumOfActiveClusters() {
-        this.num_of_cluster.logln(this.activeClusters + "");
-    }
+  public void addThroughput(long num) {
+    this.throughput_log.logln(num + "");
+  }
 
-    public void addTotalTime(long num) {
-        this.total_time_log.logln(num + "");
-    }
+  public void addRoundsPerSplay(long num) {
+    this.rounds_per_splay.logln(num + "");
+  }
 
-    public void addThroughput(long num) {
-        this.throughput_log.logln(num + "");
-    }
+  public void incrementActiveSplays() {
+    this.activeSplays++;
+  }
 
-    public void addRoundsPerSplay(long num) {
-        this.rounds_per_splay.logln(num + "");
-    }
+  public void decrementActiveSplays() {
+    this.activeSplays--;
+  }
 
-    public void incrementActiveSplays() {
-        this.activeSplays++;
-    }
+  public long getNumbugerOfActiveSplays() {
+    return activeSplays;
+  }
 
-    public void decrementActiveSplays() {
-        this.activeSplays--;
-    }
+  public void incrementActiveClusters() {
+    this.activeClusters++;
+  }
 
-    public long getNumbugerOfActiveSplays() {
-        return activeSplays;
-    }
+  public void decrementActiveClusters() {
+    this.activeClusters--;
+  }
 
-    public void incrementActiveClusters() {
-        this.activeClusters++;
-    }
+  public void resetActiveClusters() {
+    this.activeClusters = 0;
+  }
 
-    public void decrementActiveClusters() {
-        this.activeClusters--;
-    }
+  public long getActiveClusters() {
+    return activeClusters;
+  }
 
-    public void resetActiveClusters() {
-        this.activeClusters = 0;
-    }
+  public void incrementCompletedRequests() {
+    this.completedRequests++;
+  }
 
-    public long getActiveClusters() {
-        return activeClusters;
-    }
+  public long getCompletedRequests() {
+    return completedRequests;
+  }
 
-    public void incrementCompletedRequests() {
-        this.completedRequests++;
-    }
+  public void addSequence(int src, int dst) {
+    this.sequence_log.logln(src + "," + dst);
+  }
 
-    public long getCompletedRequests() {
-        return completedRequests;
-    }
+  public void printRotationData() {
+    System.out.println("Rotations:");
+    System.out.println("Number of request: " + this.rotationData.getNumberOfSamples());
+    System.out.println("Mean: " + this.rotationData.getMean());
+    System.out.println("Standard Deviation: " + this.rotationData.getStandardDeviation());
+    System.out.println("Min: " + this.rotationData.getMinimum());
+    System.out.println("Max: " + this.rotationData.getMaximum());
 
-    public void printRotationData() {
-        System.out.println("Rotations:");
-        System.out.println("Number of request: " + this.rotationData.getNumberOfSamples());
-        System.out.println("Mean: " + this.rotationData.getMean());
-        System.out.println("Standard Deviation: " + this.rotationData.getStandardDeviation());
-        System.out.println("Min: " + this.rotationData.getMinimum());
-        System.out.println("Max: " + this.rotationData.getMaximum());
+    this.operations_log.logln("rotation," +
+        this.rotationData.getSum() + "," +
+        this.rotationData.getMean() + "," +
+        this.rotationData.getStandardDeviation() + "," +
+        this.rotationData.getMinimum() + "," +
+        this.rotationData.getMaximum());
+  }
 
-        this.operations_log.logln("rotation," + 
-                            this.rotationData.getSum() + "," + 
-                            this.rotationData.getMean() + "," + 
-                            this.rotationData.getStandardDeviation() + "," +
-                            this.rotationData.getMinimum() + "," +
-                            this.rotationData.getMaximum());
-    }
+  public void printRoutingData() {
+    System.out.println("Routing:");
+    System.out.println("Number of request " + this.routingData.getNumberOfSamples());
+    System.out.println("Mean: " + this.routingData.getMean());
+    System.out.println("Standard Deviation: " + this.routingData.getStandardDeviation());
+    System.out.println("Min: " + this.routingData.getMinimum());
+    System.out.println("Max: " + this.routingData.getMaximum());
 
-    public void printRoutingData() {
-        System.out.println("Routing:");
-        System.out.println("Number of request " + this.routingData.getNumberOfSamples());
-        System.out.println("Mean: " + this.routingData.getMean());
-        System.out.println("Standard Deviation: " + this.routingData.getStandardDeviation());
-        System.out.println("Min: " + this.routingData.getMinimum());
-        System.out.println("Max: " + this.routingData.getMaximum());
-
-        this.operations_log.logln("routing," + 
-                            this.routingData.getSum() + "," + 
-                            this.routingData.getMean() + "," + 
-                            this.routingData.getStandardDeviation()+ "," +
-                            this.routingData.getMinimum() + "," +
-                            this.routingData.getMaximum());
-    }
+    this.operations_log.logln("routing," +
+        this.routingData.getSum() + "," +
+        this.routingData.getMean() + "," +
+        this.routingData.getStandardDeviation() + "," +
+        this.routingData.getMinimum() + "," +
+        this.routingData.getMaximum());
+  }
 }
