@@ -23,7 +23,7 @@ public class CommunicationMatrix {
 
             // read header
 			if ((line = br.readLine()) != null) {
-				String[] fields = line.split(",");
+				String[] fields = line.split(" ");
 				this.length = Integer.parseInt(fields[0]);
 				this.totalMatrix = Integer.parseInt(fields[1]);
             }
@@ -37,10 +37,11 @@ public class CommunicationMatrix {
             }
 
             while ((line = br.readLine()) != null) {
-				String[] fields = line.split(",");
+				String[] fields = line.split(" ");
 				int src = Integer.parseInt(fields[0]); 
                 int dst = Integer.parseInt(fields[1]);
                 this.communicationMatrix[src][dst]++;
+                this.communicationMatrix[dst][src]++;
 			}
             
             br.close();

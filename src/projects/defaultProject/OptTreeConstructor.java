@@ -14,23 +14,44 @@ public class OptTreeConstructor extends TreeConstructor {
 	private double[][] weightMatrix;
 	private double[][] bigW;
 	private int[][] distanceMatrix;
-    private OptInfo[][] optTree;
-    
-    private class OptInfo {
-	
-        public double cost;
-        public int root;
-        
+
+	private class OptInfo {
+
+		public double cost;
+		public int root;
         public OptInfo(){
             cost = 0;
             root = -1;
         }
-        
+
         public OptInfo(double c, int r){
             cost = c;
             root = r;
         }
+
+	}
+
+    class Node {
+
+        int id;
+        Node left;
+        Node right;
+
+        public Node() {
+            this.id = -1;
+            left = null;
+            right = null;
+        }
+
+        public Node(int id) {
+            this.id = id;
+            left = null;
+            right = null;
+        }
     }
+
+    private Node root;
+	private OptInfo[][] optTree;
 
     public OptTreeConstructor(BinaryTreeLayer controlNode, ArrayList<BinaryTreeLayer> tree) {
         super(controlNode, tree);
@@ -58,7 +79,28 @@ public class OptTreeConstructor extends TreeConstructor {
 		this.controlNode.setRightChild(null);
 		this.controlNode.setMinIdInSubtree(1);
         this.controlNode.setMaxIdInSubtree(this.tree.size());
-        
+
+        // Build the Tree
+        this.root = this.buildMatrix(0, netSize - 1);
+        int maxDist = 0;
+
+        // Calculate the distance matrix
+        for (int i = 0; i < netSize; i++) {
+            for (int j = 0; j < netSize; j++) {
+                this.distanceMatrix[i][j] = this.findDistance(this.root, i, j);
+                if (this.distanceMatrix[i][j] > maxDist) {
+                    maxDist = this.distanceMatrix[i][j];
+                }
+                // System.out.println("D["+i+", "+j+"] = "+distanceMatrix[i][j]);
+            }
+        }
+
+//        for (int i = 0; i < netSize; i++) {
+//            for (int j = 0; j < netSize; j++) {
+//                System.out.println(i + " " + j + " " + this.distanceMatrix[i][j]);
+//            }
+//        }
+
         // build tree
 		this.controlNode.addLinkToLeftChild(this.buildTree(0, netSize - 1));
     }
@@ -74,6 +116,7 @@ public class OptTreeConstructor extends TreeConstructor {
 			for (int j = 0; j < this.netSize; j++) {
 				this.bigW[i][j] = 0;
 				this.distanceMatrix[i][j] = 0;
+				this.optTree[i][j] = new OptInfo();
 			}
 		}
 	}
@@ -96,12 +139,6 @@ public class OptTreeConstructor extends TreeConstructor {
 	private void optTree() {
 		OptInfo resp = new OptInfo(9999999, -1);
 		// resp.cost = 99999;//Maximize the cost
-
-		for (int i = 0; i < netSize; i++) {
-			for (int j = 0; j < netSize; j++) {
-				this.optTree[i][j] = new OptInfo();
-			}
-		}
 
 		double costX = 0;
 
@@ -166,5 +203,68 @@ public class OptTreeConstructor extends TreeConstructor {
 
 		return node;
 	}
-    
+
+    // Recursively build the Tree, starting from the root
+    private Node buildMatrix(int i, int j) {
+        int root = this.optTree[i][j].root;
+        Node node = new Node();
+
+        node.id = root;
+
+        // System.out.println("The root for interval ["+i+", "+j+"] = "+root);
+
+        if (i < root) {
+            node.left = buildMatrix(i, root - 1);
+
+        }
+        if (j > root) {
+            node.right = buildMatrix(root + 1, j);
+        }
+
+        return node;
+    }
+
+    /**
+     * Distance of two nodes (u,v) in the tree: d(u,v) = d(root, u) + d(root, v) —
+     * 2*(d(root,LCA(u,v)))
+     */
+    private int findDistance(Node root, int n1, int n2) {
+        int x = pathLength(root, n1) - 1;
+        int y = pathLength(root, n2) - 1;
+        int lcaData = findLCA(root, n1, n2).id;
+        int lcaDistance = pathLength(root, lcaData) - 1;
+        return (x + y) - 2 * lcaDistance;
+    }
+
+    private int pathLength(Node root, int n1) {
+        if (root != null) {
+            int x = 0;
+            if ((root.id == n1) || (x = pathLength(root.left, n1)) > 0 || (x = pathLength(root.right, n1)) > 0) {
+                return x + 1;
+            }
+            return 0;
+        }
+        return 0;
+    }
+
+    private Node findLCA(Node root, int n1, int n2) {
+        if (root != null) {
+            if (root.id == n1 || root.id == n2) {
+                return root;
+            }
+            Node left = findLCA(root.left, n1, n2);
+            Node right = findLCA(root.right, n1, n2);
+
+            if (left != null && right != null) {
+                return root;
+            }
+            if (left != null) {
+                return left;
+            }
+            if (right != null) {
+                return right;
+            }
+        }
+        return null;
+    }
 }
