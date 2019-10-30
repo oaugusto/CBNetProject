@@ -92,14 +92,21 @@ public class TreeConstructor {
 
 		for (int i = 1; i < this.tree.size(); i++) {
 			node = this.tree.get(i);
-			node.setRightChild(null);
+			node.addLinkToRightChild(null);
 			node.setMaxIdInSubtree(node.ID);
 			node.setMinIdInSubtree(previous.getMinIdInSubtree());
-			node.setLeftChild(previous);
+			node.addLinkToLeftChild(previous);
 			previous.setParent(node);
 
 			previous = node;
 		}
+
+		// configure the control node
+		this.controlNode.setParent(null);
+		this.controlNode.setRightChild(null);
+		this.controlNode.addLinkToLeftChild(node);
+		this.controlNode.setMinIdInSubtree(1);
+		this.controlNode.setMaxIdInSubtree(this.tree.size());
 	}
 
 	public void randomTree() {

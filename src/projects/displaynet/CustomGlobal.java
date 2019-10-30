@@ -110,7 +110,8 @@ public class CustomGlobal extends AbstractCustomGlobal {
     this.controlNode.finishInitializationWithDefaultModels(true);
 
     this.treeTopology = new TreeConstructor(controlNode, this.tree);
-    this.treeTopology.setBalancedTree();
+//    this.treeTopology.setBalancedTree();
+    this.treeTopology.linearTree();
     this.treeTopology.setPositions();
 
     /*
