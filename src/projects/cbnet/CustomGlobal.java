@@ -125,7 +125,7 @@ public class CustomGlobal extends AbstractCustomGlobal {
   @Override
   public void preRound() {
     this.treeTopology.setPositions();
-
+    //Tools.repaintGUI();
     /*if (mustGenerate && this.requestQueue.hasNextRequest()) {
       mustGenerate = false;
 
