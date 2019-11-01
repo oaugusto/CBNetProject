@@ -130,6 +130,14 @@ public class DataCollection {
     this.sequence_log.logln(src + "," + dst);
   }
 
+  public DataSeries getRotationDataSeries() {
+    return this.rotationData;
+  }
+
+  public DataSeries getRoutingDataSeries() {
+    return this.routingData;
+  }
+
   public void printRotationData() {
     System.out.println("Rotations:");
     System.out.println("Number of request: " + this.rotationData.getNumberOfSamples());
