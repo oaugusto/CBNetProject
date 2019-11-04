@@ -223,7 +223,8 @@ public class HandShakeLayer extends DiSplayNetNode {
         // + this.currentSplay_handshake.dstId + "priority: " +
         // this.currentSplay_handshake.priority);
         // TODO
-        this.newSplay(this.currentSplay_handshake.getSrcId(), this.currentSplay_handshake.getDstId(),
+        this.newSplay(this.currentSplay_handshake.getSrcId(),
+            this.currentSplay_handshake.getDstId(),
             this.currentSplay_handshake.priority);
 
         this.state_handshake = State_handshake.SPLAY;

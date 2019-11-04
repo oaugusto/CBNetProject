@@ -79,7 +79,7 @@ public abstract class DiSplayNetNode extends RotationLayer {
         break;
 
       case ACTIVE:
-        if (this.checkCompletion() == true) {
+        if (this.checkCompletion()) {
 
           this.lockRotations();
           this.state = States.COMMUNICATING;
