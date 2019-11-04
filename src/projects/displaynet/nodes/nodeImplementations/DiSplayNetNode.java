@@ -8,7 +8,7 @@ import sinalgo.tools.Tools;
 /**
  * SplayNetNode
  */
-public abstract class SplayNetNode extends RotationLayer {
+public abstract class DiSplayNetNode extends RotationLayer {
 
   private enum States {
     PASSIVE, ACTIVE, COMMUNICATING
@@ -29,7 +29,7 @@ public abstract class SplayNetNode extends RotationLayer {
     this.activeSplay = null;
   }
 
-  public Request getActiveSplay() {
+  protected Request getActiveSplay() {
     return activeSplay;
   }
 
@@ -48,7 +48,7 @@ public abstract class SplayNetNode extends RotationLayer {
 
       case COMMUNICATING:
         this.state = States.PASSIVE;
-        this.unblockRotations();
+        this.unlockRotations();
         this.clearClusterRequest();
         this.activeSplay = null;
 
@@ -60,18 +60,18 @@ public abstract class SplayNetNode extends RotationLayer {
 
           if (this.checkCompletion() == true) {
 
-            this.blockRotations();
+            this.lockRotations();
             this.state = States.COMMUNICATING;
-            this.sendCompletionMessage(this.activeSplay.dstId, this.activeSplay);
+            this.sendCompletionMessage(this.activeSplay.getDstId(), this.activeSplay);
 
             // event
             this.communicationClusterFormed(this.activeSplay);
 
           } else {
             this.state = States.ACTIVE;
-            this.setOperation(this.activeSplay.srcId, this.activeSplay.dstId,
+            this.setOperation(this.activeSplay.getSrcId(), this.activeSplay.getDstId(),
                 this.activeSplay.priority);
-            if (!this.isLeastCommonAncestorOf(this.activeSplay.dstId)) {
+            if (!this.isLeastCommonAncestorOf(this.activeSplay.getDstId())) {
               this.tryRotation();
             }
           }
@@ -81,14 +81,14 @@ public abstract class SplayNetNode extends RotationLayer {
       case ACTIVE:
         if (this.checkCompletion() == true) {
 
-          this.blockRotations();
+          this.lockRotations();
           this.state = States.COMMUNICATING;
-          this.sendCompletionMessage(this.activeSplay.dstId, this.activeSplay);
+          this.sendCompletionMessage(this.activeSplay.getDstId(), this.activeSplay);
 
           // event
           this.communicationClusterFormed(this.activeSplay);
 
-        } else if (!this.isLeastCommonAncestorOf(this.activeSplay.dstId)) {
+        } else if (!this.isLeastCommonAncestorOf(this.activeSplay.getDstId())) {
           this.tryRotation();
         }
 
@@ -119,17 +119,17 @@ public abstract class SplayNetNode extends RotationLayer {
   }
 
   private boolean checkCompletion() {
-    if (this.isNeighbor(this.activeSplay.dstId)) {
+    if (this.isNeighbor(this.activeSplay.getDstId())) {
       return true;
     }
     return false;
   }
 
-  private void blockRotations() {
+  private void lockRotations() {
     this.setOperation(Integer.MIN_VALUE, Integer.MIN_VALUE, Double.MIN_VALUE);
   }
 
-  private void unblockRotations() {
+  private void unlockRotations() {
     this.clearClusterRequest();
   }
 

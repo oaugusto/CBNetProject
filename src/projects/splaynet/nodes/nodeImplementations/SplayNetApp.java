@@ -4,7 +4,7 @@ import java.util.HashMap;
 
 import projects.defaultProject.DataCollection;
 import projects.displaynet.nodes.nodeImplementations.HandShakeLayer;
-import projects.displaynet.nodes.tableEntry.NodeInfo;
+import projects.defaultProject.nodes.tableEntry.NodeInfo;
 import projects.displaynet.nodes.tableEntry.Request;
 
 /**
@@ -41,7 +41,7 @@ public class SplayNetApp extends HandShakeLayer {
     @Override
     public void communicationClusterFormed(Request request) {
         super.communicationClusterFormed(request);
-        if (request.srcId < ID) {
+        if (request.getDstId() < ID) {
             this.data.incrementActiveClusters();
         }
     }
@@ -51,7 +51,7 @@ public class SplayNetApp extends HandShakeLayer {
         super.communicationCompleted(request);
         Request activeRequest = this.getActiveSplay();
 
-        if (activeRequest.dstId < ID) {
+        if (activeRequest.getDstId() < ID) {
             this.data.decrementActiveSplays();
             this.data.addRotations(activeRequest.numOfRotations + request.numOfRotations);
             this.data.addRouting(1);

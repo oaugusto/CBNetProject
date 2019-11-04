@@ -1,7 +1,7 @@
 package projects.cbnet.nodes.tableEntry;
 
 import projects.cbnet.nodes.nodeImplementations.CBTreeLayer;
-import projects.displaynet.nodes.tableEntry.NodeInfo;
+import projects.defaultProject.nodes.tableEntry.NodeInfo;
 
 /**
  * NodeInfo

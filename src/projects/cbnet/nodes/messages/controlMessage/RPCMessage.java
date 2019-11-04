@@ -1,6 +1,6 @@
 package projects.cbnet.nodes.messages.controlMessage;
 
-import projects.displaynet.nodes.nodeImplementations.BinaryTreeLayer;
+import projects.defaultProject.nodes.nodeImplementations.BinarySearchTreeLayer;
 import sinalgo.nodes.messages.Message;
 
 /**
@@ -9,10 +9,10 @@ import sinalgo.nodes.messages.Message;
 public class RPCMessage extends Message {
 
     private String command;
-    private BinaryTreeLayer node;
+    private BinarySearchTreeLayer node;
     private long value;
 
-    public RPCMessage(String command, BinaryTreeLayer node) {
+    public RPCMessage(String command, BinarySearchTreeLayer node) {
         this.command = command;
         this.node = node;
         this.value = -1;
@@ -28,7 +28,7 @@ public class RPCMessage extends Message {
         return this.command;
     }
 
-    public BinaryTreeLayer getNode() {
+    public BinarySearchTreeLayer getNode() {
         return this.node;
     }
 
@@ -40,7 +40,7 @@ public class RPCMessage extends Message {
         this.command = cmd;
     }
 
-    public void setNode(BinaryTreeLayer node) {
+    public void setNode(BinarySearchTreeLayer node) {
         this.node = node;
     }
 

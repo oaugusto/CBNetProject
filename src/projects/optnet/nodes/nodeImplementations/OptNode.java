@@ -4,7 +4,7 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 import projects.defaultProject.DataCollection;
-import projects.displaynet.nodes.nodeImplementations.BinaryTreeLayer;
+import projects.defaultProject.nodes.nodeImplementations.BinarySearchTreeLayer;
 import projects.displaynet.nodes.tableEntry.Request;
 import projects.optnet.nodes.messages.CompletionMessage;
 import projects.optnet.nodes.messages.OptMessage;
@@ -16,7 +16,7 @@ import sinalgo.tools.Tools;
 /*
  * CBNetLayer
  */
-public class OptNode extends BinaryTreeLayer {
+public class OptNode extends BinarySearchTreeLayer {
 
     // LOG
     DataCollection data = DataCollection.getInstance();
@@ -45,7 +45,7 @@ public class OptNode extends BinaryTreeLayer {
 
             if (!this.bufferRequest.isEmpty()) {
                 Request rq = this.bufferRequest.poll();
-                OptMessage optMsg = new OptMessage(ID, rq.dstId);
+                OptMessage optMsg = new OptMessage(ID, rq.getDstId());
                 this.forwardMessage(optMsg);
 
                 this.state = States.COMMUNICATING;

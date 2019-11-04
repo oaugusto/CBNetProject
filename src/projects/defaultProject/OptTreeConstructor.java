@@ -2,8 +2,7 @@ package projects.defaultProject;
 
 import java.util.ArrayList;
 
-import projects.defaultProject.TreeConstructor;
-import projects.displaynet.nodes.nodeImplementations.BinaryTreeLayer;
+import projects.defaultProject.nodes.nodeImplementations.BinarySearchTreeLayer;
 
 /**
  * OptTreeConstructor
@@ -54,7 +53,7 @@ public class OptTreeConstructor extends TreeConstructor {
   private Node root;
   private OptInfo[][] optTree;
 
-  public OptTreeConstructor(BinaryTreeLayer controlNode, ArrayList<BinaryTreeLayer> tree) {
+  public OptTreeConstructor(BinarySearchTreeLayer controlNode, ArrayList<BinarySearchTreeLayer> tree) {
     super(controlNode, tree);
   }
 
@@ -187,9 +186,9 @@ public class OptTreeConstructor extends TreeConstructor {
   }
 
   // Recursively build the Tree, starting from the root
-  private BinaryTreeLayer buildTree(int i, int j) {
+  private BinarySearchTreeLayer buildTree(int i, int j) {
     int root = this.optTree[i][j].root;
-    BinaryTreeLayer node = tree.get(root);
+    BinarySearchTreeLayer node = tree.get(root);
     node.setMinIdInSubtree(i + 1);
     node.setMaxIdInSubtree(j + 1);
 

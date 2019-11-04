@@ -3,7 +3,7 @@ package projects.displaynet.nodes.nodeImplementations;
 import java.util.HashMap;
 
 import projects.defaultProject.DataCollection;
-import projects.displaynet.nodes.tableEntry.NodeInfo;
+import projects.defaultProject.nodes.tableEntry.NodeInfo;
 import projects.displaynet.nodes.tableEntry.Request;
 
 /**
@@ -24,7 +24,7 @@ public class DiSplayNetApp extends HandShakeLayer {
     public void newSplayStarted(Request currentRequest) {
         super.newSplayStarted(currentRequest);
         
-        if (currentRequest.dstId < ID) {
+        if (currentRequest.getDstId() < ID) {
             this.data.incrementActiveSplays();
         }
     }
@@ -39,7 +39,7 @@ public class DiSplayNetApp extends HandShakeLayer {
     @Override
     public void communicationClusterFormed(Request currentRequest) {
         super.communicationClusterFormed(currentRequest);
-        if (currentRequest.dstId < ID) {
+        if (currentRequest.getDstId() < ID) {
             this.data.incrementActiveClusters();
         }
     }
@@ -49,7 +49,7 @@ public class DiSplayNetApp extends HandShakeLayer {
         super.communicationCompleted(peerRequest);
         Request activeRequest = this.getActiveSplay();
 
-        if (activeRequest.dstId < ID) {
+        if (activeRequest.getDstId() < ID) {
             completed = true;
             this.data.addRotations(activeRequest.numOfRotations + peerRequest.numOfRotations);
             this.data.addRouting(1);

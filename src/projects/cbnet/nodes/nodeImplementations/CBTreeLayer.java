@@ -1,12 +1,12 @@
 package projects.cbnet.nodes.nodeImplementations;
 
-import projects.displaynet.nodes.nodeImplementations.BinaryTreeLayer;
+import projects.defaultProject.nodes.nodeImplementations.BinarySearchTreeLayer;
 import projects.cbnet.nodes.tableEntry.CBInfo;
 
 /**
  * CBTreeLayer
  */
-public abstract class CBTreeLayer extends BinaryTreeLayer {
+public abstract class CBTreeLayer extends BinarySearchTreeLayer {
 
     private long weight;
 

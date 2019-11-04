@@ -3,17 +3,17 @@ package projects.defaultProject;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import projects.displaynet.nodes.nodeImplementations.BinaryTreeLayer;
+import projects.defaultProject.nodes.nodeImplementations.BinarySearchTreeLayer;
 import sinalgo.configuration.Configuration;
 import sinalgo.runtime.Global;
 import sinalgo.tools.Tools;
 
 public class TreeConstructor {
 
-  protected BinaryTreeLayer controlNode;
-  protected ArrayList<BinaryTreeLayer> tree;
+  protected BinarySearchTreeLayer controlNode;
+  protected ArrayList<BinarySearchTreeLayer> tree;
 
-  public TreeConstructor(BinaryTreeLayer controlNode, ArrayList<BinaryTreeLayer> tree) {
+  public TreeConstructor(BinarySearchTreeLayer controlNode, ArrayList<BinarySearchTreeLayer> tree) {
     this.controlNode = controlNode;
     this.tree = tree;
   }
@@ -25,7 +25,7 @@ public class TreeConstructor {
     }
 
     // build binary tree topology
-    BinaryTreeLayer root = buildTree(1, this.tree.size());
+    BinarySearchTreeLayer root = buildTree(1, this.tree.size());
 
     // configure the control node
     this.controlNode.setParent(null);
@@ -42,15 +42,15 @@ public class TreeConstructor {
    * @param end
    * @return
    */
-  private BinaryTreeLayer buildTree(int start, int end) {
+  private BinarySearchTreeLayer buildTree(int start, int end) {
 
     int parentId = Integer.MIN_VALUE;
     int leftChildId = Integer.MIN_VALUE;
     int rightChildId = Integer.MIN_VALUE;
 
-    BinaryTreeLayer parent = null;
-    BinaryTreeLayer leftChild = null;
-    BinaryTreeLayer rightChild = null;
+    BinarySearchTreeLayer parent = null;
+    BinarySearchTreeLayer leftChild = null;
+    BinarySearchTreeLayer rightChild = null;
 
     parentId = (start + end) / 2;
     parent = tree.get(parentId - 1);
@@ -83,8 +83,8 @@ public class TreeConstructor {
   }
 
   public void linearTree() {
-    BinaryTreeLayer node = this.tree.get(0);
-    BinaryTreeLayer previous = node;
+    BinarySearchTreeLayer node = this.tree.get(0);
+    BinarySearchTreeLayer previous = node;
 
     node.setLeftChild(null);
     node.setRightChild(null);
@@ -111,26 +111,26 @@ public class TreeConstructor {
   }
 
   public void randomTree() {
-    ArrayList<Integer> indexs = new ArrayList<Integer>();
+    ArrayList<Integer> indexes = new ArrayList<>();
     for (int i = 0; i < this.tree.size(); i++) {
-      indexs.add(i);
+      indexes.add(i);
     }
 
-    Collections.shuffle(indexs);
+    Collections.shuffle(indexes);
 
-    BinaryTreeLayer root = this.tree.get(indexs.remove(0));
+    BinarySearchTreeLayer root = this.tree.get(indexes.remove(0));
     root.setParent(null);
     root.setLeftChild(null);
     root.setRightChild(null);
     root.setMaxIdInSubtree(root.ID);
     root.setMinIdInSubtree(root.ID);
 
-    BinaryTreeLayer n;
-    BinaryTreeLayer prev;
-    BinaryTreeLayer next;
+    BinarySearchTreeLayer n;
+    BinarySearchTreeLayer prev;
+    BinarySearchTreeLayer next;
 
-    while (!indexs.isEmpty()) {
-      n = this.tree.get(indexs.remove(0));
+    while (!indexes.isEmpty()) {
+      n = this.tree.get(indexes.remove(0));
       prev = null;
       next = root;
 
@@ -164,11 +164,11 @@ public class TreeConstructor {
     }
   }
 
-  public BinaryTreeLayer getRootNode() {
+  public BinarySearchTreeLayer getRootNode() {
     return this.controlNode.getLeftChild();
   }
 
-  private int getTreeHeight(BinaryTreeLayer root) {
+  private int getTreeHeight(BinarySearchTreeLayer root) {
 
     int left = (root.hasLeftChild()) ? getTreeHeight(root.getLeftChild()) : 0;
     int right = (root.hasRightChild()) ? getTreeHeight(root.getRightChild()) : 0;
@@ -176,7 +176,7 @@ public class TreeConstructor {
     return Math.max(left, right) + 1;
   }
 
-  private int getTreeSize(BinaryTreeLayer root) {
+  private int getTreeSize(BinarySearchTreeLayer root) {
 
     int left = (root.hasLeftChild()) ? getTreeSize(root.getLeftChild()) : 0;
     int right = (root.hasRightChild()) ? getTreeSize(root.getRightChild()) : 0;
@@ -189,20 +189,20 @@ public class TreeConstructor {
       return;
     }
 
-    BinaryTreeLayer root = getRootNode();
+    BinarySearchTreeLayer root = getRootNode();
     int height = getTreeHeight(root);
 
-    double x = Configuration.dimX / 2;
+    double x = Configuration.dimX / (float) 2;
     double y_space = Configuration.dimY / (double) (height + 2);
 
-    // null node
+    //set control node position
     this.controlNode.setPosition(x, 0, 0);
 
     setPositionHelper(root, x, y_space, 1, 1);
 
   }
 
-  private void setPositionHelper(BinaryTreeLayer root, double x, double y_space, int level,
+  private void setPositionHelper(BinarySearchTreeLayer root, double x, double y_space, int level,
       int level_x) {
 
     root.setPosition(x, y_space * (level + 1), 0);

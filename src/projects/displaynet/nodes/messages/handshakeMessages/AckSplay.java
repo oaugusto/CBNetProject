@@ -7,9 +7,9 @@ import sinalgo.nodes.messages.Message;
  */
 public class AckSplay extends Message {
 
-    @Override
-    public Message clone() {
-        return this;
-    }
-    
+  @Override
+  public Message clone() {
+    return this;
+  }
+
 }

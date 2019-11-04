@@ -7,10 +7,9 @@ import sinalgo.nodes.messages.Message;
  */
 public class StartSplay extends Message {
 
-    @Override
-    public Message clone() {
-        return this;
-    }
+  @Override
+  public Message clone() {
+    return this;
+  }
 
-    
 }

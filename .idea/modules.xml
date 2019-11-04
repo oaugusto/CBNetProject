@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/CBnetProject.iml" filepath="$PROJECT_DIR$/CBnetProject.iml" />
+      <module fileurl="file://$PROJECT_DIR$/CBNetProject.iml" filepath="$PROJECT_DIR$/CBNetProject.iml" />
     </modules>
   </component>
 </project>

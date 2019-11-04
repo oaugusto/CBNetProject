@@ -7,8 +7,8 @@ import java.util.ArrayList;
 import projects.defaultProject.DataCollection;
 import projects.defaultProject.RequestQueue;
 import projects.defaultProject.TreeConstructor;
-import projects.displaynet.nodes.nodeImplementations.BinaryTreeLayer;
-import projects.displaynet.nodes.nodeImplementations.SplayNetNode;
+import projects.defaultProject.nodes.nodeImplementations.BinarySearchTreeLayer;
+import projects.displaynet.nodes.nodeImplementations.DiSplayNetNode;
 import projects.splaynet.nodes.nodeImplementations.SplayNetApp;
 import sinalgo.configuration.Configuration;
 import sinalgo.gui.transformation.PositionTransformation;
@@ -23,8 +23,8 @@ public class CustomGlobal extends AbstractCustomGlobal {
 
     // simulation config
     public int numNodes = 30;
-    public ArrayList<BinaryTreeLayer> tree = null;
-    public BinaryTreeLayer controlNode = null;
+    public ArrayList<BinarySearchTreeLayer> tree = null;
+    public BinarySearchTreeLayer controlNode = null;
     public TreeConstructor treeTopology = null;
     public RequestQueue requestQueue;
 
@@ -79,7 +79,7 @@ public class CustomGlobal extends AbstractCustomGlobal {
         /*
          * create the nodes and constructs the tree topology
          */
-        this.tree = new ArrayList<BinaryTreeLayer>();
+        this.tree = new ArrayList<BinarySearchTreeLayer>();
 
         for (int i = 0; i < numNodes; i++) {
             SplayNetApp n = new SplayNetApp();
@@ -87,7 +87,7 @@ public class CustomGlobal extends AbstractCustomGlobal {
             this.tree.add(n);
         }
 
-        this.controlNode = new SplayNetNode() {
+        this.controlNode = new DiSplayNetNode() {
             public void draw(Graphics g, PositionTransformation pt, boolean highlight) {
                 String text = "ControlNode";
                 super.drawNodeAsDiskWithText(g, pt, highlight, text, 10, Color.YELLOW);

@@ -18,7 +18,7 @@ import projects.defaultProject.DataCollection;
 /**
  * HandShakeNode
  */
-public class HandShakeLayer extends SplayNetNode {
+public class HandShakeLayer extends DiSplayNetNode {
 
   private DataCollection data = DataCollection.getInstance();
 
@@ -34,10 +34,10 @@ public class HandShakeLayer extends SplayNetNode {
   private Random rand = Tools.getRandomNumberGenerator();
 
   // current splay operation
-  public Request currentSplay_handshake; // splay operation from myself or peer
+  private Request currentSplay_handshake; // splay operation from myself or peer
 
   // my own message to be sent
-  public Request myMsg;
+  private Request myMsg;
 
   // in case received ack from peer
   private boolean isAckMSGReceived;
@@ -49,10 +49,10 @@ public class HandShakeLayer extends SplayNetNode {
   private boolean isSplayCompleted;
 
   // store communication request from this node.
-  public Queue<Request> myMsgBuffer = new LinkedList<Request>();
+  protected Queue<Request> myMsgBuffer = new LinkedList<Request>();
 
   // store communication request from other nodes.
-  public PriorityQueue<Request> peersRequestBuffer = new PriorityQueue<Request>();
+  private PriorityQueue<Request> peersRequestBuffer = new PriorityQueue<Request>();
 
   @Override
   public void init() {
@@ -96,7 +96,7 @@ public class HandShakeLayer extends SplayNetNode {
   }
 
   @Override
-  public void nodeStep() {
+  public void handShakeStep() {
 
     switch (this.state_handshake) {
       case IDLE:
@@ -106,10 +106,10 @@ public class HandShakeLayer extends SplayNetNode {
           this.myMsg = this.myMsgBuffer.poll();
           this.myMsg.priority = Global.currentTime + rand.nextDouble();
 
-          RequestSplay msg = new RequestSplay(this.myMsg.srcId, this.myMsg.dstId,
+          RequestSplay msg = new RequestSplay(this.myMsg.getSrcId(), this.myMsg.getDstId(),
               this.myMsg.priority);
 
-          this.sendDirect(msg, Tools.getNodeByID(this.myMsg.dstId));
+          this.sendDirect(msg, Tools.getNodeByID(this.myMsg.getDstId()));
           // handshake_log
           // .logln("[" + Global.currentTime + "] " + ID + ": State:" + state_handshake +
           // " Request sent");
@@ -143,7 +143,7 @@ public class HandShakeLayer extends SplayNetNode {
           // respond with ack and the node become slave
           this.currentSplay_handshake = this.peersRequestBuffer.poll();
           AckSplay msg = new AckSplay();
-          sendDirect(msg, Tools.getNodeByID(this.currentSplay_handshake.dstId));
+          sendDirect(msg, Tools.getNodeByID(this.currentSplay_handshake.getDstId()));
 
           this.state_handshake = State_handshake.SLAVE;
 
@@ -165,7 +165,7 @@ public class HandShakeLayer extends SplayNetNode {
             // respond with ack
             this.currentSplay_handshake = this.peersRequestBuffer.poll();
             AckSplay msg = new AckSplay();
-            sendDirect(msg, Tools.getNodeByID(this.currentSplay_handshake.dstId));
+            sendDirect(msg, Tools.getNodeByID(this.currentSplay_handshake.getDstId()));
 
             this.state_handshake = State_handshake.SLAVE;
           }
@@ -182,14 +182,15 @@ public class HandShakeLayer extends SplayNetNode {
           // .logln("[" + Global.currentTime + "] " + ID + ": State:" + state_handshake +
           // " ack received");
           StartSplay msg = new StartSplay();
-          sendDirect(msg, Tools.getNodeByID(this.currentSplay_handshake.dstId));
+          sendDirect(msg, Tools.getNodeByID(this.currentSplay_handshake.getDstId()));
 
           this.state_handshake = State_handshake.START;
           // reset ack flag
           this.isAckMSGReceived = false;
 
           //Log
-          this.data.addSequence(this.currentSplay_handshake.srcId - 1, this.currentSplay_handshake.dstId - 1);
+          this.data.addSequence(this.currentSplay_handshake.getSrcId() - 1,
+              this.currentSplay_handshake.getDstId() - 1);
         }
         // handshake_log.logln("[" + Global.currentTime + "] " + ID + ": State:" +
         // state_handshake + " is next state");
@@ -222,7 +223,7 @@ public class HandShakeLayer extends SplayNetNode {
         // + this.currentSplay_handshake.dstId + "priority: " +
         // this.currentSplay_handshake.priority);
         // TODO
-        this.newSplay(this.currentSplay_handshake.srcId, this.currentSplay_handshake.dstId,
+        this.newSplay(this.currentSplay_handshake.getSrcId(), this.currentSplay_handshake.getDstId(),
             this.currentSplay_handshake.priority);
 
         this.state_handshake = State_handshake.SPLAY;

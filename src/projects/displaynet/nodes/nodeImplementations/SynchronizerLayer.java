@@ -1,146 +1,142 @@
 package projects.displaynet.nodes.nodeImplementations;
 
+import projects.defaultProject.nodes.nodeImplementations.BinarySearchTreeLayer;
+
 /**
- * SynchronizerNode Implements timeslots system to coordenate operations. The
- * node initiate the timeslot in 0 and go ...
+ * SynchronizerNode Implements timeslots system to coordenate operations. The node initiate the
+ * timeslot in 0 and go ...
  */
-public abstract class SynchronizerLayer extends BinaryTreeLayer {
+public abstract class SynchronizerLayer extends BinarySearchTreeLayer {
 
-    private int MAX_TIMESLOT = 14;
-    private int timeslot;
-    private long round;
+  private int MAX_TIMESLOT = 14;
+  private int timeslot;
+  private long round;
 
-    public int getCurrentTimeSlot() {
-        return this.timeslot;
+  public int getCurrentTimeSlot() {
+    return this.timeslot;
+  }
+
+  public long getCurrentRound() {
+    return this.round;
+  }
+
+  @Override
+  public void init() {
+    super.init();
+    this.timeslot = 0;
+  }
+
+  @Override
+  public void postStep() {
+
+    switch (this.timeslot) {
+
+      case 0:
+
+      case 1:
+
+      case 2:
+
+      case 3:
+        handShakeStep();
+        break;
+
+      case 4:
+        updateState();
+        break;
+
+      case 5:
+        timeslot1();
+        break;
+
+      case 6:
+        timeslot2();
+        break;
+
+      case 7:
+        timeslot3();
+        break;
+
+      case 8:
+        timeslot4();
+        break;
+
+      case 9:
+        timeslot5();
+        break;
+
+      case 10:
+        timeslot6();
+        break;
+
+      case 11:
+        timeslot7();
+        break;
+
+      case 12:
+        timeslot8();
+        break;
+
+      case 13:
+        timeslot9();
+        posRound();
+
+        this.round++;
+        break;
+
+      default:
+        break;
     }
 
-    public long getCurrentRound() {
-        return this.round;
-    }
+    this.timeslot = (this.timeslot + 1) % MAX_TIMESLOT;
+  }
 
-    @Override
-    public void init() {
-        super.init();
-        this.timeslot = 0;
-    }
+  public void updateState() {
 
-    @Override
-    public void postStep() {
-        
-        switch (this.timeslot) {
+  }
 
-        case 0:
-            nodeStep();
-            break;
+  public void timeslot1() {
 
-        case 1:
-            nodeStep();
-            break;
+  }
 
-        case 2:
-            nodeStep();
-            break;
+  public void timeslot2() {
 
-        case 3:
-            nodeStep();
-            break;
+  }
 
-        case 4:
-            updateState();
-            break;
+  public void timeslot3() {
 
-        case 5:
-            timeslot1();
-            break;
+  }
 
-        case 6:
-            timeslot2();
-            break;
+  public void timeslot4() {
 
-        case 7:
-            timeslot3();
-            break;
+  }
 
-        case 8:
-            timeslot4();
-            break;
+  public void timeslot5() {
 
-        case 9:
-            timeslot5();
-            break;
+  }
 
-        case 10:
-            timeslot6();
-            break;
+  public void timeslot6() {
 
-        case 11:
-            timeslot7();
-            break;
+  }
 
-        case 12:
-            timeslot8();
-            break;
+  public void timeslot7() {
 
-        case 13:
-            timeslot9();
-            posRound();
+  }
 
-            this.round++;
-            break;
+  public void timeslot8() {
 
-        default:
-            break;
-        }
+  }
 
-        this.timeslot = (this.timeslot + 1) % MAX_TIMESLOT;
-    }
+  public void timeslot9() {
 
-    public void updateState() {
+  }
 
-    }
+  public void posRound() {
 
-    public void timeslot1() {
+  }
 
-    } 
-    
-    public void timeslot2() {
+  public void handShakeStep() {
 
-    } 
-
-    public void timeslot3() {
-
-    } 
-
-    public void timeslot4() {
-
-    } 
-    
-    public void timeslot5() {
-
-    }
-
-    public void timeslot6() {
-
-    } 
-
-    public void timeslot7() {
-
-    } 
-
-    public void timeslot8() {
-
-    }
-
-    public void timeslot9() {
-
-    } 
-
-    public void posRound() {
-
-    }
-
-    public void nodeStep() {
-
-    }
+  }
 
 }

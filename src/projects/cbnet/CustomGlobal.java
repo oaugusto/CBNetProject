@@ -6,11 +6,10 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import projects.cbnet.nodes.nodeImplementations.CBNetApp;
-import projects.cbnet.nodes.timers.TriggerNodeOperation;
 import projects.defaultProject.DataCollection;
 import projects.defaultProject.RequestQueue;
 import projects.defaultProject.TreeConstructor;
-import projects.displaynet.nodes.nodeImplementations.BinaryTreeLayer;
+import projects.defaultProject.nodes.nodeImplementations.BinarySearchTreeLayer;
 import sinalgo.configuration.Configuration;
 import sinalgo.gui.transformation.PositionTransformation;
 import sinalgo.runtime.AbstractCustomGlobal;
@@ -24,8 +23,8 @@ public class CustomGlobal extends AbstractCustomGlobal {
 
   // simulation
   public int numNodes = 30;
-  public ArrayList<BinaryTreeLayer> tree = null;
-  public BinaryTreeLayer controlNode = null;
+  public ArrayList<BinarySearchTreeLayer> tree = null;
+  public BinarySearchTreeLayer controlNode = null;
   public TreeConstructor treeTopology = null;
   public RequestQueue requestQueue;
 
@@ -91,7 +90,7 @@ public class CustomGlobal extends AbstractCustomGlobal {
     /*
      * create the nodes and constructs the tree topology
      */
-    this.tree = new ArrayList<BinaryTreeLayer>();
+    this.tree = new ArrayList<BinarySearchTreeLayer>();
 
     for (int i = 0; i < numNodes; i++) {
       CBNetApp n = new CBNetApp();
