@@ -1,5 +1,6 @@
 package projects.displaynet.nodes.timers;
 
+import projects.defaultProject.nodes.messages.ApplicationMessage;
 import projects.displaynet.CustomGlobal;
 import projects.displaynet.nodes.nodeImplementations.DiSplayNetApp;
 import sinalgo.nodes.timers.Timer;
@@ -10,19 +11,17 @@ import sinalgo.tools.Tools;
  */
 public class TriggerNodeOperation extends Timer {
 
-  public int src;
-  public int dst;
+  public ApplicationMessage msg;
 
-  public TriggerNodeOperation(int src, int dst) {
-    this.src = src;
-    this.dst = dst;
+  public TriggerNodeOperation(ApplicationMessage msg) {
+    this.msg = msg;
   }
 
   @Override
   public void fire() {
 
-    DiSplayNetApp srcnode = (DiSplayNetApp) Tools.getNodeByID(src);
-    srcnode.newSplayOperation(dst);
+    DiSplayNetApp srcnode = (DiSplayNetApp) Tools.getNodeByID(msg.getSource());
+    srcnode.sendMessage(msg);
 
     CustomGlobal.mustGenerate = true;
   }

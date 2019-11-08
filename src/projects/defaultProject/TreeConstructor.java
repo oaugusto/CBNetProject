@@ -1,168 +1,30 @@
 package projects.defaultProject;
 
+import java.awt.Color;
 import java.util.ArrayList;
-import java.util.Collections;
-
 import projects.defaultProject.nodes.nodeImplementations.BinarySearchTreeLayer;
 import sinalgo.configuration.Configuration;
 import sinalgo.runtime.Global;
-import sinalgo.tools.Tools;
 
-public class TreeConstructor {
+public abstract class TreeConstructor {
 
   protected BinarySearchTreeLayer controlNode;
   protected ArrayList<BinarySearchTreeLayer> tree;
+
+  private long MIN = Long.MAX_VALUE;
+  private long MAX = Long.MIN_VALUE;
 
   public TreeConstructor(BinarySearchTreeLayer controlNode, ArrayList<BinarySearchTreeLayer> tree) {
     this.controlNode = controlNode;
     this.tree = tree;
   }
 
-  public void setBalancedTree() {
-
-    if (tree.isEmpty()) {
-      Tools.fatalError("Empty network passed to TreeConstructor");
-    }
-
-    // build binary tree topology
-    BinarySearchTreeLayer root = buildTree(1, this.tree.size());
-
-    // configure the control node
-    this.controlNode.setParent(null);
-    this.controlNode.setRightChild(null);
-    this.controlNode.addLinkToLeftChild(root);
-    this.controlNode.setMinIdInSubtree(1);
-    this.controlNode.setMaxIdInSubtree(this.tree.size());
+  public void setColorRange(long min, long max) {
+    this.MIN = min;
+    this.MAX = max;
   }
 
-  /**
-   * This function build a balance binary tree network and return root node
-   *
-   * @param start
-   * @param end
-   * @return
-   */
-  private BinarySearchTreeLayer buildTree(int start, int end) {
-
-    int parentId = Integer.MIN_VALUE;
-    int leftChildId = Integer.MIN_VALUE;
-    int rightChildId = Integer.MIN_VALUE;
-
-    BinarySearchTreeLayer parent = null;
-    BinarySearchTreeLayer leftChild = null;
-    BinarySearchTreeLayer rightChild = null;
-
-    parentId = (start + end) / 2;
-    parent = tree.get(parentId - 1);
-    parent.setMinIdInSubtree(start);
-    parent.setMaxIdInSubtree(end);
-
-    // case there is left subtree
-    if (parentId != start) {
-      leftChildId = (start + parentId - 1) / 2; // find left child
-      leftChild = tree.get(leftChildId - 1);
-      parent.addLinkToLeftChild(leftChild);
-      leftChild.setMinIdInSubtree(start);
-      leftChild.setMaxIdInSubtree(parentId - 1);
-
-      buildTree(start, parentId - 1);
-    }
-
-    // case there is right subtree
-    if (parentId != end) {
-      rightChildId = (parentId + 1 + end) / 2;
-      rightChild = tree.get(rightChildId - 1);
-      parent.addLinkToRightChild(rightChild);
-      rightChild.setMinIdInSubtree(parentId + 1);
-      rightChild.setMaxIdInSubtree(end);
-
-      buildTree(parentId + 1, end);
-    }
-
-    return parent;
-  }
-
-  public void linearTree() {
-    BinarySearchTreeLayer node = this.tree.get(0);
-    BinarySearchTreeLayer previous = node;
-
-    node.setLeftChild(null);
-    node.setRightChild(null);
-    node.setMaxIdInSubtree(node.ID);
-    node.setMinIdInSubtree(node.ID);
-
-    for (int i = 1; i < this.tree.size(); i++) {
-      node = this.tree.get(i);
-      node.addLinkToRightChild(null);
-      node.setMaxIdInSubtree(node.ID);
-      node.setMinIdInSubtree(previous.getMinIdInSubtree());
-      node.addLinkToLeftChild(previous);
-      previous.setParent(node);
-
-      previous = node;
-    }
-
-    // configure the control node
-    this.controlNode.setParent(null);
-    this.controlNode.setRightChild(null);
-    this.controlNode.addLinkToLeftChild(node);
-    this.controlNode.setMinIdInSubtree(1);
-    this.controlNode.setMaxIdInSubtree(this.tree.size());
-  }
-
-  public void randomTree() {
-    ArrayList<Integer> indexes = new ArrayList<>();
-    for (int i = 0; i < this.tree.size(); i++) {
-      indexes.add(i);
-    }
-
-    Collections.shuffle(indexes);
-
-    BinarySearchTreeLayer root = this.tree.get(indexes.remove(0));
-    root.setParent(null);
-    root.setLeftChild(null);
-    root.setRightChild(null);
-    root.setMaxIdInSubtree(root.ID);
-    root.setMinIdInSubtree(root.ID);
-
-    BinarySearchTreeLayer n;
-    BinarySearchTreeLayer prev;
-    BinarySearchTreeLayer next;
-
-    while (!indexes.isEmpty()) {
-      n = this.tree.get(indexes.remove(0));
-      prev = null;
-      next = root;
-
-      while (next != null) {
-        prev = next;
-
-        if (next.ID > n.ID) {
-          if (n.ID < next.getMinIdInSubtree()) {
-            next.setMinIdInSubtree(n.ID);
-          }
-          next = next.getLeftChild();
-        } else {
-          if (n.ID > next.getMaxIdInSubtree()) {
-            next.setMaxIdInSubtree(n.ID);
-          }
-          next = next.getRightChild();
-        }
-      }
-
-      n.setParent(prev);
-      n.setLeftChild(null);
-      n.setRightChild(null);
-      n.setMaxIdInSubtree(n.ID);
-      n.setMinIdInSubtree(n.ID);
-
-      if (prev.ID > n.ID) {
-        prev.setLeftChild(n);
-      } else {
-        prev.setRightChild(n);
-      }
-    }
-  }
+  public abstract void buildTree();
 
   public BinarySearchTreeLayer getRootNode() {
     return this.controlNode.getLeftChild();
@@ -184,6 +46,18 @@ public class TreeConstructor {
     return left + right + 1;
   }
 
+  private void getMinMaxCounters(BinarySearchTreeLayer root) {
+    this.MIN = Math.min(this.MIN, root.getCounter());
+    this.MAX = Math.max(this.MAX, root.getCounter());
+
+    if (root.hasLeftChild()) {
+      getMinMaxCounters(root.getLeftChild());
+    }
+    if (root.hasRightChild()) {
+      getMinMaxCounters(root.getRightChild());
+    }
+  }
+
   public void setPositions() {
     if (!Global.isGuiMode) {
       return;
@@ -198,6 +72,8 @@ public class TreeConstructor {
     //set control node position
     this.controlNode.setPosition(x, 0, 0);
 
+    this.getMinMaxCounters(root);
+
     setPositionHelper(root, x, y_space, 1, 1);
 
   }
@@ -206,6 +82,7 @@ public class TreeConstructor {
       int level_x) {
 
     root.setPosition(x, y_space * (level + 1), 0);
+    root.setColor(this.getColorFromValue(root.getCounter()));
 
     if (root.hasLeftChild() && root.hasRightChild()) {
 
@@ -225,5 +102,31 @@ public class TreeConstructor {
       setPositionHelper(root.getLeftChild(), x, y_space, level + 1, level_x);
 
     }
+  }
+
+  public Color getColorFromValue(long value) {
+    int r1 = Color.RED.getRed();
+    int g1 = Color.RED.getGreen();
+    int b1 = Color.RED.getBlue();
+    int a1 = Color.RED.getAlpha();
+
+    int r2 = Color.BLUE.getRed();
+    int g2 = Color.BLUE.getGreen();
+    int b2 = Color.BLUE.getBlue();
+    int a2 = Color.BLUE.getAlpha();
+
+    int newR = 0;
+    int newG = 0;
+    int newB = 0;
+    int newA = 0;
+
+    double iNorm;
+    iNorm = (value - this.MIN) / (double) (this.MAX - this.MIN); //a normalized [0:1] variable
+    newR = (int) (r1 + iNorm * (r2 - r1));
+    newG = (int) (g1 + iNorm * (g2 - g1));
+    newB = (int) (b1 + iNorm * (b2 - b1));
+    newA = (int) (a1 + iNorm * (a2 - a1));
+
+    return new Color(newR, newG, newB, newA);
   }
 }

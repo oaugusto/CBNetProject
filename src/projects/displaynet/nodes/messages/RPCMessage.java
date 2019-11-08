@@ -1,4 +1,4 @@
-package projects.displaynet.nodes.messages.controlMessages;
+package projects.displaynet.nodes.messages;
 
 import projects.defaultProject.nodes.nodeImplementations.BinarySearchTreeLayer;
 import sinalgo.nodes.messages.Message;

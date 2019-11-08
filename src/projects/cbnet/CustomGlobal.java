@@ -7,6 +7,7 @@ import java.util.Random;
 
 import projects.cbnet.nodes.nodeImplementations.CBNetApp;
 import projects.defaultProject.DataCollection;
+import projects.defaultProject.LinearTreeTopology;
 import projects.defaultProject.RequestQueue;
 import projects.defaultProject.TreeConstructor;
 import projects.defaultProject.nodes.nodeImplementations.BinarySearchTreeLayer;
@@ -106,9 +107,9 @@ public class CustomGlobal extends AbstractCustomGlobal {
     };
     this.controlNode.finishInitializationWithDefaultModels(true);
 
-    this.treeTopology = new TreeConstructor(controlNode, this.tree);
-//    this.treeTopology.setBalancedTree();
-    this.treeTopology.linearTree();
+    this.treeTopology = new LinearTreeTopology(controlNode, this.tree);
+    this.treeTopology.buildTree();
+//    this.treeTopology.linearTree();
     this.treeTopology.setPositions();
 
     /*

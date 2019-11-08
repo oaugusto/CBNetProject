@@ -6,11 +6,13 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import projects.defaultProject.DataCollection;
+import projects.defaultProject.LinearTreeTopology;
 import projects.defaultProject.RequestQueue;
 import projects.defaultProject.TreeConstructor;
+import projects.defaultProject.nodes.messages.ApplicationMessage;
 import projects.defaultProject.nodes.nodeImplementations.BinarySearchTreeLayer;
 import projects.displaynet.nodes.nodeImplementations.DiSplayNetApp;
-import projects.displaynet.nodes.nodeImplementations.DiSplayNetNode;
+import projects.displaynet.nodes.nodeImplementations.ControlLayer;
 import sinalgo.configuration.Configuration;
 import sinalgo.gui.transformation.PositionTransformation;
 import sinalgo.runtime.AbstractCustomGlobal;
@@ -99,7 +101,7 @@ public class CustomGlobal extends AbstractCustomGlobal {
       this.tree.add(n);
     }
 
-    this.controlNode = new DiSplayNetNode() {
+    this.controlNode = new DiSplayNetApp() {
       public void draw(Graphics g, PositionTransformation pt, boolean highlight) {
         String text = "ControlNode";
         super.drawNodeAsDiskWithText(g, pt, highlight, text, 10, Color.YELLOW);
@@ -107,9 +109,8 @@ public class CustomGlobal extends AbstractCustomGlobal {
     };
     this.controlNode.finishInitializationWithDefaultModels(true);
 
-    this.treeTopology = new TreeConstructor(controlNode, this.tree);
-//    this.treeTopology.setBalancedTree();
-    this.treeTopology.linearTree();
+    this.treeTopology = new LinearTreeTopology(controlNode, this.tree);
+    this.treeTopology.buildTree();
     this.treeTopology.setPositions();
 
     /*
@@ -118,7 +119,7 @@ public class CustomGlobal extends AbstractCustomGlobal {
     while (this.requestQueue.hasNextRequest()) {
       Tuple<Integer, Integer> r = this.requestQueue.getNextRequest();
       DiSplayNetApp node = (DiSplayNetApp) Tools.getNodeByID(r.first);
-      node.newSplayOperation(r.second);
+      node.sendMessage(new ApplicationMessage(r.first, r.second));
     }
   }
 
@@ -137,7 +138,7 @@ public class CustomGlobal extends AbstractCustomGlobal {
       }
 
       Tuple<Integer, Integer> r = this.requestQueue.getNextRequest();
-      TriggerNodeOperation ted = new TriggerNodeOperation(r.first, r.second);
+      TriggerNodeOperation ted = new TriggerNodeOperation(new ApplicationMessage(r.first, r.second));
       ted.startGlobalTimer(x);
 
     }*/

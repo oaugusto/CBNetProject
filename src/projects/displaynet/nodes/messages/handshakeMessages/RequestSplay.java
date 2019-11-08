@@ -1,25 +1,26 @@
 package projects.displaynet.nodes.messages.handshakeMessages;
 
+import projects.defaultProject.nodes.messages.NetworkMessage;
 import sinalgo.nodes.messages.Message;
 
 /**
  * RequestSplay
  */
-public class RequestSplay extends Message {
+public class RequestSplay extends NetworkMessage {
 
-  public int src;
-  public int dst;
-  public double priority;
+  private double priority;
 
   public RequestSplay(int src, int dst, double priority) {
-    this.src = src;
-    this.dst = dst;
+    super(src, dst);
     this.priority = priority;
   }
 
-  @Override
-  public Message clone() {
-    return this;
+  public double getPriority() {
+    return priority;
+  }
+
+  public void setPriority(double priority) {
+    this.priority = priority;
   }
 
 }

@@ -4,11 +4,11 @@ import projects.defaultProject.nodes.nodeImplementations.BinarySearchTreeLayer;
 
 /**
  * SynchronizerNode Implements timeslots system to coordenate operations. The node initiate the
- * timeslot in 0 and go ...
+ * timeslot in 0
  */
 public abstract class SynchronizerLayer extends BinarySearchTreeLayer {
 
-  private int MAX_TIMESLOT = 14;
+  private int MAX_TIMESLOT = 15;
   private int timeslot;
   private long round;
 
@@ -42,43 +42,22 @@ public abstract class SynchronizerLayer extends BinarySearchTreeLayer {
         break;
 
       case 4:
-        updateState();
-        break;
-
-      case 5:
-        timeslot1();
-        break;
-
-      case 6:
-        timeslot2();
+        controlStep();
         break;
 
       case 7:
-        timeslot3();
-        break;
-
-      case 8:
-        timeslot4();
-        break;
-
-      case 9:
-        timeslot5();
+        clusterPhaseOne();
         break;
 
       case 10:
-        timeslot6();
-        break;
-
-      case 11:
-        timeslot7();
-        break;
-
-      case 12:
-        timeslot8();
+        clusterPhaseTwo();
         break;
 
       case 13:
-        timeslot9();
+        rotationStep();
+        break;
+
+      case 14:
         posRound();
 
         this.round++;
@@ -91,52 +70,16 @@ public abstract class SynchronizerLayer extends BinarySearchTreeLayer {
     this.timeslot = (this.timeslot + 1) % MAX_TIMESLOT;
   }
 
-  public void updateState() {
+  public abstract void handShakeStep();
 
-  }
+  public abstract void controlStep();
 
-  public void timeslot1() {
+  public abstract void clusterPhaseOne();
 
-  }
+  public abstract void clusterPhaseTwo();
 
-  public void timeslot2() {
+  public abstract void rotationStep();
 
-  }
-
-  public void timeslot3() {
-
-  }
-
-  public void timeslot4() {
-
-  }
-
-  public void timeslot5() {
-
-  }
-
-  public void timeslot6() {
-
-  }
-
-  public void timeslot7() {
-
-  }
-
-  public void timeslot8() {
-
-  }
-
-  public void timeslot9() {
-
-  }
-
-  public void posRound() {
-
-  }
-
-  public void handShakeStep() {
-
-  }
+  public abstract void posRound();
 
 }

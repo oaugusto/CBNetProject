@@ -5,30 +5,40 @@ package projects.displaynet.nodes.tableEntry;
  */
 public class Request implements Comparable<Request> {
 
+  // requester of communication id
   private int srcId;
+  // target node to send message id
   private int dstId;
-  public double priority;
+  // priority of this request
+  private double priority = Double.MAX_VALUE;
+  // current request belongs to master node
+  private boolean isMaster = false;
 
-  public long numOfRotations;
-  public long numOfRouting;
+  // log information
+  public long numOfRotations = 0;
+  public long numOfRouting = 0;
 
-  public long initialTime;
-  public long finalTime;
+  public long initialTime = 0;
+  public long finalTime = 0;
 
-  public Request(int src, int dst) {
-    this.srcId = src;
-    this.dstId = dst;
-    this.priority = 0.0;
-    this.numOfRotations = 0;
-    this.numOfRouting = 0;
+  public Request(int srcId, int dstId, boolean master) {
+    this.srcId = srcId;
+    this.dstId = dstId;
+    this.isMaster = master;
   }
 
-  public Request(int src, int dst, double pri) {
-    this.srcId = src;
-    this.dstId = dst;
-    this.priority = pri;
-    this.numOfRotations = 0;
-    this.numOfRouting = 0;
+  public Request(int srcId, int dstId, double priority, boolean master) {
+    this.srcId = srcId;
+    this.dstId = dstId;
+    this.priority = priority;
+    this.isMaster = master;
+  }
+
+  public Request(Request o) {
+    this.srcId = o.getSrcId();
+    this.dstId = o.getDstId();
+    this.priority = o.getPriority();
+    this.isMaster = o.isMaster();
   }
 
   public int getSrcId() {
@@ -39,14 +49,44 @@ public class Request implements Comparable<Request> {
     return dstId;
   }
 
+  public boolean isMaster() {
+    return isMaster;
+  }
+
+  public void setPriority(double priority) {
+    this.priority = priority;
+  }
+
+  public double getPriority() {
+    return priority;
+  }
+
+  /**
+   * the target node corresponds to the node to connect.
+   * @return
+   */
+  public int getTargetNode() {
+    if (isMaster) {
+      return dstId;
+    } else {
+      return srcId;
+    }
+  }
 
   @Override
   public int compareTo(Request o) {
-    int value = Double.compare(this.priority, o.priority);
-    if (value == 0) {
-      return this.srcId - o.srcId;
+    int cmpPriority = Double.compare(this.priority, o.priority); // compare the priorities
+    int cmpIDs = this.srcId - o.srcId; // in tie, use the id of the requester
+
+    if (cmpPriority == 0) {
+      if (cmpIDs == 0) {
+        // the requester node has higher priority
+        return Boolean.compare(this.isMaster(), o.isMaster());
+      } else {
+        return cmpIDs;
+      }
     } else {
-      return value;
+      return cmpPriority;
     }
   }
 }

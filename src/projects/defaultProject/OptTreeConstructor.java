@@ -53,16 +53,17 @@ public class OptTreeConstructor extends TreeConstructor {
   private Node root;
   private OptInfo[][] optTree;
 
-  public OptTreeConstructor(BinarySearchTreeLayer controlNode, ArrayList<BinarySearchTreeLayer> tree) {
+  public OptTreeConstructor(BinarySearchTreeLayer controlNode,
+      ArrayList<BinarySearchTreeLayer> tree, double[][] weightMatrix) {
     super(controlNode, tree);
-  }
-
-  public void setOptTree(double[][] weightMatrix) {
 
     this.weightMatrix = weightMatrix;
-
     // the size of network
     this.netSize = weightMatrix.length;
+  }
+
+  @Override
+  public void buildTree()  {
 
     // assign zero to entries
     this.initializeMatrices();
@@ -95,14 +96,8 @@ public class OptTreeConstructor extends TreeConstructor {
       }
     }
 
-//        for (int i = 0; i < netSize; i++) {
-//            for (int j = 0; j < netSize; j++) {
-//                System.out.println(i + " " + j + " " + this.distanceMatrix[i][j]);
-//            }
-//        }
-
     // build tree
-    this.controlNode.addLinkToLeftChild(this.buildTree(0, netSize - 1));
+    this.controlNode.addLinkToLeftChild(this.buildOptTree(0, netSize - 1));
   }
 
   private void initializeMatrices() {
@@ -186,7 +181,7 @@ public class OptTreeConstructor extends TreeConstructor {
   }
 
   // Recursively build the Tree, starting from the root
-  private BinarySearchTreeLayer buildTree(int i, int j) {
+  private BinarySearchTreeLayer buildOptTree(int i, int j) {
     int root = this.optTree[i][j].root;
     BinarySearchTreeLayer node = tree.get(root);
     node.setMinIdInSubtree(i + 1);
@@ -195,11 +190,11 @@ public class OptTreeConstructor extends TreeConstructor {
     // System.out.println("The root for interval ["+i+", "+j+"] = "+root);
 
     if (i < root) {
-      node.addLinkToLeftChild(buildTree(i, root - 1));
+      node.addLinkToLeftChild(buildOptTree(i, root - 1));
 
     }
     if (j > root) {
-      node.addLinkToRightChild(buildTree(root + 1, j));
+      node.addLinkToRightChild(buildOptTree(root + 1, j));
     }
 
     return node;

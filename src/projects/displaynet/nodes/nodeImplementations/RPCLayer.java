@@ -4,7 +4,7 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 import projects.defaultProject.nodes.nodeImplementations.BinarySearchTreeLayer;
-import projects.displaynet.nodes.messages.controlMessages.RPCMessage;
+import projects.displaynet.nodes.messages.RPCMessage;
 import sinalgo.nodes.messages.Message;
 import sinalgo.tools.Tools;
 

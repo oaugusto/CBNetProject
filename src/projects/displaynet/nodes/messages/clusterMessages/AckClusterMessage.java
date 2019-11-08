@@ -1,4 +1,4 @@
-package projects.displaynet.nodes.messages.controlMessages;
+package projects.displaynet.nodes.messages.clusterMessages;
 
 import projects.defaultProject.nodes.messages.NetworkMessage;
 import projects.defaultProject.nodes.tableEntry.NodeInfo;

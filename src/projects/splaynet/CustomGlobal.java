@@ -4,11 +4,12 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.util.ArrayList;
 
+import projects.defaultProject.BalancedTreeTopology;
 import projects.defaultProject.DataCollection;
 import projects.defaultProject.RequestQueue;
 import projects.defaultProject.TreeConstructor;
 import projects.defaultProject.nodes.nodeImplementations.BinarySearchTreeLayer;
-import projects.displaynet.nodes.nodeImplementations.DiSplayNetNode;
+import projects.displaynet.nodes.nodeImplementations.ControlLayer;
 import projects.splaynet.nodes.nodeImplementations.SplayNetApp;
 import sinalgo.configuration.Configuration;
 import sinalgo.gui.transformation.PositionTransformation;
@@ -87,7 +88,7 @@ public class CustomGlobal extends AbstractCustomGlobal {
             this.tree.add(n);
         }
 
-        this.controlNode = new DiSplayNetNode() {
+        this.controlNode = new ControlLayer() {
             public void draw(Graphics g, PositionTransformation pt, boolean highlight) {
                 String text = "ControlNode";
                 super.drawNodeAsDiskWithText(g, pt, highlight, text, 10, Color.YELLOW);
@@ -95,8 +96,8 @@ public class CustomGlobal extends AbstractCustomGlobal {
         };
         this.controlNode.finishInitializationWithDefaultModels(true);
 
-        this.treeTopology = new TreeConstructor(controlNode, this.tree);
-        this.treeTopology.setBalancedTree();
+        this.treeTopology = new BalancedTreeTopology(controlNode, this.tree);
+        this.treeTopology.buildTree();
         this.treeTopology.setPositions();
 
     }

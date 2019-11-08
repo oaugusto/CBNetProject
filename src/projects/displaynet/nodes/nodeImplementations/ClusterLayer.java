@@ -5,8 +5,8 @@ import java.util.LinkedList;
 import java.util.PriorityQueue;
 import java.util.Queue;
 
-import projects.displaynet.nodes.messages.controlMessages.AckClusterMessage;
-import projects.displaynet.nodes.messages.controlMessages.RequestClusterMessage;
+import projects.displaynet.nodes.messages.clusterMessages.AckClusterMessage;
+import projects.displaynet.nodes.messages.clusterMessages.RequestClusterMessage;
 import projects.defaultProject.nodes.tableEntry.NodeInfo;
 import sinalgo.nodes.messages.Message;
 
@@ -16,7 +16,7 @@ import sinalgo.nodes.messages.Message;
 public abstract class ClusterLayer extends RPCLayer {
 
   // set with current splay request of this node
-  private RequestClusterMessage clusterRequest;
+  private RequestClusterMessage currentClusterRequest;
 
   // this priority queue store all request cluster message received
   private PriorityQueue<RequestClusterMessage> queueClusterRequest;
@@ -28,22 +28,18 @@ public abstract class ClusterLayer extends RPCLayer {
   public void init() {
     super.init();
 
-    this.clusterRequest = null;
+    this.currentClusterRequest = null;
     this.queueClusterRequest = new PriorityQueue<>();
     this.queueAckCluster = new LinkedList<>();
   }
 
-  public RequestClusterMessage getClusterRequest() {
-    return clusterRequest;
-  }
-
   public void setClusterRequest(int src, int dst, double priority) {
     // position is set to 0, first node in the sequence
-    this.clusterRequest = new RequestClusterMessage(src, dst, 0, priority);
+    this.currentClusterRequest = new RequestClusterMessage(src, dst, 0, priority);
   }
 
   public void clearClusterRequest() {
-    this.clusterRequest = null;
+    this.currentClusterRequest = null;
   }
 
   public void clearClusterRequestQueue() {
@@ -58,16 +54,20 @@ public abstract class ClusterLayer extends RPCLayer {
     this.sendToParent(msg);
   }
 
+  public void sendRequestCommunicationCluster() {
+
+  }
+
   /**
    * This method send a cluster request and put the request into the buffer of current node. The
    * hopCounter means how many times the message should be routed.
    */
   public void sendRequestCluster() {
     // add cluster request to buffer
-    this.queueClusterRequest.add(this.clusterRequest);
+    this.queueClusterRequest.add(this.currentClusterRequest);
 
     // shift the position one hop
-    RequestClusterMessage msg = new RequestClusterMessage(this.clusterRequest);
+    RequestClusterMessage msg = new RequestClusterMessage(this.currentClusterRequest);
     msg.incrementHopCounter();
 
     this.forwardRequestCluster(msg);
@@ -80,13 +80,13 @@ public abstract class ClusterLayer extends RPCLayer {
     if (msg instanceof RequestClusterMessage) {
 
       RequestClusterMessage requestMessage = (RequestClusterMessage) msg;
-      int position = requestMessage.getHopCounter();
+      int hopCounter = requestMessage.getHopCounter();
 
       /**
        * It is not possible to parent to be the dst because completion is check first
        * and the grandparent being LCA has effect on the type of rotation
        */
-      if (position == 3 || (position == 2 && ID == requestMessage.getDestination())) {
+      if (hopCounter == 3 || (hopCounter == 2 && ID == requestMessage.getDestination())) {
 
         requestMessage.setFinalNode();
 
@@ -95,7 +95,7 @@ public abstract class ClusterLayer extends RPCLayer {
         RequestClusterMessage newRequestMessage = new RequestClusterMessage(requestMessage);
         newRequestMessage.incrementHopCounter();
 
-        if (position == 1 && this.isLeastCommonAncestorOf(requestMessage.getDestination())) {
+        if (hopCounter == 1 && this.isLeastCommonAncestorOf(requestMessage.getDestination())) {
           newRequestMessage.setFinalNode();
         }
 
@@ -121,7 +121,7 @@ public abstract class ClusterLayer extends RPCLayer {
    * In this time slot all request message will have arrived
    */
   @Override
-  public void timeslot3() {
+  public void clusterPhaseOne() {
 
     if (!this.queueClusterRequest.isEmpty()) {
       RequestClusterMessage rq = this.queueClusterRequest.poll();
@@ -129,9 +129,9 @@ public abstract class ClusterLayer extends RPCLayer {
       // check if my current request is greater than request received
       // if my current msg is greater than the request received send ack message.
       // The node can send message to itself
-      if (this.clusterRequest == null || this.clusterRequest.compareTo(rq) >= 0
+      if (this.currentClusterRequest == null || this.currentClusterRequest.compareTo(rq) >= 0
           || (this.isLeastCommonAncestorOf(rq.getSource())
-          && this.clusterRequest.getDestination() == rq.getSource())) {
+          && this.currentClusterRequest.getDestination() == rq.getSource())) {
 
         NodeInfo info = this.getNodeInfo();
         AckClusterMessage ack = new AckClusterMessage(rq.getSource(), rq.getDestination(),
@@ -209,8 +209,7 @@ public abstract class ClusterLayer extends RPCLayer {
    * cluster formation verify if the permission was granted.
    */
   @Override
-  public void timeslot6() {
-    super.timeslot6();
+  public void clusterPhaseTwo() {
 
     // This node has sent request cluster message
     if (!this.queueAckCluster.isEmpty()) {
@@ -225,5 +224,9 @@ public abstract class ClusterLayer extends RPCLayer {
   }
 
   public abstract void clusterCompleted(HashMap<String, NodeInfo> cluster);
+
+  public void communicationClusterFormed() {
+
+  }
 
 }

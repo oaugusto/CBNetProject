@@ -12,18 +12,33 @@ import sinalgo.nodes.messages.Message;
 import sinalgo.tools.Tools;
 
 /**
- * BinaryTreeLayer This class implements the binary tree node functions like keeping track of
- * neighboors and changing links. **Only parent nodes can change link to its children
+ * BinaryTreeLayer: This class implements the basically binary tree node functions
  */
 public abstract class BinarySearchTreeLayer extends Node implements
     Comparable<BinarySearchTreeLayer> {
 
+  //mantains the number of operations performed over this node
+  private long counter;
+
   private BinarySearchTreeLayer parent;
   private BinarySearchTreeLayer leftChild;
   private BinarySearchTreeLayer rightChild;
+
   private int minIdInSubtree;
   private int maxIdInSubtree;
   private boolean isRoot;
+
+  public long getCounter() {
+    return this.counter;
+  }
+
+  public void incrementCounter() {
+    this.counter++;
+  }
+
+  public void clearCounter() {
+    this.counter = 0;
+  }
 
   public BinarySearchTreeLayer getParent() {
     return this.parent;
@@ -58,12 +73,10 @@ public abstract class BinarySearchTreeLayer extends Node implements
   }
 
   public boolean isLeastCommonAncestorOf(BinarySearchTreeLayer node) {
-
     return this.minIdInSubtree <= node.ID && node.ID <= this.maxIdInSubtree;
   }
 
   public boolean isLeastCommonAncestorOf(int id) {
-
     return this.minIdInSubtree <= id && id <= this.maxIdInSubtree;
   }
 
@@ -130,23 +143,14 @@ public abstract class BinarySearchTreeLayer extends Node implements
         this.maxIdInSubtree);
   }
 
-  /**
-   * @param parent the parent to set
-   */
   public void setParent(BinarySearchTreeLayer parent) {
     this.parent = parent;
   }
 
-  /**
-   * @param leftChild the leftChild to set
-   */
   public void setLeftChild(BinarySearchTreeLayer leftChild) {
     this.leftChild = leftChild;
   }
 
-  /**
-   * @param rightChild the rightChild to set
-   */
   public void setRightChild(BinarySearchTreeLayer rightChild) {
     this.rightChild = rightChild;
   }
@@ -164,12 +168,13 @@ public abstract class BinarySearchTreeLayer extends Node implements
   }
 
   /**
-   * Remove a link with the node is not null.
+   * Remove a link to a node that is not null.
    *
    * @param node
    */
   private void removeLinkTo(BinarySearchTreeLayer node) {
 
+    // only the parent can remove a link
     if ((node == null) || this.getRelationship(node).equals("Parent")) {
       return;
     }
@@ -178,7 +183,7 @@ public abstract class BinarySearchTreeLayer extends Node implements
       this.outgoingConnections.remove(this, node);
       node.outgoingConnections.remove(node, this);
     } else {
-      Tools.fatalError("Trying to remove a non-existing conenction on node " + ID);
+      Tools.fatalError("Trying to remove a non-existing connection to node " + ID);
     }
   }
 
@@ -274,13 +279,13 @@ public abstract class BinarySearchTreeLayer extends Node implements
   }
 
   protected void sendForwardMessage(int dst, Message msg) {
-    RoutingMessage rt = new RoutingMessage(ID, dst, msg);
 
     if (dst == ID) {
       this.receiveMessage(msg);
       return;
     }
 
+    RoutingMessage rt = new RoutingMessage(ID, dst, msg);
     forwardMessage(rt);
   }
 
@@ -291,6 +296,7 @@ public abstract class BinarySearchTreeLayer extends Node implements
     this.rightChild = null;
     this.minIdInSubtree = Integer.MIN_VALUE;
     this.maxIdInSubtree = Integer.MIN_VALUE;
+    this.counter = 0;
   }
 
   @Override
@@ -361,6 +367,7 @@ public abstract class BinarySearchTreeLayer extends Node implements
     String text = "" + ID;
 
     // draw the node as a circle with the text inside
-    super.drawNodeAsDiskWithText(g, pt, highlight, text, 12, Color.YELLOW);
+//    super.drawNodeAsDiskWithText(g, pt, highlight, text, 12, Color.YELLOW);
+    super.drawAsDisk(g, pt, false, 15);
   }
 }

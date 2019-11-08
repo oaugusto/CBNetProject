@@ -10,6 +10,8 @@ import projects.defaultProject.RequestQueue;
 import projects.defaultProject.OptTreeConstructor;
 import projects.defaultProject.nodes.nodeImplementations.BinarySearchTreeLayer;
 import projects.optnet.nodes.nodeImplementations.OptNode;
+import projects.simplenet.nodes.nodeImplementations.CBNetApp;
+import projects.simplenet.nodes.nodeImplementations.CBNetNode;
 import sinalgo.configuration.Configuration;
 import sinalgo.gui.transformation.PositionTransformation;
 import sinalgo.runtime.AbstractCustomGlobal;
@@ -82,12 +84,13 @@ public class CustomGlobal extends AbstractCustomGlobal {
     this.tree = new ArrayList<BinarySearchTreeLayer>();
 
     for (int i = 0; i < numNodes; i++) {
-      OptNode n = new OptNode();
+//      OptNode n = new OptNode();
+      CBNetApp n = new CBNetApp();
       n.finishInitializationWithDefaultModels(true);
       this.tree.add(n);
     }
 
-    this.controlNode = new OptNode() {
+    this.controlNode = new CBNetNode() {
       public void draw(Graphics g, PositionTransformation pt, boolean highlight) {
         String text = "ControlNode";
         super.drawNodeAsDiskWithText(g, pt, highlight, text, 10, Color.YELLOW);
@@ -95,10 +98,10 @@ public class CustomGlobal extends AbstractCustomGlobal {
     };
     this.controlNode.finishInitializationWithDefaultModels(true);
 
-    this.treeTopology = new OptTreeConstructor(controlNode, this.tree);
     CommunicationMatrix mtx = new CommunicationMatrix(input);
+    this.treeTopology = new OptTreeConstructor(controlNode, this.tree, mtx.getFrequencyMatrix());
 
-    this.treeTopology.setOptTree(mtx.getFrequencyMatrix());
+    this.treeTopology.buildTree();
     System.out.println("opt tree finished");
     this.treeTopology.setPositions();
 
@@ -107,7 +110,8 @@ public class CustomGlobal extends AbstractCustomGlobal {
      */
     while (this.requestQueue.hasNextRequest()) {
       Tuple<Integer, Integer> r = this.requestQueue.getNextRequest();
-      OptNode node = (OptNode) Tools.getNodeByID(r.first);
+//      OptNode node = (OptNode) Tools.getNodeByID(r.first);
+      CBNetApp node = (CBNetApp) Tools.getNodeByID(r.first);
       node.newMessage(r.second);
     }
 

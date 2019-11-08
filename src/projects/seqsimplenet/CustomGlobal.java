@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.util.ArrayList;
 
+import projects.defaultProject.BalancedTreeTopology;
 import projects.defaultProject.DataCollection;
 import projects.defaultProject.RequestQueue;
 import projects.defaultProject.TreeConstructor;
@@ -95,8 +96,8 @@ public class CustomGlobal extends AbstractCustomGlobal {
         };
         this.controlNode.finishInitializationWithDefaultModels(true);
 
-        this.treeTopology = new TreeConstructor(controlNode, this.tree);
-        this.treeTopology.setBalancedTree();
+        this.treeTopology = new BalancedTreeTopology(controlNode, this.tree);
+        this.treeTopology.buildTree();
         this.treeTopology.setPositions();
 
     }

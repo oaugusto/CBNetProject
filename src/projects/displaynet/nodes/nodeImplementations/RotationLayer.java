@@ -21,7 +21,7 @@ public abstract class RotationLayer extends ClusterLayer {
     this.isZigOperation = false;
   }
 
-  public void setOperation(int src, int dst, double priority) {
+  public void setRequest(int src, int dst, double priority) {
     this.setClusterRequest(src, dst, priority);
   }
 
@@ -29,6 +29,11 @@ public abstract class RotationLayer extends ClusterLayer {
     this.sendRequestCluster();
   }
 
+  public void requestCommunication() {
+
+  }
+
+  // Event
   @Override
   public void clusterCompleted(HashMap<String, NodeInfo> cluster) {
     // System.out.println("Node " + ID + ": cluster completed");
@@ -62,7 +67,7 @@ public abstract class RotationLayer extends ClusterLayer {
 
 
   /*
-               z                   z
+               z                  z
               /                  /
              y                  x
            /  \               /  \
@@ -193,10 +198,10 @@ public abstract class RotationLayer extends ClusterLayer {
   /*
                  w                  w
                 /                  /
-               z					x
+               z					        x
               / \               /   \
              y   d             y     z
-            / \		  ->    / \   / \
+            / \		  ->        / \   / \
            a   x             a   b c   d
               / \
              b   c
@@ -267,8 +272,7 @@ public abstract class RotationLayer extends ClusterLayer {
   }
 
   @Override
-  public void timeslot9() {
-    super.timeslot9();
+  public void rotationStep() {
 
     this.executeAllRPC();
     this.clearRPCQueue();
@@ -284,12 +288,8 @@ public abstract class RotationLayer extends ClusterLayer {
     }
   }
 
-  public void zigCompleted() {
+  public abstract void zigCompleted();
 
-  }
-
-  public void rotationCompleted() {
-
-  }
+  public abstract void rotationCompleted();
 
 }
