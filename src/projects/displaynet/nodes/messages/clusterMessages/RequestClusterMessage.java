@@ -1,6 +1,7 @@
 package projects.displaynet.nodes.messages.clusterMessages;
 
 import projects.defaultProject.nodes.messages.NetworkMessage;
+import projects.displaynet.nodes.tableEntry.Request;
 import sinalgo.nodes.messages.Message;
 
 /**
@@ -10,6 +11,7 @@ public class RequestClusterMessage extends NetworkMessage implements
     Comparable<RequestClusterMessage> {
 
   private double priority;
+  private boolean isMaster = false;
 
   private int hopCounter;
   private boolean isFinalNode; // keep track if this node is final node in current request
@@ -19,13 +21,15 @@ public class RequestClusterMessage extends NetworkMessage implements
     this.priority = msg.getPriority();
     this.hopCounter = msg.getHopCounter();
     this.isFinalNode = false;
+    this.isMaster = msg.isMaster();
   }
 
-  public RequestClusterMessage(int src, int dst, int hopCounter, double priority) {
+  public RequestClusterMessage(int src, int dst, int hopCounter, double priority, boolean master) {
     super(src, dst);
     this.priority = priority;
     this.hopCounter = hopCounter;
     this.isFinalNode = false;
+    this.isMaster = master;
   }
 
   public double getPriority() {
@@ -38,6 +42,10 @@ public class RequestClusterMessage extends NetworkMessage implements
 
   public boolean isFinalNode() {
     return isFinalNode;
+  }
+
+  public boolean isMaster() {
+    return isMaster;
   }
 
   public void setPriority(double priority) {
@@ -56,6 +64,14 @@ public class RequestClusterMessage extends NetworkMessage implements
     this.isFinalNode = true;
   }
 
+  public int getRequesterNode() {
+    return isMaster ? this.getSource() : this.getDestination();
+  }
+
+  public int getTargetNode() {
+    return isMaster ? this.getDestination() : this.getSource();
+  }
+
   @Override
   public Message clone() {
     return this;
@@ -63,11 +79,18 @@ public class RequestClusterMessage extends NetworkMessage implements
 
   @Override
   public int compareTo(RequestClusterMessage o) {
-    int value = Double.compare(this.priority, o.priority);
-    if (value == 0) { // In case tie, compare the id of the source node
-      return this.getDestination() - o.getDestination();
+    int cmpPriority = Double.compare(this.getPriority(), o.getPriority()); // compare the priorities
+    int cmpIDs = getRequesterNode() - o.getRequesterNode(); // in tie, use the id of the requester
+
+    if (cmpPriority == 0) {
+      if (cmpIDs == 0) {
+        // the requester node has higher priority
+        return Boolean.compare(this.isMaster(), o.isMaster());
+      } else {
+        return cmpIDs;
+      }
     } else {
-      return value;
+      return cmpPriority;
     }
   }
 

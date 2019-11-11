@@ -61,22 +61,18 @@ public class Request implements Comparable<Request> {
     return priority;
   }
 
-  /**
-   * the target node corresponds to the node to connect.
-   * @return
-   */
+  public int getRequesterNode() {
+    return isMaster ? srcId : dstId;
+  }
+
   public int getTargetNode() {
-    if (isMaster) {
-      return dstId;
-    } else {
-      return srcId;
-    }
+    return isMaster ? dstId : srcId;
   }
 
   @Override
   public int compareTo(Request o) {
-    int cmpPriority = Double.compare(this.priority, o.priority); // compare the priorities
-    int cmpIDs = this.srcId - o.srcId; // in tie, use the id of the requester
+    int cmpPriority = Double.compare(this.getPriority(), o.getPriority()); // compare the priorities
+    int cmpIDs = getRequesterNode() - o.getRequesterNode(); // in tie, use the id of the requester
 
     if (cmpPriority == 0) {
       if (cmpIDs == 0) {

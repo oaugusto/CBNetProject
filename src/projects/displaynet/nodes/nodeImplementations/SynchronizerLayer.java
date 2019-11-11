@@ -8,8 +8,8 @@ import projects.defaultProject.nodes.nodeImplementations.BinarySearchTreeLayer;
  */
 public abstract class SynchronizerLayer extends BinarySearchTreeLayer {
 
-  private int MAX_TIMESLOT = 15;
-  private int timeslot;
+  private int MAX_TIMESLOT = 16;
+  public int timeslot;
   private long round;
 
   public int getCurrentTimeSlot() {
@@ -38,26 +38,28 @@ public abstract class SynchronizerLayer extends BinarySearchTreeLayer {
       case 2:
 
       case 3:
+
+      case 4:
         handShakeStep();
         break;
 
-      case 4:
+      case 5:
         controlStep();
         break;
 
-      case 7:
+      case 8:
         clusterPhaseOne();
         break;
 
-      case 10:
+      case 11:
         clusterPhaseTwo();
         break;
 
-      case 13:
+      case 14:
         rotationStep();
         break;
 
-      case 14:
+      case 15:
         posRound();
 
         this.round++;

@@ -64,7 +64,7 @@ public class OptNode extends BinarySearchTreeLayer {
     }
 
     public void newMessage(int dst) {
-        Request splay = new Request(ID, dst);
+        Request splay = new Request(ID, dst, false);
         this.bufferRequest.add(splay);
     }
 

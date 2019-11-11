@@ -34,17 +34,17 @@ public class CustomGlobal extends AbstractCustomGlobal {
 
     @Override
     public boolean hasTerminated() {
-        if (this.data.getCompletedRequests() >= MAX_REQ) {
-            SplayNetApp node = (SplayNetApp) Tools.getNodeByID(1);
-            this.data.addTotalTime(node.getCurrentRound());
-            this.data.printRotationData();
-            this.data.printRoutingData();
-            return true;
-        }
+//        if (this.data.getCompletedRequests() >= MAX_REQ) {
+//            SplayNetApp node = (SplayNetApp) Tools.getNodeByID(1);
+//            this.data.addTotalTime(node.getCurrentRound());
+//            this.data.printRotationData();
+//            this.data.printRoutingData();
+//            return true;
+//        }
         return false;
     }
 
-    @Override
+    /*@Override
     public void preRun() {
 
 
@@ -69,17 +69,17 @@ public class CustomGlobal extends AbstractCustomGlobal {
         // Set Log Path
         this.data.setPath(output);
 
-        /*
+        *//*
          * read input data and configure the simulation
-         */
+         *//*
         this.requestQueue = new RequestQueue(input);
         this.numNodes = this.requestQueue.getNumberOfNodes();
         MAX_REQ = this.requestQueue.getNumberOfRequests();
 
 
-        /*
+        *//*
          * create the nodes and constructs the tree topology
-         */
+         *//*
         this.tree = new ArrayList<BinarySearchTreeLayer>();
 
         for (int i = 0; i < numNodes; i++) {
@@ -119,6 +119,6 @@ public class CustomGlobal extends AbstractCustomGlobal {
             }
         }
 
-    }
+    }*/
 
 }

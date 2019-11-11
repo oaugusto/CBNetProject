@@ -10,7 +10,7 @@ import projects.displaynet.nodes.tableEntry.Request;
 /**
  * SplayNetNode
  */
-public class SplayNetApp extends HandShakeLayer {
+public class SplayNetApp {/*extends HandShakeLayer {
 
     private DataCollection data  = DataCollection.getInstance();
 
@@ -70,7 +70,7 @@ public class SplayNetApp extends HandShakeLayer {
             this.data.addNumOfActiveClusters();
             this.data.resetActiveClusters();
         }
-    }
+    }*/
 
 
     

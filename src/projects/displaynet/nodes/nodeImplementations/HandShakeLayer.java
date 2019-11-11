@@ -31,14 +31,14 @@ public abstract class HandShakeLayer extends CommunicationLayer {
 
   private HandShakeState handShakeState;
 
-  // to break ties in priority
-  private Random rand = Tools.getRandomNumberGenerator();
-
   // current splay operation
-  private Request currentSplayHandShake; // splay operation from myself or peer
+  private Random rand = Tools.getRandomNumberGenerator();
 
   // my own message to be sent
   private ApplicationMessage myMsg;
+
+  // to break ties in priority
+  private Request currentSplayHandShake; // splay operation from myself or peer
 
   // in case received ack from peer
   private boolean isAckMSGReceived;
@@ -79,7 +79,7 @@ public abstract class HandShakeLayer extends CommunicationLayer {
       RequestSplay aux = (RequestSplay) msg;
       // System.out.println("node:" + ID + " " +aux.src + " " + aux.dst);
       this.peersRequestBuffer
-          .add(new Request(aux.getSource(), aux.getDestination(), aux.getPriority(), false));
+          .add(new Request(ID, aux.getSource(), aux.getPriority(), false));
 
     } else if (msg instanceof AckSplay) {
       // if the msg is instance of ack, my request is ready to start
@@ -91,10 +91,9 @@ public abstract class HandShakeLayer extends CommunicationLayer {
     }
   }
 
-  // TODO
+  // Communication completed on both nodes, resquester and target node
   @Override
-  public void communicationCompleted(Request request) {
-    super.communicationCompleted(request);
+  public void communicationCompleted() {
     this.isSplayCompleted = true;
   }
 
@@ -113,16 +112,12 @@ public abstract class HandShakeLayer extends CommunicationLayer {
               this.myMsg.getPriority());
 
           this.sendDirect(msg, Tools.getNodeByID(this.myMsg.getDestination()));
-          // handshake_log
-          // .logln("[" + Global.currentTime + "] " + ID + ": State:" + state_handshake +
-          // " Request sent");
         }
 
         if ((this.myMsg != null) || !this.peersRequestBuffer.isEmpty()) {
           this.handShakeState = HandShakeState.SYNC;
-          // handshake_log
-          // .logln("[" + Global.currentTime + "] " + ID + ": State:" + state_handshake +
-          // " is next state");
+
+          System.out.println("Idle " + ID + "timeslot " + this.timeslot);
         }
 
         break;
@@ -130,66 +125,53 @@ public abstract class HandShakeLayer extends CommunicationLayer {
       // set current splay operation
       case SYNC:
         if (this.peersRequestBuffer.isEmpty()) {
-          // handshake_log.logln(
-          // "[" + Global.currentTime + "] " + ID + ": State:" + state_handshake + "
-          // peerRequest is empty");
           // current node become master
           this.currentSplayHandShake = new Request(this.myMsg.getSource(),
               this.myMsg.getDestination(), this.myMsg.getPriority(), true);
           this.handShakeState = HandShakeState.MASTER;
-          // reset myMsg
-          this.setNewApplicationMessage(this.myMsg);
-          this.myMsg = null;
 
+          this.setNewApplicationMessage(this.myMsg);
+          System.out.println("Sync " + ID + "timeslot " + this.timeslot);
         } else if (this.myMsg == null) {
-          // handshake_log
-          // .logln("[" + Global.currentTime + "] " + ID + ": State:" + state_handshake +
-          // " mymsg is null");
           // respond with ack and the node become slave
           this.currentSplayHandShake = this.peersRequestBuffer.poll();
           AckSplay msg = new AckSplay();
-          sendDirect(msg, Tools.getNodeByID(this.currentSplayHandShake.getSrcId()));
+          sendDirect(msg, Tools.getNodeByID(this.currentSplayHandShake.getDstId()));
 
           this.handShakeState = HandShakeState.SLAVE;
-
+          System.out.println("Sync " + ID + "timeslot " + this.timeslot);
         } else {
           Request req = this.peersRequestBuffer.peek();
 
           if (req.getPriority() > this.myMsg.getPriority()) {
-            // handshake_log.logln("[" + Global.currentTime + "] " + ID + ": State:" +
-            // state_handshake
-            // + " mymsg has higher priority");
+
             this.currentSplayHandShake = new Request(this.myMsg.getSource(),
                 this.myMsg.getDestination(), this.myMsg.getPriority(), true);
             this.handShakeState = HandShakeState.MASTER;
             // reset myMsg
             this.myMsg = null;
+            System.out.println("Sync " + ID + "timeslot " + this.timeslot);
           } else {
-            // handshake_log.logln("[" + Global.currentTime + "] " + ID + ": State:" +
-            // state_handshake
-            // + " peermsg has higher priority");
+
             // respond with ack
             this.currentSplayHandShake = this.peersRequestBuffer.poll();
             if (this.currentSplayHandShake == null) { // test only
               Tools.fatalError("currentSplayHandshake is null");
             }
             AckSplay msg = new AckSplay();
-            sendDirect(msg, Tools.getNodeByID(this.currentSplayHandShake.getSrcId()));
+            sendDirect(msg, Tools.getNodeByID(this.currentSplayHandShake.getDstId()));
 
             this.handShakeState = HandShakeState.SLAVE;
+            System.out.println("Sync " + ID + "timeslot " + this.timeslot);
           }
         }
 
-        // handshake_log.logln("[" + Global.currentTime + "] " + ID + ": State:" +
-        // state_handshake + " is next state");
         break;
 
       case MASTER:
         // init splay sending start msg
         if (this.isAckMSGReceived) {
-          // handshake_log
-          // .logln("[" + Global.currentTime + "] " + ID + ": State:" + state_handshake +
-          // " ack received");
+
           StartSplay msg = new StartSplay();
           sendDirect(msg, Tools.getNodeByID(this.currentSplayHandShake.getDstId()));
 
@@ -200,62 +182,46 @@ public abstract class HandShakeLayer extends CommunicationLayer {
           //Log
           this.data.addSequence(this.currentSplayHandShake.getSrcId() - 1,
               this.currentSplayHandShake.getDstId() - 1);
+          System.out.println("Master " + ID + "timeslot " + this.timeslot);
         }
-        // handshake_log.logln("[" + Global.currentTime + "] " + ID + ": State:" +
-        // state_handshake + " is next state");
+
         break;
 
       case SLAVE:
         // wait the StartMsg
         if (this.isStartMSGReceived) {
-          // handshake_log
-          // .logln("[" + Global.currentTime + "] " + ID + ": State:" + state_handshake +
-          // " start received");
+
           this.handShakeState = HandShakeState.START;
           // reset startmsg flag
           this.isStartMSGReceived = false;
           // go to splay state
+          System.out.println("slave " + ID + "timeslot " + this.timeslot);
         } else {
-          // handshake_log
-          // .logln("[" + Global.currentTime + "] " + ID + ": State:" + state_handshake +
-          // " is next state");
+
           break;
         }
-        // System.out.println("[" + Global.currentTime + "] " + ID + ": State:" +
-        // state_handshake + " is next state");
 
       case START:
         // insert currentsplay_hands'hake operation on active_splay
-        // handshake_log.logln("[" + Global.currentTime + "] " + ID + ": State:" +
-        // state_handshake
-        // + " generate next splay src:" + this.currentSplay_handshake.srcId + " dst"
-        // + this.currentSplay_handshake.dstId + "priority: " +
-        // this.currentSplay_handshake.priority);
         // TODO
-        this.newSplay(this.currentSplayHandShake);
-
+        this.startNewSplay(this.currentSplayHandShake);
         this.handShakeState = HandShakeState.SPLAY;
-        // handshake_log.logln("[" + Global.currentTime + "] " + ID + ": State:" +
-        // state_handshake + " is next state");
-        // System.out.println(ID + " Init splay:(" + this.currentSplay_handshake.srcId +
-        // ", "
-        // + this.currentSplay_handshake.dstId + ") time: " + Global.currentTime);
+        System.out.println("Start " + ID + "timeslot " + this.timeslot);
 
       case SPLAY:
         // splay is completed when the src and dst are neighbor of each other
+        System.out.println("Splay " + ID + "timeslot " + this.timeslot);
         if (this.isSplayCompleted) {
-          // handshake_log.logln(
-          // "[" + Global.currentTime + "] " + ID + ": State:" + state_handshake + " splay
-          // completec");
           // TODO
           // reset to first state
           this.currentSplayHandShake = null;
+          // reset myMsg
+          this.myMsg = null;
           this.handShakeState = HandShakeState.IDLE;
           // reset isSplayCompleted
           this.isSplayCompleted = false;
         }
-        // handshake_log.logln("[" + Global.currentTime + "] " + ID + ": State:" +
-        // state_handshake + " is next state");
+
         break;
 
       default:

@@ -1,7 +1,6 @@
 package projects.displaynet.nodes.nodeImplementations;
 
 import projects.displaynet.nodes.tableEntry.Request;
-import sinalgo.nodes.messages.Message;
 import sinalgo.tools.Tools;
 
 /**
@@ -10,7 +9,7 @@ import sinalgo.tools.Tools;
 public abstract class ControlLayer extends RotationLayer {
 
   private enum States {
-    PASSIVE, ACTIVE, COMMUNICATING
+    PASSIVE, ACTIVE
   }
 
   // keep current state of the node
@@ -18,6 +17,7 @@ public abstract class ControlLayer extends RotationLayer {
 
   // keeps track of every splay a node participate as source or destination. once
   // a splay is completed, it is assigned null value
+  private boolean newSplay;
   private Request activeSplay;
 
   @Override
@@ -25,6 +25,7 @@ public abstract class ControlLayer extends RotationLayer {
     super.init();
 
     this.state = States.PASSIVE;
+    this.newSplay = false;
     this.activeSplay = null;
   }
 
@@ -32,9 +33,16 @@ public abstract class ControlLayer extends RotationLayer {
     return activeSplay;
   }
 
-  public void newSplay(Request rq) {
+  public void startNewSplay(Request rq) {
+    this.newSplay = true;
     this.activeSplay = rq;
     this.activeSplay.initialTime = this.getCurrentRound();
+  }
+
+  public void resetSplay() {
+    this.newSplay = false;
+    this.activeSplay = null;
+    this.state = States.PASSIVE;
   }
 
   @Override
@@ -46,34 +54,29 @@ public abstract class ControlLayer extends RotationLayer {
     switch (this.state) {
 
       case PASSIVE:
-        if (this.activeSplay != null) {
+        if (this.newSplay) {
 
           // event
           this.newSplayStarted(this.activeSplay);
 
-          if (this.isNeighbor(this.activeSplay.getTargetNode())) {
-
-            this.state = States.ACTIVE;
-            // request communication cluster from cluster layer
-
-          } else {
-            this.state = States.ACTIVE;
-            this.setRequest(this.activeSplay.getSrcId(), this.activeSplay.getDstId(),
-                this.activeSplay.getPriority());
-            if (!this.isLeastCommonAncestorOf(this.activeSplay.getTargetNode())) {
-              this.tryRotation();
-            }
-          }
+          this.state = States.ACTIVE;
+          this.setRequest(this.activeSplay.getSrcId(), this.activeSplay.getDstId(),
+              this.activeSplay.getPriority(), this.activeSplay.isMaster());
+        } else {
+          break;
         }
-        break;
 
       case ACTIVE:
-        if (this.isNeighbor(this.activeSplay.getTargetNode())) {
 
-          this.state = States.ACTIVE;
+        if (this.isNeighbor(this.activeSplay.getDstId())) {
+
           // request communication cluster from cluster layer
+          if (this.activeSplay.isMaster()){
+            this.sendCommunicationRequestCluster();
+          }
 
-        } else if (!this.isLeastCommonAncestorOf(this.activeSplay.getTargetNode())) {
+        } else if (!this.isAncestorOf(this.activeSplay.getDstId())) {
+          System.out.println("is neighbor node" + ID);
           this.tryRotation();
         }
 
@@ -96,16 +99,15 @@ public abstract class ControlLayer extends RotationLayer {
     this.activeSplay.numOfRotations++;
   }
 
-  public void newSplayStarted(Request currentRequest) {
-
+  @Override
+  public void communicationClusterCompleted() {
+    this.resetSplay();
+    this.connectionEstablished();
   }
 
-  public void communicationClusterFormed(Request currentRequest) {
+  public abstract void newSplayStarted(Request currentRequest);
 
-  }
-
-  public void communicationCompleted(Request peerRequest) {
-    this.activeSplay.finalTime = this.getCurrentRound();
-  }
+//  this.activeSplay.finalTime = this.getCurrentRound();
+  public abstract void connectionEstablished();
 
 }

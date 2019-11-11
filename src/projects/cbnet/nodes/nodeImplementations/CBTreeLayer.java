@@ -34,8 +34,8 @@ public abstract class CBTreeLayer extends BinarySearchTreeLayer {
     public void updateWeights(int from, int to) {
         CBTreeLayer aux = this;
 
-        if (!aux.isLeastCommonAncestorOf(to)) {
-            while (!aux.isLeastCommonAncestorOf(to)) {
+        if (!aux.isAncestorOf(to)) {
+            while (!aux.isAncestorOf(to)) {
                 aux.incrementWeight();
                 aux = (CBTreeLayer) aux.getParent();
 			} 

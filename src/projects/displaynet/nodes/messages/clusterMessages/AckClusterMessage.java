@@ -12,14 +12,14 @@ public class AckClusterMessage extends NetworkMessage {
   private double priority;
   private NodeInfo info;
 
-  private int position;
+  private int hopCounter;
   private boolean isFinalNode; // keep track if this node is final node in current request
 
   public AckClusterMessage(int src, int dst, double priority, int position, NodeInfo info) {
     super(src, dst);
     this.priority = priority;
     this.info = info;
-    this.position = position;
+    this.hopCounter = position;
   }
 
   public double getPriority() {
@@ -30,8 +30,8 @@ public class AckClusterMessage extends NetworkMessage {
     return info;
   }
 
-  public int getPosition() {
-    return position;
+  public int getHopCounter() {
+    return hopCounter;
   }
 
   public boolean isFinalNode() {
@@ -46,8 +46,8 @@ public class AckClusterMessage extends NetworkMessage {
     this.info = info;
   }
 
-  public void setPosition(int position) {
-    this.position = position;
+  public void setHopCounter(int hopCounter) {
+    this.hopCounter = hopCounter;
   }
 
   public void setFinalNode() {

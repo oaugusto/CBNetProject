@@ -4,15 +4,13 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.Random;
-
+import projects.defaultProject.BalancedTreeTopology;
 import projects.defaultProject.DataCollection;
-import projects.defaultProject.LinearTreeTopology;
 import projects.defaultProject.RequestQueue;
 import projects.defaultProject.TreeConstructor;
 import projects.defaultProject.nodes.messages.ApplicationMessage;
 import projects.defaultProject.nodes.nodeImplementations.BinarySearchTreeLayer;
 import projects.displaynet.nodes.nodeImplementations.DiSplayNetApp;
-import projects.displaynet.nodes.nodeImplementations.ControlLayer;
 import sinalgo.configuration.Configuration;
 import sinalgo.gui.transformation.PositionTransformation;
 import sinalgo.runtime.AbstractCustomGlobal;
@@ -109,7 +107,7 @@ public class CustomGlobal extends AbstractCustomGlobal {
     };
     this.controlNode.finishInitializationWithDefaultModels(true);
 
-    this.treeTopology = new LinearTreeTopology(controlNode, this.tree);
+    this.treeTopology = new BalancedTreeTopology(controlNode, this.tree);
     this.treeTopology.buildTree();
     this.treeTopology.setPositions();
 

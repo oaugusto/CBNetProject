@@ -111,7 +111,7 @@ public abstract class ClusterLayer extends CBNetLayer {
                 RequestClusterUpMessage newRequestMessage = new RequestClusterUpMessage(requestMessage);
                 newRequestMessage.shiftPosition();
 
-                if (position == 1 && this.isLeastCommonAncestorOf(requestMessage.getDst())) {
+                if (position == 1 && this.isAncestorOf(requestMessage.getDst())) {
                     newRequestMessage.setFinalNode();
                 }
 

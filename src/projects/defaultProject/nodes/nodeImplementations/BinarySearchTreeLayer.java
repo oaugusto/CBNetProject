@@ -72,11 +72,11 @@ public abstract class BinarySearchTreeLayer extends Node implements
     this.isRoot = false;
   }
 
-  public boolean isLeastCommonAncestorOf(BinarySearchTreeLayer node) {
+  public boolean isAncestorOf(BinarySearchTreeLayer node) {
     return this.minIdInSubtree <= node.ID && node.ID <= this.maxIdInSubtree;
   }
 
-  public boolean isLeastCommonAncestorOf(int id) {
+  public boolean isAncestorOf(int id) {
     return this.minIdInSubtree <= id && id <= this.maxIdInSubtree;
   }
 
@@ -362,12 +362,13 @@ public abstract class BinarySearchTreeLayer extends Node implements
     return ID - o.ID;
   }
 
-  public void draw(Graphics g, PositionTransformation pt, boolean highlight) {
-    // String text = ID + " l:" + this.minIdInSubtree + " r:" + this.maxIdInSubtree;
-    String text = "" + ID;
-
-    // draw the node as a circle with the text inside
-//    super.drawNodeAsDiskWithText(g, pt, highlight, text, 12, Color.YELLOW);
-    super.drawAsDisk(g, pt, false, 15);
-  }
+//  @Override
+//  public void draw(Graphics g, PositionTransformation pt, boolean highlight) {
+//    // String text = ID + " l:" + this.minIdInSubtree + " r:" + this.maxIdInSubtree;
+//    String text = "" + ID;
+//
+//    // draw the node as a circle with the text inside
+////    super.drawNodeAsDiskWithText(g, pt, highlight, text, 12, Color.YELLOW);
+//    super.drawAsDisk(g, pt, false, 15);
+//  }
 }

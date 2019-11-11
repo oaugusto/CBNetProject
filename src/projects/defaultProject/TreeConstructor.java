@@ -82,7 +82,7 @@ public abstract class TreeConstructor {
       int level_x) {
 
     root.setPosition(x, y_space * (level + 1), 0);
-    root.setColor(this.getColorFromValue(root.getCounter()));
+//    root.setColor(this.getColorFromValue(root.getCounter()));
 
     if (root.hasLeftChild() && root.hasRightChild()) {
 

@@ -21,16 +21,12 @@ public abstract class RotationLayer extends ClusterLayer {
     this.isZigOperation = false;
   }
 
-  public void setRequest(int src, int dst, double priority) {
-    this.setClusterRequest(src, dst, priority);
+  public void setRequest(int src, int dst, double priority, boolean master) {
+    this.setClusterRequest(src, dst, priority, master);
   }
 
   public void tryRotation() {
     this.sendRequestCluster();
-  }
-
-  public void requestCommunication() {
-
   }
 
   // Event
