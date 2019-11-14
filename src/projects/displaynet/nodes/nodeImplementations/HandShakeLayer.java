@@ -71,33 +71,6 @@ public abstract class HandShakeLayer extends CommunicationLayer {
   }
 
   @Override
-  public void receiveMessage(Message msg) {
-    super.receiveMessage(msg);
-
-    if (msg instanceof RequestSplay) {
-
-      RequestSplay aux = (RequestSplay) msg;
-      // System.out.println("node:" + ID + " " +aux.src + " " + aux.dst);
-      this.peersRequestBuffer
-          .add(new Request(ID, aux.getSource(), aux.getPriority(), false));
-
-    } else if (msg instanceof AckSplay) {
-      // if the msg is instance of ack, my request is ready to start
-      this.isAckMSGReceived = true;
-
-    } else if (msg instanceof StartSplay) {
-      // start splay once the peer has started
-      this.isStartMSGReceived = true;
-    }
-  }
-
-  // Communication completed on both nodes, resquester and target node
-  @Override
-  public void communicationCompleted() {
-    this.isSplayCompleted = true;
-  }
-
-  @Override
   public void handShakeStep() {
 
     switch (this.handShakeState) {
@@ -229,5 +202,32 @@ public abstract class HandShakeLayer extends CommunicationLayer {
         break;
     }
 
+  }
+
+  @Override
+  public void receiveMessage(Message msg) {
+    super.receiveMessage(msg);
+
+    if (msg instanceof RequestSplay) {
+
+      RequestSplay aux = (RequestSplay) msg;
+      // System.out.println("node:" + ID + " " +aux.src + " " + aux.dst);
+      this.peersRequestBuffer
+          .add(new Request(ID, aux.getSource(), aux.getPriority(), false));
+
+    } else if (msg instanceof AckSplay) {
+      // if the msg is instance of ack, my request is ready to start
+      this.isAckMSGReceived = true;
+
+    } else if (msg instanceof StartSplay) {
+      // start splay once the peer has started
+      this.isStartMSGReceived = true;
+    }
+  }
+
+  // Communication completed on both nodes, resquester and target node
+  @Override
+  public void communicationCompleted() {
+    this.isSplayCompleted = true;
   }
 }

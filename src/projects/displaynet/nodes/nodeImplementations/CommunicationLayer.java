@@ -3,6 +3,7 @@ package projects.displaynet.nodes.nodeImplementations;
 import projects.defaultProject.nodes.messages.AckApplicationMessage;
 import projects.defaultProject.nodes.messages.ApplicationMessage;
 import sinalgo.nodes.messages.Message;
+import sinalgo.tools.Tools;
 
 public abstract class CommunicationLayer extends ControlLayer {
 
@@ -13,6 +14,9 @@ public abstract class CommunicationLayer extends ControlLayer {
   }
 
   public void connectionEstablished() {
+    if (this.applicationMessage == null) {
+      Tools.fatalError("Null aplication message");
+    }
     this.sendForwardMessage(this.applicationMessage.getDestination(), this.applicationMessage);
     System.out.println("connection established at " + ID);
   }
