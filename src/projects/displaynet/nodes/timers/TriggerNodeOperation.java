@@ -23,7 +23,7 @@ public class TriggerNodeOperation extends Timer {
     DiSplayNetApp srcnode = (DiSplayNetApp) Tools.getNodeByID(msg.getSource());
     srcnode.sendMessage(msg);
 
-    CustomGlobal.mustGenerate = true;
+    CustomGlobal.mustGenerateSplay = true;
   }
 
 }

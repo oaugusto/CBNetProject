@@ -11,6 +11,7 @@ import projects.defaultProject.TreeConstructor;
 import projects.defaultProject.nodes.messages.ApplicationMessage;
 import projects.defaultProject.nodes.nodeImplementations.BinarySearchTreeLayer;
 import projects.displaynet.nodes.nodeImplementations.DiSplayNetApp;
+import projects.displaynet.nodes.nodeImplementations.SynchronizerLayer;
 import sinalgo.configuration.Configuration;
 import sinalgo.gui.transformation.PositionTransformation;
 import sinalgo.runtime.AbstractCustomGlobal;
@@ -27,11 +28,11 @@ public class CustomGlobal extends AbstractCustomGlobal {
   public ArrayList<BinarySearchTreeLayer> tree = null;
   public BinarySearchTreeLayer controlNode = null;
   public TreeConstructor treeTopology = null;
-  public RequestQueue requestQueue;
+  public RequestQueue requestQueue = null;
 
   // control execution
   public static boolean isSequencial = false;
-  public static boolean mustGenerate = true;
+  public static boolean mustGenerateSplay = true;
 
   public Random random = Tools.getRandomNumberGenerator();
   public double lambda = 0.15;
@@ -125,8 +126,8 @@ public class CustomGlobal extends AbstractCustomGlobal {
   public void preRound() {
     this.treeTopology.setPositions();
 
-    /*if (mustGenerate && this.requestQueue.hasNextRequest()) {
-      mustGenerate = false;
+    /*if (mustGenerateSplay && this.requestQueue.hasNextRequest()) {
+      mustGenerateSplay = false;
 
       double u = random.nextDouble();
       double x = Math.log(1 - u) / (-lambda);

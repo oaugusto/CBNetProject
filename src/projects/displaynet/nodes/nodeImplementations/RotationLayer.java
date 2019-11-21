@@ -8,7 +8,7 @@ import projects.defaultProject.nodes.tableEntry.NodeInfo;
 /**
  * RotationLayer
  */
-public abstract class RotationLayer extends ClusterLayer {
+public class RotationLayer extends ClusterLayer {
 
   private boolean rotating;
   private boolean isZigOperation; // for logging
@@ -284,8 +284,8 @@ public abstract class RotationLayer extends ClusterLayer {
     }
   }
 
-  public abstract void zigCompleted();
+  public void zigCompleted() {}
 
-  public abstract void rotationCompleted();
+  public void rotationCompleted() {}
 
 }

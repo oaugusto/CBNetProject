@@ -6,7 +6,7 @@ import sinalgo.tools.Tools;
 /**
  * SplayNetNode
  */
-public abstract class ControlLayer extends RotationLayer {
+public class ControlLayer extends RotationLayer {
 
   private enum States {
     PASSIVE, ACTIVE
@@ -42,6 +42,7 @@ public abstract class ControlLayer extends RotationLayer {
   public void resetSplay() {
     this.newSplay = false;
     this.activeSplay = null;
+    this.clearClusterRequest();
     this.state = States.PASSIVE;
   }
 
@@ -76,7 +77,6 @@ public abstract class ControlLayer extends RotationLayer {
           }
 
         } else if (!this.isAncestorOf(this.activeSplay.getDstId())) {
-          System.out.println("is neighbor node" + ID);
           this.tryRotation();
         }
 
@@ -101,13 +101,12 @@ public abstract class ControlLayer extends RotationLayer {
 
   @Override
   public void communicationClusterCompleted() {
-    this.resetSplay();
     this.connectionEstablished();
   }
 
-  public abstract void newSplayStarted(Request currentRequest);
+  public void newSplayStarted(Request currentRequest) {}
 
 //  this.activeSplay.finalTime = this.getCurrentRound();
-  public abstract void connectionEstablished();
+  public void connectionEstablished() {}
 
 }

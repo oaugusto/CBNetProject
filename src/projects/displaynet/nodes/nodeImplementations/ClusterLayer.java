@@ -10,17 +10,18 @@ import projects.displaynet.nodes.messages.clusterMessages.AckCommunicationReques
 import projects.displaynet.nodes.messages.clusterMessages.CommunicationRequest;
 import projects.displaynet.nodes.messages.clusterMessages.RequestClusterMessage;
 import sinalgo.nodes.messages.Message;
+import sinalgo.tools.Tools;
 
 /**
  * ClusterLayer
  */
-public abstract class ClusterLayer extends RPCLayer {
+public class ClusterLayer extends RPCLayer {
 
   // set with current splay request of this node
   private RequestClusterMessage currentClusterRequest;
 
   // this priority queue store all request cluster message received
-  private PriorityQueue<RequestClusterMessage> queueClusterRequest;
+  private PriorityQueue<RequestClusterMessage> priorityQueueClusterRequest;
 
   // this queue keeps all acks received due to a request cluster operation
   private Queue<AckClusterMessage> queueAckCluster;
@@ -30,7 +31,7 @@ public abstract class ClusterLayer extends RPCLayer {
     super.init();
 
     this.currentClusterRequest = null;
-    this.queueClusterRequest = new PriorityQueue<>();
+    this.priorityQueueClusterRequest = new PriorityQueue<>();
     this.queueAckCluster = new LinkedList<>();
   }
 
@@ -44,20 +45,16 @@ public abstract class ClusterLayer extends RPCLayer {
   }
 
   public void clearClusterRequestQueue() {
-    this.queueClusterRequest.clear();
+    this.priorityQueueClusterRequest.clear();
   }
 
   public void clearAckClusterQueue() {
     this.queueAckCluster.clear();
   }
 
-  private void forwardRequestCluster(RequestClusterMessage msg) {
-    this.sendToParent(msg);
-  }
-
   public void sendCommunicationRequestCluster() {
     // add communication cluster request to buffer
-    this.queueClusterRequest.add(new CommunicationRequest(this.currentClusterRequest));
+    this.priorityQueueClusterRequest.add(new CommunicationRequest(this.currentClusterRequest));
 
     // shift the position one hop
     CommunicationRequest msg = new CommunicationRequest(this.currentClusterRequest);
@@ -67,13 +64,17 @@ public abstract class ClusterLayer extends RPCLayer {
     this.sendForwardMessage(msg.getDestination(), msg);
   }
 
+  private void forwardRequestCluster(RequestClusterMessage msg) {
+    this.sendToParent(msg);
+  }
+
   /**
    * This method send a cluster request and put the request into the buffer of current node. The
    * hopCounter means how many times the message should be routed.
    */
   public void sendRequestCluster() {
     // add cluster request to buffer
-    this.queueClusterRequest.add(this.currentClusterRequest);
+    this.priorityQueueClusterRequest.add(this.currentClusterRequest);
 
     // shift the position one hop
     RequestClusterMessage msg = new RequestClusterMessage(this.currentClusterRequest);
@@ -89,7 +90,7 @@ public abstract class ClusterLayer extends RPCLayer {
     if (msg instanceof CommunicationRequest) {
 
       CommunicationRequest comRqMessage = (CommunicationRequest) msg;
-      this.queueClusterRequest.add(comRqMessage);
+      this.priorityQueueClusterRequest.add(comRqMessage);
 
     } else if (msg instanceof RequestClusterMessage) {
 
@@ -118,7 +119,7 @@ public abstract class ClusterLayer extends RPCLayer {
       }
 
       // add current request to queue
-      this.queueClusterRequest.add(requestMessage);
+      this.priorityQueueClusterRequest.add(requestMessage);
 
     } else if (msg instanceof AckClusterMessage) {
 
@@ -133,9 +134,25 @@ public abstract class ClusterLayer extends RPCLayer {
    */
   @Override
   public void clusterPhaseOne() {
+    /*System.out.println("Node " + ID);
+    if (!this.priorityQueueClusterRequest.isEmpty()) {
+      RequestClusterMessage rq = this.priorityQueueClusterRequest.peek();
+      System.out.println(
+          "pri:" + rq.getRequesterNode() + " " + rq.getTargetNode() + " " + rq
+              .getPriority());
+    } else {
+      System.out.println("pri: null");
+    }
+    if (this.currentClusterRequest == null) {
+      System.out.println("cur: null");
+    } else {
+      System.out.println("cur:" + this.currentClusterRequest.getRequesterNode() + " "
+          + this.currentClusterRequest.getTargetNode() + " " + this.currentClusterRequest
+          .getPriority());
+    }*/
 
-    if (!this.queueClusterRequest.isEmpty()) {
-      RequestClusterMessage rq = this.queueClusterRequest.poll();
+    if (!this.priorityQueueClusterRequest.isEmpty()) {
+      RequestClusterMessage rq = this.priorityQueueClusterRequest.poll();
 
       if (rq instanceof CommunicationRequest) {
 
@@ -257,8 +274,10 @@ public abstract class ClusterLayer extends RPCLayer {
     this.clearAckClusterQueue();
   }
 
-  public abstract void clusterCompleted(HashMap<String, NodeInfo> cluster);
+  public void clusterCompleted(HashMap<String, NodeInfo> cluster) {
+  }
 
-  public abstract void communicationClusterCompleted();
+  public void communicationClusterCompleted() {
+  }
 
 }

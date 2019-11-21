@@ -19,7 +19,7 @@ import projects.defaultProject.DataCollection;
 /**
  * HandShakeNode
  */
-public abstract class HandShakeLayer extends CommunicationLayer {
+public class HandShakeLayer extends CommunicationLayer {
 
   private DataCollection data = DataCollection.getInstance();
 
@@ -85,12 +85,15 @@ public abstract class HandShakeLayer extends CommunicationLayer {
               this.myMsg.getPriority());
 
           this.sendDirect(msg, Tools.getNodeByID(this.myMsg.getDestination()));
+          System.out.println(
+              "[1] node " + ID + " sent msg rq to " + this.myMsg.getDestination() + " at time "
+                  + Global.currentTime);
         }
 
         if ((this.myMsg != null) || !this.peersRequestBuffer.isEmpty()) {
           this.handShakeState = HandShakeState.SYNC;
 
-          System.out.println("Idle " + ID + "timeslot " + this.timeslot);
+          // System.out.println("Idle " + ID + "timeslot " + this.timeslot);
         }
 
         break;
@@ -104,7 +107,12 @@ public abstract class HandShakeLayer extends CommunicationLayer {
           this.handShakeState = HandShakeState.MASTER;
 
           this.setNewApplicationMessage(this.myMsg);
-          System.out.println("Sync " + ID + "timeslot " + this.timeslot);
+          // reset myMsg
+          this.myMsg = null;
+          System.out.println("[2] node " + ID + " sync: peerReq is empty go to master ("
+              + this.currentSplayHandShake.getSrcId() + "," + this.currentSplayHandShake.getDstId()
+              + ") at time " + Global.currentTime);
+
         } else if (this.myMsg == null) {
           // respond with ack and the node become slave
           this.currentSplayHandShake = this.peersRequestBuffer.poll();
@@ -112,7 +120,10 @@ public abstract class HandShakeLayer extends CommunicationLayer {
           sendDirect(msg, Tools.getNodeByID(this.currentSplayHandShake.getDstId()));
 
           this.handShakeState = HandShakeState.SLAVE;
-          System.out.println("Sync " + ID + "timeslot " + this.timeslot);
+          System.out.println("[2] node " + ID + " sync: myMsg is empty go to slave ("
+              + this.currentSplayHandShake.getSrcId() + "," + this.currentSplayHandShake.getDstId()
+              + ") at time " + Global.currentTime);
+
         } else {
           Request req = this.peersRequestBuffer.peek();
 
@@ -121,9 +132,14 @@ public abstract class HandShakeLayer extends CommunicationLayer {
             this.currentSplayHandShake = new Request(this.myMsg.getSource(),
                 this.myMsg.getDestination(), this.myMsg.getPriority(), true);
             this.handShakeState = HandShakeState.MASTER;
+
+            this.setNewApplicationMessage(this.myMsg);
             // reset myMsg
             this.myMsg = null;
-            System.out.println("Sync " + ID + "timeslot " + this.timeslot);
+            System.out.println("[2] node " + ID + " sync: my Msg has higher priotiry than peer go to master ("
+                + this.currentSplayHandShake.getSrcId() + "," + this.currentSplayHandShake.getDstId()
+                + ") at time " + Global.currentTime);
+
           } else {
 
             // respond with ack
@@ -135,7 +151,9 @@ public abstract class HandShakeLayer extends CommunicationLayer {
             sendDirect(msg, Tools.getNodeByID(this.currentSplayHandShake.getDstId()));
 
             this.handShakeState = HandShakeState.SLAVE;
-            System.out.println("Sync " + ID + "timeslot " + this.timeslot);
+            System.out.println("[2] node " + ID + " sync: peer has higher priotiry than myMsg go to slave ("
+                + this.currentSplayHandShake.getSrcId() + "," + this.currentSplayHandShake.getDstId()
+                + ") at time " + Global.currentTime);
           }
         }
 
@@ -155,7 +173,10 @@ public abstract class HandShakeLayer extends CommunicationLayer {
           //Log
           this.data.addSequence(this.currentSplayHandShake.getSrcId() - 1,
               this.currentSplayHandShake.getDstId() - 1);
-          System.out.println("Master " + ID + "timeslot " + this.timeslot);
+
+          System.out.println("[3] node " + ID + " master: ack received go to start ("
+              + this.currentSplayHandShake.getSrcId() + "," + this.currentSplayHandShake.getDstId()
+              + ") at time " + Global.currentTime);
         }
 
         break;
@@ -168,28 +189,33 @@ public abstract class HandShakeLayer extends CommunicationLayer {
           // reset startmsg flag
           this.isStartMSGReceived = false;
           // go to splay state
-          System.out.println("slave " + ID + "timeslot " + this.timeslot);
+          System.out.println("[3] node " + ID + " slave: start received go to start ("
+              + this.currentSplayHandShake.getSrcId() + "," + this.currentSplayHandShake.getDstId()
+              + ") at time " + Global.currentTime);
         } else {
 
           break;
         }
 
       case START:
-        // insert currentsplay_hands'hake operation on active_splay
+        // insert currentsplay_handshake operation on active_splay
         // TODO
         this.startNewSplay(this.currentSplayHandShake);
         this.handShakeState = HandShakeState.SPLAY;
-        System.out.println("Start " + ID + "timeslot " + this.timeslot);
+        System.out.println("[4] node " + ID + " start: start operation go to splay ("
+            + this.currentSplayHandShake.getSrcId() + "," + this.currentSplayHandShake.getDstId()
+            + ") at time " + Global.currentTime);
 
       case SPLAY:
         // splay is completed when the src and dst are neighbor of each other
-        System.out.println("Splay " + ID + "timeslot " + this.timeslot);
+        // System.out.println("Splay " + ID + "timeslot " + this.timeslot);
         if (this.isSplayCompleted) {
           // TODO
+          System.out.println("[5] node " + ID + " splay: splay completed go to idle ("
+              + this.currentSplayHandShake.getSrcId() + "," + this.currentSplayHandShake.getDstId()
+              + ")at time " + Global.currentTime);
           // reset to first state
           this.currentSplayHandShake = null;
-          // reset myMsg
-          this.myMsg = null;
           this.handShakeState = HandShakeState.IDLE;
           // reset isSplayCompleted
           this.isSplayCompleted = false;
@@ -198,7 +224,7 @@ public abstract class HandShakeLayer extends CommunicationLayer {
         break;
 
       default:
-        Tools.fatalError("Find default state in module handshake");
+        Tools.fatalError("default state in module handshake");
         break;
     }
 
@@ -211,7 +237,8 @@ public abstract class HandShakeLayer extends CommunicationLayer {
     if (msg instanceof RequestSplay) {
 
       RequestSplay aux = (RequestSplay) msg;
-      // System.out.println("node:" + ID + " " +aux.src + " " + aux.dst);
+      System.out.println("[1] node:" + ID + " recv rq (" + aux.getSource() + "," + aux.getDestination() + ") at time "
+          + Global.currentTime);
       this.peersRequestBuffer
           .add(new Request(ID, aux.getSource(), aux.getPriority(), false));
 

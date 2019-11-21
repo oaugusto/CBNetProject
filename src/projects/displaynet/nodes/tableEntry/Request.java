@@ -71,18 +71,6 @@ public class Request implements Comparable<Request> {
 
   @Override
   public int compareTo(Request o) {
-    int cmpPriority = Double.compare(this.getPriority(), o.getPriority()); // compare the priorities
-    int cmpIDs = getRequesterNode() - o.getRequesterNode(); // in tie, use the id of the requester
-
-    if (cmpPriority == 0) {
-      if (cmpIDs == 0) {
-        // the requester node has higher priority
-        return Boolean.compare(this.isMaster(), o.isMaster());
-      } else {
-        return cmpIDs;
-      }
-    } else {
-      return cmpPriority;
-    }
+    return Double.compare(this.getPriority(), o.getPriority()); // compare the priorities
   }
 }

@@ -6,8 +6,7 @@ public class CommunicationRequest extends RequestClusterMessage {
     super(src, dst, hopCounter, priority, master);
   }
 
-  public CommunicationRequest(
-      RequestClusterMessage msg) {
+  public CommunicationRequest(RequestClusterMessage msg) {
     super(msg);
   }
 }

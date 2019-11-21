@@ -5,7 +5,7 @@ import projects.defaultProject.nodes.messages.ApplicationMessage;
 import sinalgo.nodes.messages.Message;
 import sinalgo.tools.Tools;
 
-public abstract class CommunicationLayer extends ControlLayer {
+public class CommunicationLayer extends ControlLayer {
 
   private ApplicationMessage applicationMessage;
 
@@ -18,7 +18,7 @@ public abstract class CommunicationLayer extends ControlLayer {
       Tools.fatalError("Null aplication message");
     }
     this.sendForwardMessage(this.applicationMessage.getDestination(), this.applicationMessage);
-    System.out.println("connection established at " + ID);
+    //System.out.println("connection established at " + ID);
   }
 
   @Override
@@ -30,8 +30,9 @@ public abstract class CommunicationLayer extends ControlLayer {
 
       this.sendForwardMessage(appMsg.getSource(), new AckApplicationMessage(appMsg));
 
+      this.resetSplay();
       this.communicationCompleted();
-      System.out.println("communication completed at node " + ID);
+      //System.out.println("communication completed at node " + ID);
 
     } else if (msg instanceof AckApplicationMessage) {
       AckApplicationMessage ackAppMsg = (AckApplicationMessage) msg;
@@ -39,14 +40,15 @@ public abstract class CommunicationLayer extends ControlLayer {
       // clear current application msg
       this.applicationMessage = null;
 
+      this.resetSplay();
       this.communicationCompleted();
       this.ackMessage(ackAppMsg);
-      System.out.println("communication completed at node " + ID);
+      //System.out.println("communication completed at node " + ID);
     }
   }
 
-  public abstract void communicationCompleted();
+  public void communicationCompleted() {}
 
-  public abstract void ackMessage(AckApplicationMessage ackMsg);
+  public void ackMessage(AckApplicationMessage ackMsg) {}
 
 }

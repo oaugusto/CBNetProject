@@ -1,12 +1,16 @@
 package projects.displaynet.nodes.nodeImplementations;
 
+import java.awt.Color;
+import java.awt.Graphics;
 import projects.defaultProject.nodes.nodeImplementations.BinarySearchTreeLayer;
+import sinalgo.gui.transformation.PositionTransformation;
+import sinalgo.tools.Tools;
 
 /**
  * SynchronizerNode Implements timeslots system to coordenate operations. The node initiate the
  * timeslot in 0
  */
-public abstract class SynchronizerLayer extends BinarySearchTreeLayer {
+public class SynchronizerLayer extends BinarySearchTreeLayer {
 
   private int MAX_TIMESLOT = 16;
   public int timeslot;
@@ -32,12 +36,20 @@ public abstract class SynchronizerLayer extends BinarySearchTreeLayer {
     switch (this.timeslot) {
 
       case 0:
+        handShakeStep();
+        break;
 
       case 1:
+        handShakeStep();
+        break;
 
       case 2:
+        handShakeStep();
+        break;
 
       case 3:
+        handShakeStep();
+        break;
 
       case 4:
         handShakeStep();
@@ -72,16 +84,16 @@ public abstract class SynchronizerLayer extends BinarySearchTreeLayer {
     this.timeslot = (this.timeslot + 1) % MAX_TIMESLOT;
   }
 
-  public abstract void handShakeStep();
+  public void handShakeStep() {}
 
-  public abstract void controlStep();
+  public void controlStep() {}
 
-  public abstract void clusterPhaseOne();
+  public void clusterPhaseOne() {}
 
-  public abstract void clusterPhaseTwo();
+  public void clusterPhaseTwo() {}
 
-  public abstract void rotationStep();
+  public void rotationStep() {}
 
-  public abstract void posRound();
+  public void posRound() {}
 
 }

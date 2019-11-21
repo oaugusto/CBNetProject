@@ -80,12 +80,12 @@ public class RequestClusterMessage extends NetworkMessage implements
   @Override
   public int compareTo(RequestClusterMessage o) {
     int cmpPriority = Double.compare(this.getPriority(), o.getPriority()); // compare the priorities
-    int cmpIDs = getRequesterNode() - o.getRequesterNode(); // in tie, use the id of the requester
+    int cmpIDs = Integer.compare(o.getRequesterNode(), this.getRequesterNode()); // in tie, use the id of the requester
 
     if (cmpPriority == 0) {
       if (cmpIDs == 0) {
         // the requester node has higher priority
-        return Boolean.compare(this.isMaster(), o.isMaster());
+        return Boolean.compare(o.isMaster(), this.isMaster());
       } else {
         return cmpIDs;
       }
