@@ -1,77 +1,82 @@
 package projects.splaynet.nodes.nodeImplementations;
 
+import java.awt.Color;
+import java.awt.Graphics;
 import java.util.HashMap;
 
 import projects.defaultProject.DataCollection;
+import projects.defaultProject.nodes.messages.AckApplicationMessage;
+import projects.defaultProject.nodes.messages.ApplicationMessage;
+import projects.defaultProject.nodes.nodeImplementations.ApplicationNode;
 import projects.displaynet.nodes.nodeImplementations.HandShakeLayer;
 import projects.defaultProject.nodes.tableEntry.NodeInfo;
 import projects.displaynet.nodes.tableEntry.Request;
+import sinalgo.gui.transformation.PositionTransformation;
 
 /**
  * SplayNetNode
  */
-public class SplayNetApp {/*extends HandShakeLayer {
+public class SplayNetApp extends HandShakeLayer implements ApplicationNode {
 
-    private DataCollection data  = DataCollection.getInstance();
+  private boolean requestCompleted = false;
+  private DataCollection data = DataCollection.getInstance();
 
-    public void newSplayOperation(int dst) {
-        Request rq = new Request(ID, dst);
-        this.myMsgBuffer.add(rq);
+  @Override
+  public void sendMessage(ApplicationMessage msg) {
+    this.myMsgBuffer.add(msg);
+  }
 
-        this.data.incrementActiveSplays();
-    }
-    
-    @Override
-    public void newSplayStarted(Request request) {
-        super.newSplayStarted(request);
-    }
+  @Override
+  public void ackMessage(AckApplicationMessage ackMsg) {
+    this.data.addRotations(ackMsg.getRequest().numOfRotations);
+    this.data.addRouting(1);
+    this.data.addThroughput(this.getCurrentRound());
+    this.data.addRoundsPerSplay(ackMsg.getRequest().finalTime - ackMsg.getRequest().initialTime);
+    this.data.incrementCompletedRequests();
+    requestCompleted = true;
+  }
 
-    @Override
-    public void clusterCompleted(HashMap<String, NodeInfo> cluster) {
-        super.clusterCompleted(cluster);
+  /*-----------------Data collector-------------------*/
 
-        this.data.incrementActiveClusters();
-    }
+  @Override
+  public void newSplayStarted(Request currentRequest) {
+    this.data.incrementActiveSplays();
+  }
 
-    @Override
-    public void rotationCompleted() {
-        super.rotationCompleted();
-    }
-    
-    @Override
-    public void communicationClusterFormed(Request request) {
-        super.communicationClusterFormed(request);
-        if (request.getDstId() < ID) {
-            this.data.incrementActiveClusters();
-        }
-    }
+  @Override
+  public void communicationClusterCompleted() {
+    super.communicationClusterCompleted();
+    this.data.incrementActiveClusters();
+  }
 
-    @Override
-    public void communicationCompleted(Request request) {
-        super.communicationCompleted(request);
-        Request activeRequest = this.getActiveSplay();
+  @Override
+  public void clusterCompleted(HashMap<String, NodeInfo> cluster) {
+    super.clusterCompleted(cluster);
+    this.data.incrementActiveClusters();
+  }
 
-        if (activeRequest.getDstId() < ID) {
-            this.data.decrementActiveSplays();
-            this.data.addRotations(activeRequest.numOfRotations + request.numOfRotations);
-            this.data.addRouting(1);
-            this.data.addThroughput(this.getCurrentRound());
-            this.data.addRoundsPerSplay(request.finalTime - request.initialTime);;
-            this.data.incrementCompletedRequests();
-        }
+  @Override
+  public void posRound() {
+    if (ID == 1) {
+      this.data.addNumOfActiveSplays();
+      this.data.addNumOfActiveClusters();
+      this.data.resetActiveClusters();
     }
 
-    @Override
-    public void posRound() {
-        super.posRound();
+    if (requestCompleted) {
+      requestCompleted = false;
+      this.data.decrementActiveSplays();
+    }
+  }
 
-        if (ID == 1) {
-            this.data.addNumOfActiveSplays();
-            this.data.addNumOfActiveClusters();
-            this.data.resetActiveClusters();
-        }
-    }*/
+  /*-------------------------------------------------*/
 
+  @Override
+  public void draw(Graphics g, PositionTransformation pt, boolean highlight) {
+    // String text = ID + " l:" + this.minIdInSubtree + " r:" + this.maxIdInSubtree;
+    String text = "" + ID;
 
-    
+    // draw the node as a circle with the text inside
+    super.drawNodeAsDiskWithText(g, pt, highlight, text, 12, Color.YELLOW);
+  }
 }

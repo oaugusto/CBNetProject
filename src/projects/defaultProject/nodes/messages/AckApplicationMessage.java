@@ -13,4 +13,12 @@ public class AckApplicationMessage extends NetworkMessage {
   public AckApplicationMessage(ApplicationMessage appMsg) {
     super(appMsg.getDestination(), appMsg.getSource());
   }
+
+  public void setRequest(Request request) {
+    this.request = request;
+  }
+
+  public Request getRequest() {
+    return request;
+  }
 }

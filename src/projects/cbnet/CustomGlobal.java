@@ -6,8 +6,9 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import projects.cbnet.nodes.nodeImplementations.CBNetApp;
+import projects.cbnet.nodes.timers.TriggerNodeOperation;
+import projects.defaultProject.BalancedTreeTopology;
 import projects.defaultProject.DataCollection;
-import projects.defaultProject.LinearTreeTopology;
 import projects.defaultProject.RequestQueue;
 import projects.defaultProject.TreeConstructor;
 import projects.defaultProject.nodes.nodeImplementations.BinarySearchTreeLayer;
@@ -31,7 +32,7 @@ public class CustomGlobal extends AbstractCustomGlobal {
 
   // control execution
   public static boolean isSequencial = true;
-  public static boolean mustGenerate = true;
+  public static boolean mustGenerateSplay = true;
 
   public Random random = Tools.getRandomNumberGenerator();
   public double lambda = 0.15;
@@ -107,7 +108,7 @@ public class CustomGlobal extends AbstractCustomGlobal {
     };
     this.controlNode.finishInitializationWithDefaultModels(true);
 
-    this.treeTopology = new LinearTreeTopology(controlNode, this.tree);
+    this.treeTopology = new BalancedTreeTopology(controlNode, this.tree);
     this.treeTopology.buildTree();
 //    this.treeTopology.linearTree();
     this.treeTopology.setPositions();
@@ -115,19 +116,19 @@ public class CustomGlobal extends AbstractCustomGlobal {
     /*
      * initiate sigma buffers with message
      */
-    while (this.requestQueue.hasNextRequest()) {
+    /*while (this.requestQueue.hasNextRequest()) {
       Tuple<Integer, Integer> r = this.requestQueue.getNextRequest();
       CBNetApp node = (CBNetApp) Tools.getNodeByID(r.first);
       node.newMessage(r.second);
-    }
+    }*/
   }
 
   @Override
   public void preRound() {
     this.treeTopology.setPositions();
-    //Tools.repaintGUI();
-    /*if (mustGenerate && this.requestQueue.hasNextRequest()) {
-      mustGenerate = false;
+
+    if (mustGenerateSplay && this.requestQueue.hasNextRequest()) {
+      mustGenerateSplay = false;
 
       double u = random.nextDouble();
       double x = Math.log(1 - u) / (-lambda);
@@ -140,7 +141,7 @@ public class CustomGlobal extends AbstractCustomGlobal {
       TriggerNodeOperation ted = new TriggerNodeOperation(r.first, r.second);
       ted.startGlobalTimer(x);
 
-    }*/
+    }
   }
 
 }

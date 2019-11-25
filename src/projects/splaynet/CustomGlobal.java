@@ -8,6 +8,7 @@ import projects.defaultProject.BalancedTreeTopology;
 import projects.defaultProject.DataCollection;
 import projects.defaultProject.RequestQueue;
 import projects.defaultProject.TreeConstructor;
+import projects.defaultProject.nodes.messages.ApplicationMessage;
 import projects.defaultProject.nodes.nodeImplementations.BinarySearchTreeLayer;
 import projects.displaynet.nodes.nodeImplementations.ControlLayer;
 import projects.splaynet.nodes.nodeImplementations.SplayNetApp;
@@ -34,17 +35,17 @@ public class CustomGlobal extends AbstractCustomGlobal {
 
     @Override
     public boolean hasTerminated() {
-//        if (this.data.getCompletedRequests() >= MAX_REQ) {
-//            SplayNetApp node = (SplayNetApp) Tools.getNodeByID(1);
-//            this.data.addTotalTime(node.getCurrentRound());
-//            this.data.printRotationData();
-//            this.data.printRoutingData();
-//            return true;
-//        }
+        if (this.data.getCompletedRequests() >= MAX_REQ) {
+            SplayNetApp node = (SplayNetApp) Tools.getNodeByID(1);
+            this.data.addTotalTime(node.getCurrentRound());
+            this.data.printRotationData();
+            this.data.printRoutingData();
+            return true;
+        }
         return false;
     }
 
-    /*@Override
+    @Override
     public void preRun() {
 
 
@@ -69,17 +70,15 @@ public class CustomGlobal extends AbstractCustomGlobal {
         // Set Log Path
         this.data.setPath(output);
 
-        *//*
-         * read input data and configure the simulation
-         *//*
+
+        // read input data and configure the simulation
         this.requestQueue = new RequestQueue(input);
         this.numNodes = this.requestQueue.getNumberOfNodes();
         MAX_REQ = this.requestQueue.getNumberOfRequests();
 
 
-        *//*
-         * create the nodes and constructs the tree topology
-         *//*
+
+        // create the nodes and constructs the tree topology
         this.tree = new ArrayList<BinarySearchTreeLayer>();
 
         for (int i = 0; i < numNodes; i++) {
@@ -88,7 +87,7 @@ public class CustomGlobal extends AbstractCustomGlobal {
             this.tree.add(n);
         }
 
-        this.controlNode = new ControlLayer() {
+        this.controlNode = new SplayNetApp() {
             public void draw(Graphics g, PositionTransformation pt, boolean highlight) {
                 String text = "ControlNode";
                 super.drawNodeAsDiskWithText(g, pt, highlight, text, 10, Color.YELLOW);
@@ -103,8 +102,8 @@ public class CustomGlobal extends AbstractCustomGlobal {
     }
 
     public static void activateNextSplay(int src, int dst) {
-        SplayNetApp srcnode = (SplayNetApp)Tools.getNodeByID(src);	
-        srcnode.newSplayOperation(dst);
+        SplayNetApp srcnode = (SplayNetApp)Tools.getNodeByID(src);
+        srcnode.sendMessage(new ApplicationMessage(src, dst));
     }
     
     @Override
@@ -119,6 +118,6 @@ public class CustomGlobal extends AbstractCustomGlobal {
             }
         }
 
-    }*/
+    }
 
 }

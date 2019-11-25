@@ -20,11 +20,11 @@ public class DataCollection {
   private Logging routing_per_splay;
   private Logging rounds_per_splay;
   private Logging total_time_log;
-  private Logging concurrency_log;
-  private Logging num_of_cluster;
+  private Logging active_requests_log;// number of active request per round
+  private Logging active_clusters_log; // number of cluster per round
   private Logging throughput_log;
-  private Logging operations_log;
-  private Logging sequence_log;
+  private Logging operations_log; // print final results from simulation
+  private Logging sequence_log; // the sequence of the requests were started
 
   private DataCollection() {
 
@@ -35,8 +35,8 @@ public class DataCollection {
     routing_per_splay = Logging.getLogger(path + "/routing_per_splay.txt");
     rounds_per_splay = Logging.getLogger(path + "/rounds_per_splay.txt");
     total_time_log = Logging.getLogger(path + "/total_time.txt");
-    concurrency_log = Logging.getLogger(path + "/concurrent_req.txt");
-    num_of_cluster = Logging.getLogger(path + "/clusters.txt");
+    active_requests_log = Logging.getLogger(path + "/concurrent_req.txt");
+    active_clusters_log = Logging.getLogger(path + "/clusters.txt");
     throughput_log = Logging.getLogger(path + "/throughput.txt");
     operations_log = Logging.getLogger(path + "/operations.txt");
     sequence_log = Logging.getLogger(path + "/sequence.txt");
@@ -71,11 +71,11 @@ public class DataCollection {
   }
 
   public void addNumOfActiveSplays() {
-    this.concurrency_log.logln(this.activeSplays + "");
+    this.active_requests_log.logln(this.activeSplays + "");
   }
 
   public void addNumOfActiveClusters() {
-    this.num_of_cluster.logln(this.activeClusters + "");
+    this.active_clusters_log.logln(this.activeClusters + "");
   }
 
   public void addTotalTime(long num) {

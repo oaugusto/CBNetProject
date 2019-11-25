@@ -6,7 +6,7 @@ import sinalgo.tools.Tools;
 /**
  * SplayNetNode
  */
-public class ControlLayer extends RotationLayer {
+public abstract class ControlLayer extends RotationLayer {
 
   private enum States {
     PASSIVE, ACTIVE
@@ -18,7 +18,7 @@ public class ControlLayer extends RotationLayer {
   // keeps track of every splay a node participate as source or destination. once
   // a splay is completed, it is assigned null value
   private boolean newSplay;
-  private Request activeSplay;
+  private Request activeSplayRequest;
 
   @Override
   public void init() {
@@ -26,22 +26,22 @@ public class ControlLayer extends RotationLayer {
 
     this.state = States.PASSIVE;
     this.newSplay = false;
-    this.activeSplay = null;
+    this.activeSplayRequest = null;
   }
 
-  protected Request getActiveSplay() {
-    return activeSplay;
+  protected Request getActiveSplayRequest() {
+    return activeSplayRequest;
   }
 
   public void startNewSplay(Request rq) {
     this.newSplay = true;
-    this.activeSplay = rq;
-    this.activeSplay.initialTime = this.getCurrentRound();
+    this.activeSplayRequest = rq;
+    this.activeSplayRequest.initialTime = this.getCurrentRound();
   }
 
   public void resetSplay() {
     this.newSplay = false;
-    this.activeSplay = null;
+    this.activeSplayRequest = null;
     this.clearClusterRequest();
     this.state = States.PASSIVE;
   }
@@ -58,25 +58,27 @@ public class ControlLayer extends RotationLayer {
         if (this.newSplay) {
 
           // event
-          this.newSplayStarted(this.activeSplay);
+          if (this.activeSplayRequest.isMaster()) {
+            this.newSplayStarted(this.activeSplayRequest);
+          }
 
           this.state = States.ACTIVE;
-          this.setRequest(this.activeSplay.getSrcId(), this.activeSplay.getDstId(),
-              this.activeSplay.getPriority(), this.activeSplay.isMaster());
+          this.setRequest(this.activeSplayRequest.getSrcId(), this.activeSplayRequest.getDstId(),
+              this.activeSplayRequest.getPriority(), this.activeSplayRequest.isMaster());
         } else {
           break;
         }
 
       case ACTIVE:
 
-        if (this.isNeighbor(this.activeSplay.getDstId())) {
+        if (this.isNeighbor(this.activeSplayRequest.getDstId())) {
 
           // request communication cluster from cluster layer
-          if (this.activeSplay.isMaster()){
+          if (this.activeSplayRequest.isMaster()) {
             this.sendCommunicationRequestCluster();
           }
 
-        } else if (!this.isAncestorOf(this.activeSplay.getDstId())) {
+        } else if (!this.isAncestorOf(this.activeSplayRequest.getDstId())) {
           this.tryRotation();
         }
 
@@ -90,13 +92,13 @@ public class ControlLayer extends RotationLayer {
 
   @Override
   public void zigCompleted() { // single rotation
-    this.activeSplay.numOfRotations++;
+    this.activeSplayRequest.numOfRotations++;
   }
 
   @Override
   public void rotationCompleted() { // double rotation
-    this.activeSplay.numOfRotations++;
-    this.activeSplay.numOfRotations++;
+    this.activeSplayRequest.numOfRotations++;
+    this.activeSplayRequest.numOfRotations++;
   }
 
   @Override
@@ -104,9 +106,8 @@ public class ControlLayer extends RotationLayer {
     this.connectionEstablished();
   }
 
-  public void newSplayStarted(Request currentRequest) {}
+  public abstract void newSplayStarted(Request currentRequest);
 
-//  this.activeSplay.finalTime = this.getCurrentRound();
-  public void connectionEstablished() {}
+  public abstract void connectionEstablished();
 
 }

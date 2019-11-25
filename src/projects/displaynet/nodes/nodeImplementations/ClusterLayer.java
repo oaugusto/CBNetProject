@@ -10,12 +10,11 @@ import projects.displaynet.nodes.messages.clusterMessages.AckCommunicationReques
 import projects.displaynet.nodes.messages.clusterMessages.CommunicationRequest;
 import projects.displaynet.nodes.messages.clusterMessages.RequestClusterMessage;
 import sinalgo.nodes.messages.Message;
-import sinalgo.tools.Tools;
 
 /**
  * ClusterLayer
  */
-public class ClusterLayer extends RPCLayer {
+public abstract class ClusterLayer extends RPCLayer {
 
   // set with current splay request of this node
   private RequestClusterMessage currentClusterRequest;
@@ -134,22 +133,6 @@ public class ClusterLayer extends RPCLayer {
    */
   @Override
   public void clusterPhaseOne() {
-    /*System.out.println("Node " + ID);
-    if (!this.priorityQueueClusterRequest.isEmpty()) {
-      RequestClusterMessage rq = this.priorityQueueClusterRequest.peek();
-      System.out.println(
-          "pri:" + rq.getRequesterNode() + " " + rq.getTargetNode() + " " + rq
-              .getPriority());
-    } else {
-      System.out.println("pri: null");
-    }
-    if (this.currentClusterRequest == null) {
-      System.out.println("cur: null");
-    } else {
-      System.out.println("cur:" + this.currentClusterRequest.getRequesterNode() + " "
-          + this.currentClusterRequest.getTargetNode() + " " + this.currentClusterRequest
-          .getPriority());
-    }*/
 
     if (!this.priorityQueueClusterRequest.isEmpty()) {
       RequestClusterMessage rq = this.priorityQueueClusterRequest.poll();
@@ -274,10 +257,8 @@ public class ClusterLayer extends RPCLayer {
     this.clearAckClusterQueue();
   }
 
-  public void clusterCompleted(HashMap<String, NodeInfo> cluster) {
-  }
+  public abstract void clusterCompleted(HashMap<String, NodeInfo> cluster);
 
-  public void communicationClusterCompleted() {
-  }
+  public abstract void communicationClusterCompleted();
 
 }

@@ -11,7 +11,7 @@ import projects.defaultProject.TreeConstructor;
 import projects.defaultProject.nodes.messages.ApplicationMessage;
 import projects.defaultProject.nodes.nodeImplementations.BinarySearchTreeLayer;
 import projects.displaynet.nodes.nodeImplementations.DiSplayNetApp;
-import projects.displaynet.nodes.nodeImplementations.SynchronizerLayer;
+import projects.displaynet.nodes.timers.TriggerNodeOperation;
 import sinalgo.configuration.Configuration;
 import sinalgo.gui.transformation.PositionTransformation;
 import sinalgo.runtime.AbstractCustomGlobal;
@@ -115,18 +115,18 @@ public class CustomGlobal extends AbstractCustomGlobal {
     /*
      * initiate sigma buffers with message
      */
-    while (this.requestQueue.hasNextRequest()) {
+    /*while (this.requestQueue.hasNextRequest()) {
       Tuple<Integer, Integer> r = this.requestQueue.getNextRequest();
       DiSplayNetApp node = (DiSplayNetApp) Tools.getNodeByID(r.first);
       node.sendMessage(new ApplicationMessage(r.first, r.second));
-    }
+    }*/
   }
 
   @Override
   public void preRound() {
     this.treeTopology.setPositions();
 
-    /*if (mustGenerateSplay && this.requestQueue.hasNextRequest()) {
+    if (mustGenerateSplay && this.requestQueue.hasNextRequest()) {
       mustGenerateSplay = false;
 
       double u = random.nextDouble();
@@ -139,7 +139,6 @@ public class CustomGlobal extends AbstractCustomGlobal {
       Tuple<Integer, Integer> r = this.requestQueue.getNextRequest();
       TriggerNodeOperation ted = new TriggerNodeOperation(new ApplicationMessage(r.first, r.second));
       ted.startGlobalTimer(x);
-
-    }*/
+    }
   }
 }
