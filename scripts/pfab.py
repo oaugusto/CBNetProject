@@ -7,27 +7,25 @@ import numpy
 
 # this file keep all completed experiments
 log_path = "./scripts/logs/"
-log_file = "randomwalkLog.txt"
+log_file = "pfabLog.txt"
 
 if not os.path.exists(log_path):
     os.makedirs(log_path)
 
 # read log file    
-log = []
-with open(os.path.join(log_path, log_file), 'a+') as Log:
-    log = set(line.rstrip() for line in Log)
+open(os.path.join(log_path, log_file), 'a').close()
+    
+log = set(line.rstrip() for line in open(os.path.join(log_path, log_file), 'r'))
 
 # open log file for append and create a lock variable
-file = open("scripts/logs/randomwalkLog.txt", "a+")
+file = open("scripts/logs/pfabLog.txt", "a+")
 file_lock = threading.Lock()
 
 projects = ["flattening", "flatnet", "cbnet", "seqcbnet", "splaynet", "displaynet", "semisplaynet", "seqsemisplaynet", "simplenet"]
 # project = sys.argv[1]
 
 # parameters of simulation
-numNodes = [128, 1024]
-walkLength = [4, 16, 32]
-numFlows = [1, 4, 16]
+datasets = ["trace_0_1", "trace_0_5", "trace_0_8"]
 
 #number of threads to simulation
 numThreads = 10
@@ -45,7 +43,6 @@ class myThread (threading.Thread):
         self.threadID = threadID
         self.commands = commands
     def run(self):
-        print(command)
         execute(self.commands)
 
 
@@ -66,16 +63,14 @@ for project in projects:
     commands = []
 
     # generate all possibles inputs for simulation
-    for n in numNodes:
-        for w in walkLength:
-            for f in numFlows:
-                input = 'input/randomwalkDS/{}/{}-nodes-{}-walkLength-{}-numberOfConcurrentFlows-input.txt'.format(n, n, w, f)
-                output = 'output/randomwalk/{}/{}/{}/{}'.format(project, n, w, f)
-                cmd = '{} {} -overwrite input={} output={} AutoStart=true > /dev/null'.format(command, project, input, output)
+    for dataset in datasets:
+        input = 'input/p_fabDS/{}.csv'.format(dataset)
+        output = 'output/pfab/{}/{}'.format(project, dataset)
+        cmd = '{} {} -overwrite input={} output={} AutoStart=true > /dev/null'.format(command, project, input, output)
 
-                # not executed yet
-                if cmd not in log:
-                    commands.append(cmd)
+        # not executed yet
+        if cmd not in log:
+            commands.append(cmd)
 
     numCommands = len(commands)
 

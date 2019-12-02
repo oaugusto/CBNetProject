@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <sinalgo>
-	<ProjectSelector windowWidth="1922" windowHeight="1057" lastChosenProject="" windowPosX="-1" windowPosY="0" isMaximized="false" selectedTab="1" />
-	<GUI windowWidth="941" windowHeight="882" windowPosX="-1" windowPosY="0" isMaximized="true" ControlPanelExpandSimulation="true" ControlPanelShowFullViewPanel="true" ControlPanelShowTextPanel="true" ControlPanelShowProjectControl="true" RunOperationIsLimited="false" helpWindowWidth="500" helpWindowHeight="500" helpWindowPosX="200" helpWindowPosY="200" helpWindowIsMaximized="false" />
-	<RandomSeed seedFromPreviousRun="-8629608988770196278" />
-	<App lastSelectedFileDirectory="" checkForUpdatesAtStartup="true" updateCheckTimeStamp="1575311055820" runCmdLineArgs="-project splaynet -overwrite input=input/projectorDS/tor_128.txt output=test " />
+	<ProjectSelector windowWidth="600" windowHeight="400" lastChosenProject="" windowPosX="50" windowPosY="50" isMaximized="false" selectedTab="1" />
+	<GUI windowWidth="800" windowHeight="600" windowPosX="50" windowPosY="50" isMaximized="false" ControlPanelExpandSimulation="true" ControlPanelShowFullViewPanel="true" ControlPanelShowTextPanel="true" ControlPanelShowProjectControl="true" RunOperationIsLimited="true" helpWindowWidth="500" helpWindowHeight="500" helpWindowPosX="200" helpWindowPosY="200" helpWindowIsMaximized="false" />
+	<RandomSeed seedFromPreviousRun="5325518598317605062" />
+	<App lastSelectedFileDirectory="" checkForUpdatesAtStartup="true" updateCheckTimeStamp="0" runCmdLineArgs="-batch -project simplenet -overwrite input=input/randomwalkDS/1024/1024-nodes-4-walkLength-16-numberOfConcurrentFlows-input.txt output=output/randomwalk/simplenet/1024/4/16 AutoStart=true " />
 	<GenNodesDlg numNodes="100" />
 </sinalgo>
 

@@ -6,20 +6,23 @@ import threading
 import numpy
 
 # this file keep all completed experiments
-log_file = "scripts/logs/projectorLog.txt"
+log_path = "./scripts/logs/"
+log_file = "projectorLog.txt"
 
-if not os.path.exists(log_file):
-    os.mknod(log_file)
+if not os.path.exists(log_path):
+    os.makedirs(log_path)
 
-# read log file
-log = set(line.rstrip() for line in open(log_file))
+# read log file    
+open(os.path.join(log_path, log_file), 'a').close()
+    
+log = set(line.rstrip() for line in open(os.path.join(log_path, log_file), 'r'))
 
 # open log file for append and create a lock variable
 file = open("scripts/logs/projectorLog.txt", "a+")
 file_lock = threading.Lock()
 
-projects = ["cbnet", "seqcbnet", "splaynet", "displaynet", "semisplaynet", "seqsemisplaynet", "simplenet", "seqsimplenet"]
-#project = sys.argv[1]
+projects = ["flattening", "flatnet", "cbnet", "seqcbnet", "splaynet", "displaynet", "semisplaynet", "seqsemisplaynet", "simplenet"]
+# project = sys.argv[1]
 
 # parameters of simulation
 numNodes = [128, 256, 512, 1024]

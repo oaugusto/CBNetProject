@@ -6,22 +6,26 @@ import threading
 import numpy
 
 # this file keep all completed experiments
-log_file = "scripts/logs/normalLog.txt"
+log_path = "./scripts/logs/"
+log_file = "normalLog.txt"
 
-if not os.path.exists(log_file):
-    os.mknod(log_file)
+if not os.path.exists(log_path):
+    os.makedirs(log_path)
 
-# read log file
-log = set(line.rstrip() for line in open(log_file))
+# read log file    
+open(os.path.join(log_path, log_file), 'a').close()
+    
+log = set(line.rstrip() for line in open(os.path.join(log_path, log_file), 'r'))
 
 # open log file for append and create a lock variable
 file = open("scripts/logs/normalLog.txt", "a+")
 file_lock = threading.Lock()
 
-projects = ["cbnet", "seqcbnet", "splaynet", "displaynet", "semisplaynet", "seqsemisplaynet", "simplenet", "seqsimplenet"]
-#project = sys.argv[1]
+projects = ["flattening", "flatnet", "cbnet", "seqcbnet", "splaynet", "displaynet", "semisplaynet", "seqsemisplaynet", "simplenet"]
+# project = sys.argv[1]
 
 # parameters of simulation
+numSimulations = 30
 numNodes = [128, 1024]
 std = [0.2, 0.8, 1.6, 3.2, 6.4]
 
@@ -47,7 +51,7 @@ class myThread (threading.Thread):
 def execute(commands):
     for command in commands:
         print(command)
-        os.system(command)
+        #os.system(command)
 
         file_lock.acquire()
         file.write(command + "\n")
@@ -63,13 +67,15 @@ for project in projects:
     # generate all possibles inputs for simulation
     for n in numNodes:
         for s in std:
-            input = 'input/normalDS/{}/{}-{}-std.txt'.format(n, n, s)
-            output = 'output/normal/{}/{}/{}'.format(project, n, s)
-            cmd = '{} {} -overwrite input={} output={} AutoStart=true > /dev/null'.format(command, project, input, output)
+            for i in range(1, numSimulations + 1):
+                input = 'input/normalDS/{}/{}-{}-std.txt'.format(n, n, s)
+                output = 'output/normal/{}/{}/{}/{}'.format(project, n, s, i)
+                cmd = '{} {} -overwrite input={} output={} AutoStart=true > /dev/null'.format(command, project, input, output)
 
-            # not executed yet
-            if cmd not in log:
-                commands.append(cmd)
+                # not executed yet
+                if cmd not in log:
+                    commands.append(cmd)
+                    #print(cmd)
 
     numCommands = len(commands)
 
