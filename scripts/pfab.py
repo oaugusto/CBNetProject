@@ -21,7 +21,7 @@ log = set(line.rstrip() for line in open(os.path.join(log_path, log_file), 'r'))
 file = open("scripts/logs/pfabLog.txt", "a+")
 file_lock = threading.Lock()
 
-projects = ["optnet", "flattening", "flatnet", "cbnet", "seqcbnet", "splaynet", "displaynet", "semisplaynet", "seqsemisplaynet", "simplenet"]
+projects = ["optnet", "flattening", "flatnet", "cbnet", "seqcbnet", "splaynet", "displaynet", "simplenet"]
 # project = sys.argv[1]
 
 # parameters of simulation
@@ -64,7 +64,7 @@ for project in projects:
 
     # generate all possibles inputs for simulation
     for dataset in datasets:
-        input = 'input/p_fabDS/{}.csv'.format(dataset)
+        input = 'input/p_fabDS/{}.txt'.format(dataset)
         output = 'output/pfab/{}/{}'.format(project, dataset)
         cmd = '{} {} -overwrite input={} output={} AutoStart=true > /dev/null'.format(command, project, input, output)
 

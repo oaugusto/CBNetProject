@@ -7,7 +7,7 @@ import numpy
 
 # this file keep all completed experiments
 log_path = "./scripts/logs/"
-log_file = "hpcLog.txt"
+log_file = "facebookLog.txt"
 
 if not os.path.exists(log_path):
     os.makedirs(log_path)
@@ -18,14 +18,14 @@ open(os.path.join(log_path, log_file), 'a').close()
 log = set(line.rstrip() for line in open(os.path.join(log_path, log_file), 'r'))
 
 # open log file for append and create a lock variable
-file = open("scripts/logs/hpcLog.txt", "a+")
+file = open("scripts/logs/facebookLog.txt", "a+")
 file_lock = threading.Lock()
 
 projects = ["optnet", "flattening", "flatnet", "cbnet", "seqcbnet", "splaynet", "displaynet", "simplenet"]
 # project = sys.argv[1]
 
 # parameters of simulation
-datasets = ["cesar_mocfe", "cesar_nekbone", "exact_boxlib_cns_nospec_large", "exact_boxlib_multigrid_c_large"]
+datasets = ["datasetC_pairs"]
 
 #number of threads to simulation
 numThreads = 10
@@ -64,8 +64,8 @@ for project in projects:
 
     # generate all possibles inputs for simulation
     for dataset in datasets:
-        input = 'input/hpcDS/{}.txt'.format(dataset)
-        output = 'output/hpc/{}/{}'.format(project, dataset)
+        input = 'input/facebookDS/{}.txt'.format(dataset)
+        output = 'output/facebook/{}'.format(project)
         cmd = '{} {} -overwrite input={} output={} AutoStart=true > /dev/null'.format(command, project, input, output)
 
         # not executed yet
