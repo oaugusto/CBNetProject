@@ -84,8 +84,8 @@ public class CustomGlobal extends AbstractCustomGlobal {
     this.tree = new ArrayList<BinarySearchTreeLayer>();
 
     for (int i = 0; i < numNodes; i++) {
-//      OptNode n = new OptNode();
-      CBNetApp n = new CBNetApp();
+      OptNode n = new OptNode();
+//      CBNetApp n = new CBNetApp();
       n.finishInitializationWithDefaultModels(true);
       this.tree.add(n);
     }
@@ -110,8 +110,8 @@ public class CustomGlobal extends AbstractCustomGlobal {
      */
     while (this.requestQueue.hasNextRequest()) {
       Tuple<Integer, Integer> r = this.requestQueue.getNextRequest();
-//      OptNode node = (OptNode) Tools.getNodeByID(r.first);
-      CBNetApp node = (CBNetApp) Tools.getNodeByID(r.first);
+      OptNode node = (OptNode) Tools.getNodeByID(r.first);
+//      CBNetApp node = (CBNetApp) Tools.getNodeByID(r.first);
       node.newMessage(r.second);
     }
 

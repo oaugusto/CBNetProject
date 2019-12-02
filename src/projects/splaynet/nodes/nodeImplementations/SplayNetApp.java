@@ -40,7 +40,7 @@ public class SplayNetApp extends HandShakeLayer implements ApplicationNode {
 
   @Override
   public void newSplayStarted(Request currentRequest) {
-    this.data.incrementActiveSplays();
+
   }
 
   @Override

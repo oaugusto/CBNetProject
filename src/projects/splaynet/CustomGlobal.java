@@ -10,7 +10,6 @@ import projects.defaultProject.RequestQueue;
 import projects.defaultProject.TreeConstructor;
 import projects.defaultProject.nodes.messages.ApplicationMessage;
 import projects.defaultProject.nodes.nodeImplementations.BinarySearchTreeLayer;
-import projects.displaynet.nodes.nodeImplementations.ControlLayer;
 import projects.splaynet.nodes.nodeImplementations.SplayNetApp;
 import sinalgo.configuration.Configuration;
 import sinalgo.gui.transformation.PositionTransformation;
@@ -101,23 +100,23 @@ public class CustomGlobal extends AbstractCustomGlobal {
 
     }
 
-    public static void activateNextSplay(int src, int dst) {
+    public void activateNextSplay(int src, int dst) {
         SplayNetApp srcnode = (SplayNetApp)Tools.getNodeByID(src);
         srcnode.sendMessage(new ApplicationMessage(src, dst));
+
+        this.data.incrementActiveSplays();
     }
-    
+
     @Override
     public void preRound() {
         this.treeTopology.setPositions();
-    
-        // System.out.println(this.data.getNumbugerOfActiveSplays());
+
         if(this.data.getNumbugerOfActiveSplays() < 1){
             if(requestQueue.hasNextRequest()){
                 Tuple<Integer, Integer> r = requestQueue.getNextRequest();
-                activateNextSplay(r.first, r.second);
+                this.activateNextSplay(r.first, r.second);
             }
         }
-
     }
 
 }
