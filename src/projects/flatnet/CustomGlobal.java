@@ -33,7 +33,7 @@ public class CustomGlobal extends AbstractCustomGlobal {
 
     public Random random = Tools.getRandomNumberGenerator();
     public double lambda = 0.15;
-    public static double mu = 10;
+    public double mu = 10;
 
     // LOG
     DataCollection data = DataCollection.getInstance();
@@ -64,6 +64,11 @@ public class CustomGlobal extends AbstractCustomGlobal {
 
             if (Configuration.hasParameter("output")) {
                 output = Configuration.getStringParameter("output");
+            }
+
+            if(Configuration.hasParameter("mu")) {
+                mu = (double)Configuration.getIntegerParameter("mu");
+                lambda = (double)(1/mu);
             }
 
         } catch (Exception e) {
@@ -107,11 +112,11 @@ public class CustomGlobal extends AbstractCustomGlobal {
         /*
          * initiate sigma buffers with message
          */
-        /*while (this.requestQueue.hasNextRequest()) {
+        while (this.requestQueue.hasNextRequest()) {
             Tuple<Integer, Integer> r = this.requestQueue.getNextRequest();
             FlatNetApp node = (FlatNetApp) Tools.getNodeByID(r.first);
             node.newMessage(r.second);
-        }*/
+        }
         
     }
 
@@ -119,7 +124,7 @@ public class CustomGlobal extends AbstractCustomGlobal {
     public void preRound() {
         this.treeTopology.setPositions();
 
-        if (mustGenerateSplay && this.requestQueue.hasNextRequest()) {
+        /*if (mustGenerateSplay && this.requestQueue.hasNextRequest()) {
             mustGenerateSplay = false;
 
             double u = random.nextDouble();
@@ -133,7 +138,7 @@ public class CustomGlobal extends AbstractCustomGlobal {
             TriggerNodeOperation ted = new TriggerNodeOperation(r.first, r.second);
             ted.startGlobalTimer(x);
 
-        }
+        }*/
     }
 
 }

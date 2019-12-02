@@ -116,18 +116,18 @@ public class CustomGlobal extends AbstractCustomGlobal {
     /*
      * initiate sigma buffers with message
      */
-    /*while (this.requestQueue.hasNextRequest()) {
+    while (this.requestQueue.hasNextRequest()) {
       Tuple<Integer, Integer> r = this.requestQueue.getNextRequest();
       CBNetApp node = (CBNetApp) Tools.getNodeByID(r.first);
       node.newMessage(r.second);
-    }*/
+    }
   }
 
   @Override
   public void preRound() {
     this.treeTopology.setPositions();
 
-    if (mustGenerateSplay && this.requestQueue.hasNextRequest()) {
+    /*if (mustGenerateSplay && this.requestQueue.hasNextRequest()) {
       mustGenerateSplay = false;
 
       double u = random.nextDouble();
@@ -141,7 +141,7 @@ public class CustomGlobal extends AbstractCustomGlobal {
       TriggerNodeOperation ted = new TriggerNodeOperation(r.first, r.second);
       ted.startGlobalTimer(x);
 
-    }
+    }*/
   }
 
 }
