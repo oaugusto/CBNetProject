@@ -11,6 +11,7 @@ import projects.defaultProject.RequestQueue;
 import projects.defaultProject.TreeConstructor;
 import projects.defaultProject.nodes.nodeImplementations.BinarySearchTreeLayer;
 import projects.simplenet.nodes.nodeImplementations.CBNetApp;
+import projects.simplenet.nodes.nodeImplementations.SimpleNode;
 import sinalgo.configuration.Configuration;
 import sinalgo.gui.transformation.PositionTransformation;
 import sinalgo.runtime.AbstractCustomGlobal;
@@ -42,8 +43,9 @@ public class CustomGlobal extends AbstractCustomGlobal {
     @Override
     public boolean hasTerminated() {
         if (this.data.getCompletedRequests() >= MAX_REQ) {
-            CBNetApp node = (CBNetApp) Tools.getNodeByID(1);
-            this.data.addTotalTime(node.getCurrentRound());
+//            CBNetApp node = (CBNetApp) Tools.getNodeByID(1);
+            SimpleNode node = (SimpleNode) Tools.getNodeByID(1);
+//            this.data.addTotalTime(node.getCurrentRound());
             this.data.printRotationData();
             this.data.printRoutingData();
             return true;
@@ -88,12 +90,13 @@ public class CustomGlobal extends AbstractCustomGlobal {
         this.tree = new ArrayList<BinarySearchTreeLayer>();
 
         for (int i = 0; i < numNodes; i++) {
-            CBNetApp n = new CBNetApp();
+            //CBNetApp n = new CBNetApp();
+            SimpleNode n = new SimpleNode();
             n.finishInitializationWithDefaultModels(true);
             this.tree.add(n);
         }
 
-        this.controlNode = new CBNetApp() {
+        this.controlNode = new SimpleNode() { // new CBNetApp() {
             public void draw(Graphics g, PositionTransformation pt, boolean highlight) {
                 String text = "ControlNode";
                 super.drawNodeAsDiskWithText(g, pt, highlight, text, 10, Color.YELLOW);
@@ -110,7 +113,8 @@ public class CustomGlobal extends AbstractCustomGlobal {
          */
         while (this.requestQueue.hasNextRequest()) {
             Tuple<Integer, Integer> r = this.requestQueue.getNextRequest();
-            CBNetApp node = (CBNetApp) Tools.getNodeByID(r.first);
+            //CBNetApp node = (CBNetApp) Tools.getNodeByID(r.first);
+            SimpleNode node = (SimpleNode) Tools.getNodeByID(r.first);
             node.newMessage(r.second);
         }
        

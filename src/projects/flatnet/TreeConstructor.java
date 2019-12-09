@@ -24,8 +24,8 @@ public class TreeConstructor {
 		}
 
 		// build binary tree topology
-		buildTree(0, this.tree.size());
-		BinaryTreeLayer root = tree.get(0);
+		// buildTree(0, this.tree.size());
+		BinaryTreeLayer root = buildBalancedTree(1, this.tree.size());
 
 		// configure the control node
 		this.controlNode.setParent(null);
@@ -57,6 +57,44 @@ public class TreeConstructor {
 			}
 		}
 
+	}
+
+	private BinaryTreeLayer buildBalancedTree(int start, int end) {
+
+		int parentId = Integer.MIN_VALUE;
+		int leftChildId = Integer.MIN_VALUE;
+		int rightChildId = Integer.MIN_VALUE;
+
+		BinaryTreeLayer parent = null;
+		BinaryTreeLayer leftChild = null;
+		BinaryTreeLayer rightChild = null;
+
+		parentId = (start + end) / 2;
+		parent = tree.get(parentId - 1);
+
+		// case there is left subtree
+		if (parentId != start) {
+			leftChildId = (start + parentId - 1) / 2; // find left child
+			leftChild = tree.get(leftChildId - 1);
+
+			buildBalancedTree(start, parentId - 1);
+
+			parent.addLinkToLeftChild(leftChild);
+			parent.setLeftDescendants(leftChild);
+		}
+
+		// case there is right subtree
+		if (parentId != end) {
+			rightChildId = (parentId + 1 + end) / 2;
+			rightChild = tree.get(rightChildId - 1);
+
+			buildBalancedTree(parentId + 1, end);
+
+			parent.addLinkToRightChild(rightChild);
+			parent.setRightDescendants(rightChild);
+		}
+
+		return parent;
 	}
 
 
