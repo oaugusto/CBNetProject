@@ -21,10 +21,12 @@ log = set(line.rstrip() for line in open(os.path.join(log_path, log_file), 'r'))
 file = open("scripts/logs/projectorLog.txt", "a+")
 file_lock = threading.Lock()
 
-projects = ["optnet", "flattening", "flatnet", "cbnet", "seqcbnet", "splaynet", "displaynet", "simplenet"]
+#projects = ["optnet", "flattening", "flatnet", "cbnet", "seqcbnet", "splaynet", "displaynet", "simplenet"]
+projects = ["optnet", "flattening", "flatnet", "splaynet", "displaynet", "simplenet"]
 # project = sys.argv[1]
 
 # parameters of simulation
+datasets = ["random", "newTor", "tor"]
 numNodes = [128, 256, 512, 1024]
 numSimulations = 30
 
@@ -64,15 +66,16 @@ for project in projects:
     commands = []
 
     # generate all possibles inputs for simulation
-    for n in numNodes:
-        for i in range(1, numSimulations + 1):
-            input = 'input/projectorDS/{}/{}_tor_{}.txt'.format(n, i, n)
-            output = 'output/projector/{}/{}/{}'.format(project, n, i)
-            cmd = '{} {} -overwrite input={} output={} AutoStart=true > /dev/null'.format(command, project, input, output)
+    for dataset in datasets: 
+        for n in numNodes:
+            for i in range(1, numSimulations + 1):
+                input = 'input/projectorDS/{}/{}/{}_tor_{}.txt'.format(dataset, n, i, n)
+                output = 'output/projector/{}/{}/{}/{}'.format(project, dataset, n, i)
+                cmd = '{} {} -overwrite input={} output={} AutoStart=true > /dev/null'.format(command, project, input, output)
 
-            # not executed yet
-            if cmd not in log:
-                commands.append(cmd)
+                # not executed yet
+                if cmd not in log:
+                    commands.append(cmd)
 
     numCommands = len(commands)
 
