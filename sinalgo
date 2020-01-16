@@ -1,1 +1,1 @@
-java -cp binaries/bin sinalgo.Run $*
+java -cp binaries/bin:binaries/jdom.jar sinalgo.Run $*

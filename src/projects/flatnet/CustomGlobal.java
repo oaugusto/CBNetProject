@@ -32,8 +32,7 @@ public class CustomGlobal extends AbstractCustomGlobal {
     public static boolean mustGenerateSplay = true;
 
     public Random random = Tools.getRandomNumberGenerator();
-    public double lambda = 0.15;
-    public double mu = 10;
+    public double lambda = 0.05;
 
     // LOG
     DataCollection data = DataCollection.getInstance();
@@ -67,7 +66,7 @@ public class CustomGlobal extends AbstractCustomGlobal {
             }
 
             if(Configuration.hasParameter("mu")) {
-                mu = (double)Configuration.getIntegerParameter("mu");
+                double mu = (double)Configuration.getIntegerParameter("mu");
                 lambda = (double)(1/mu);
             }
 
