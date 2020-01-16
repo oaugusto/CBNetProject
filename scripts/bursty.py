@@ -7,7 +7,7 @@ import numpy
 
 # this file keep all completed experiments
 log_path = "./scripts/logs/"
-log_file = "normalLog.txt"
+log_file = "burstyLog.txt"
 
 if not os.path.exists(log_path):
     os.makedirs(log_path)
@@ -18,17 +18,16 @@ open(os.path.join(log_path, log_file), 'a').close()
 log = set(line.rstrip() for line in open(os.path.join(log_path, log_file), 'r'))
 
 # open log file for append and create a lock variable
-file = open("scripts/logs/normalLog.txt", "a+")
+file = open("scripts/logs/projectorLog.txt", "a+")
 file_lock = threading.Lock()
 
-#projects = ["flattening", "flatnet", "cbnet", "seqcbnet", "splaynet", "displaynet", "semisplaynet", "seqsemisplaynet", "simplenet"]
-projects = ["splaynet", "displaynet", "simplenet", "optnet"]
+#projects = ["optnet", "flattening", "flatnet", "cbnet", "seqcbnet", "splaynet", "displaynet", "simplenet"]
+projects = ["optnet", "splaynet", "displaynet", "simplenet"]
 # project = sys.argv[1]
 
 # parameters of simulation
+numNodes = [128, 256, 512, 1024]
 numSimulations = 30
-numNodes = [128, 1024]
-std = [0.2, 0.8, 1.6, 3.2, 6.4]
 
 #number of threads to simulation
 numThreads = 10
@@ -67,16 +66,14 @@ for project in projects:
 
     # generate all possibles inputs for simulation
     for n in numNodes:
-        for s in std:
-            for i in range(1, numSimulations + 1):
-                input = 'input/normalDS/{}/{}-{}-std.txt'.format(n, n, s)
-                output = 'output/normal/{}/{}/{}/{}'.format(project, n, s, i)
-                cmd = '{} {} -overwrite input={} output={} AutoStart=true > /dev/null'.format(command, project, input, output)
+        for i in range(1, numSimulations + 1):
+            input = 'input/bursty/{}/{}_tor_{}.txt'.format(n, i, n)
+            output = 'output/bursty/{}/{}/{}'.format(project, n, i)
+            cmd = '{} {} -overwrite input={} output={} AutoStart=true > /dev/null'.format(command, project, input, output)
 
-                # not executed yet
-                if cmd not in log:
-                    commands.append(cmd)
-                    #print(cmd)
+		# not executed yet
+            if cmd not in log:
+                commands.append(cmd)
 
     numCommands = len(commands)
 
@@ -109,4 +106,3 @@ for project in projects:
 
 
 print("Simulation Completed")
-                    

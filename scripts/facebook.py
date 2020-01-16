@@ -21,7 +21,8 @@ log = set(line.rstrip() for line in open(os.path.join(log_path, log_file), 'r'))
 file = open("scripts/logs/facebookLog.txt", "a+")
 file_lock = threading.Lock()
 
-projects = ["optnet", "flattening", "flatnet", "cbnet", "seqcbnet", "splaynet", "displaynet", "simplenet"]
+#projects = ["optnet", "flattening", "flatnet", "cbnet", "seqcbnet", "splaynet", "displaynet", "simplenet"]
+projects = ["optnet", "splaynet", "displaynet", "simplenet"]
 # project = sys.argv[1]
 
 # parameters of simulation

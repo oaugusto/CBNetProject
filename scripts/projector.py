@@ -22,11 +22,13 @@ file = open("scripts/logs/projectorLog.txt", "a+")
 file_lock = threading.Lock()
 
 #projects = ["optnet", "flattening", "flatnet", "cbnet", "seqcbnet", "splaynet", "displaynet", "simplenet"]
-projects = ["optnet", "flattening", "flatnet", "splaynet", "displaynet", "simplenet"]
+#projects = ["optnet", "flattening", "flatnet", "splaynet", "displaynet", "simplenet"]
+projects = ["optnet", "splaynet", "displaynet", "simplenet"]
 # project = sys.argv[1]
 
 # parameters of simulation
-datasets = ["random", "newTor", "tor"]
+#datasets = ["random", "newTor", "tor"]
+datasets = ["newTor"]
 numNodes = [128, 256, 512, 1024]
 numSimulations = 30
 
@@ -70,7 +72,7 @@ for project in projects:
         for n in numNodes:
             for i in range(1, numSimulations + 1):
                 input = 'input/projectorDS/{}/{}/{}_tor_{}.txt'.format(dataset, n, i, n)
-                output = 'output/projector/{}/{}/{}/{}'.format(project, dataset, n, i)
+                output = 'output/projector/{}/{}/{}/{}'.format(dataset, project, n, i)
                 cmd = '{} {} -overwrite input={} output={} AutoStart=true > /dev/null'.format(command, project, input, output)
 
                 # not executed yet
