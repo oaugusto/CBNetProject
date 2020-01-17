@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.util.ArrayList;
 
+import java.util.Random;
 import projects.defaultProject.BalancedTreeTopology;
 import projects.defaultProject.DataCollection;
 import projects.defaultProject.RequestQueue;
@@ -11,6 +12,7 @@ import projects.defaultProject.TreeConstructor;
 import projects.defaultProject.nodes.messages.ApplicationMessage;
 import projects.defaultProject.nodes.nodeImplementations.BinarySearchTreeLayer;
 import projects.splaynet.nodes.nodeImplementations.SplayNetApp;
+import projects.splaynet.nodes.timers.TriggerNodeOperation;
 import sinalgo.configuration.Configuration;
 import sinalgo.gui.transformation.PositionTransformation;
 import sinalgo.runtime.AbstractCustomGlobal;
@@ -28,6 +30,11 @@ public class CustomGlobal extends AbstractCustomGlobal {
     public BinarySearchTreeLayer controlNode = null;
     public TreeConstructor treeTopology = null;
     public RequestQueue requestQueue;
+
+    public static boolean mustGenerateSplay = true;
+
+    public Random random = Tools.getRandomNumberGenerator();
+    public double lambda = 0.05;
 
     // LOG
     DataCollection data = DataCollection.getInstance();
@@ -111,11 +118,23 @@ public class CustomGlobal extends AbstractCustomGlobal {
     public void preRound() {
         this.treeTopology.setPositions();
 
-        if(this.data.getNumbugerOfActiveSplays() < 1){
+        if(this.data.getNumbugerOfActiveSplays() < 1 && mustGenerateSplay){
             if(requestQueue.hasNextRequest()){
                 Tuple<Integer, Integer> r = requestQueue.getNextRequest();
                 this.activateNextSplay(r.first, r.second);
             }
+
+            mustGenerateSplay = false;
+
+            double u = random.nextDouble();
+            double x = Math.log(1 - u) / (-lambda);
+            x = (int) x;
+            if (x <= 0) {
+                x = 1;
+            }
+
+            TriggerNodeOperation ted = new TriggerNodeOperation();
+            ted.startGlobalTimer(x);
         }
     }
 
