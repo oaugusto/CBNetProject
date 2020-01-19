@@ -29,6 +29,9 @@ projects = ["optnet", "splaynet", "displaynet", "simplenet"]
 numNodes = [128, 256, 512, 1024]
 numSimulations = 30
 
+x = [0.4, 0.8, 1]
+y = [0.4, 0.8, 1]
+
 #number of threads to simulation
 numThreads = 10
 
@@ -66,14 +69,16 @@ for project in projects:
 
     # generate all possibles inputs for simulation
     for n in numNodes:
-        for i in range(1, numSimulations + 1):
-            input = 'input/bursty/{}/{}_tor_{}.txt'.format(n, i, n)
-            output = 'output/bursty/{}/{}/{}'.format(project, n, i)
-            cmd = '{} {} -overwrite input={} output={} AutoStart=true > /dev/null'.format(command, project, input, output)
+        for idx_1 in x:
+            for idx_2 in y:
+                for i in range(1, numSimulations + 1):
+                    input = 'input/bursty/{}-{}/{}/{}_tor_{}.txt'.format(idx_1, idx_2, n, i, n)
+                    output = 'output/bursty/{}-{}/{}/{}/{}'.format(idx_1, idx_2, project, n, i)
+                    cmd = '{} {} -overwrite input={} output={} AutoStart=true > /dev/null'.format(command, project, input, output)
 
-		# not executed yet
-            if cmd not in log:
-                commands.append(cmd)
+                    # not executed yet
+                    if cmd not in log:
+                        commands.append(cmd)
 
     numCommands = len(commands)
 
