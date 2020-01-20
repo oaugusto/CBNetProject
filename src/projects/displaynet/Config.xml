@@ -240,7 +240,7 @@
         <input value ="" />
         <output value ="test" />
         <seedId value = "10" />
-        <mu value ="40" />
+        <mu value ="20" />
 
         <ExitAfter value="false" rounds="10000000"/>
         <AutoStart value="false"/>
