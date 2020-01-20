@@ -72,7 +72,7 @@ for project in projects:
         for idx_1 in x:
             for i in range(1, numSimulations + 1):
                 input = 'input/bursty/{}-{}/{}/{}_tor_{}.txt'.format(idx_1, "0.2", n, i, n)
-                output = 'output/bursty/{}-{}/{}/{}/{}'.format(idx_1, idx_2, project, n, i)
+                output = 'output/bursty/{}-{}/{}/{}/{}'.format(idx_1, "0.2", project, n, i)
                 cmd = '{} {} -overwrite input={} output={} AutoStart=true > /dev/null'.format(command, project, input, output)
 
                 # not executed yet
@@ -82,7 +82,7 @@ for project in projects:
         for idx_2 in x:
             for i in range(1, numSimulations + 1):
                 input = 'input/bursty/{}-{}/{}/{}_tor_{}.txt'.format("0.2", idx_2, n, i, n)
-                output = 'output/bursty/{}-{}/{}/{}/{}'.format(idx_1, idx_2, project, n, i)
+                output = 'output/bursty/{}-{}/{}/{}/{}'.format("0.2", idx_2, project, n, i)
                 cmd = '{} {} -overwrite input={} output={} AutoStart=true > /dev/null'.format(command, project, input, output)
 
                 # not executed yet
