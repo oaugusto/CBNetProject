@@ -2,8 +2,8 @@
 <sinalgo>
 	<ProjectSelector windowWidth="600" windowHeight="400" lastChosenProject="" windowPosX="50" windowPosY="50" isMaximized="false" selectedTab="1" />
 	<GUI windowWidth="800" windowHeight="600" windowPosX="50" windowPosY="50" isMaximized="false" ControlPanelExpandSimulation="true" ControlPanelShowFullViewPanel="true" ControlPanelShowTextPanel="true" ControlPanelShowProjectControl="true" RunOperationIsLimited="true" helpWindowWidth="500" helpWindowHeight="500" helpWindowPosX="200" helpWindowPosY="200" helpWindowIsMaximized="false" />
-	<RandomSeed seedFromPreviousRun="7780532233863872453" />
-	<App lastSelectedFileDirectory="" checkForUpdatesAtStartup="true" updateCheckTimeStamp="1579528593803" runCmdLineArgs="-batch -project simplenet -overwrite input=input/projectorDS/newTor/512/12_tor_512.txt output=output/projector/newTor/simplenet/512/12 AutoStart=true " />
+	<RandomSeed seedFromPreviousRun="2638879567531814560" />
+	<App lastSelectedFileDirectory="" checkForUpdatesAtStartup="true" updateCheckTimeStamp="1579528593803" runCmdLineArgs="-batch -project displaynet -overwrite input=input/bursty/0.4-1/1024/1_tor_1024.txt output=output/bursty/0.4-1/displaynet/1024/1 AutoStart=true " />
 	<GenNodesDlg numNodes="100" />
 </sinalgo>
 

@@ -79,7 +79,7 @@ public abstract class HandShakeLayer extends CommunicationLayer {
         // handshake_log.logln(ID +": State:" + state_handshake + " ");
         if (this.myMsg == null && !this.myMsgBuffer.isEmpty()) {
           this.myMsg = this.myMsgBuffer.poll();
-          this.myMsg.setPriority(Global.currentTime + rand.nextDouble());
+          //this.myMsg.setPriority(Global.currentTime + rand.nextDouble());
 
           RequestSplay msg = new RequestSplay(this.myMsg.getSource(), this.myMsg.getDestination(),
               this.myMsg.getPriority());
