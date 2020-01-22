@@ -11,17 +11,22 @@ import projects.defaultProject.nodes.tableEntry.NodeInfo;
 import projects.displaynet.nodes.tableEntry.Request;
 import sinalgo.gui.transformation.PositionTransformation;
 import sinalgo.tools.Tools;
+import sinalgo.runtime.Global;
+import java.util.Random;
 
 /**
  * DiSplayNetApp
  */
 public class DiSplayNetApp extends HandShakeLayer implements ApplicationNode {
 
+  private Random rand = Tools.getRandomNumberGenerator();
+
   private boolean requestCompleted = false;
   private DataCollection data = DataCollection.getInstance();
 
   @Override
   public void sendMessage(ApplicationMessage msg) {
+    //msg.setPriority(Global.currentTime + rand.nextDouble());
     this.myMsgBuffer.add(msg);
   }
 
