@@ -79,7 +79,7 @@ public abstract class HandShakeLayer extends CommunicationLayer {
         // handshake_log.logln(ID +": State:" + state_handshake + " ");
         if (this.myMsg == null && !this.myMsgBuffer.isEmpty()) {
           this.myMsg = this.myMsgBuffer.poll();
-          this.myMsg.setPriority(Global.currentTime + rand.nextDouble());
+//          this.myMsg.setPriority(Global.currentTime + rand.nextDouble());
 
           RequestSplay msg = new RequestSplay(this.myMsg.getSource(), this.myMsg.getDestination(),
               this.myMsg.getPriority());
@@ -102,17 +102,34 @@ public abstract class HandShakeLayer extends CommunicationLayer {
       case SYNC:
         if (this.peersRequestBuffer.isEmpty()) {
           // current node become master
-          this.currentSplayHandShake = new Request(this.myMsg.getSource(),
-              this.myMsg.getDestination(), this.myMsg.getPriority(), true);
-          this.handShakeState = HandShakeState.MASTER;
+          // init splay sending start msg
+          if (this.isAckMSGReceived) {
 
-          this.setNewApplicationMessage(this.myMsg);
-          // reset myMsg
-          this.myMsg = null;
+            this.currentSplayHandShake = new Request(this.myMsg.getSource(),
+                this.myMsg.getDestination(), this.myMsg.getPriority(), true);
+
+            this.setNewApplicationMessage(this.myMsg);
+            // reset myMsg
+            this.myMsg = null;
+
+            StartSplay msg = new StartSplay();
+            sendDirect(msg, Tools.getNodeByID(this.currentSplayHandShake.getDstId()));
+
+            // reset ack flag
+            this.isAckMSGReceived = false;
+
+            //Log
+            this.data.addSequence(this.currentSplayHandShake.getSrcId() - 1,
+                this.currentSplayHandShake.getDstId() - 1);
+
+            this.handShakeState = HandShakeState.MASTER;
+//          System.out.println("[3] node " + ID + " master: ack received go to start ("
+//              + this.currentSplayHandShake.getSrcId() + "," + this.currentSplayHandShake.getDstId()
+//              + ") at time " + Global.currentTime);
+          }
 //          System.out.println("[2] node " + ID + " sync: peerReq is empty go to master ("
 //              + this.currentSplayHandShake.getSrcId() + "," + this.currentSplayHandShake.getDstId()
 //              + ") at time " + Global.currentTime);
-
         } else if (this.myMsg == null) {
           // respond with ack and the node become slave
           this.currentSplayHandShake = this.peersRequestBuffer.poll();
@@ -129,13 +146,30 @@ public abstract class HandShakeLayer extends CommunicationLayer {
 
           if (req.getPriority() > this.myMsg.getPriority()) {
 
-            this.currentSplayHandShake = new Request(this.myMsg.getSource(),
-                this.myMsg.getDestination(), this.myMsg.getPriority(), true);
-            this.handShakeState = HandShakeState.MASTER;
+            if (this.isAckMSGReceived) {
 
-            this.setNewApplicationMessage(this.myMsg);
-            // reset myMsg
-            this.myMsg = null;
+              this.currentSplayHandShake = new Request(this.myMsg.getSource(),
+                  this.myMsg.getDestination(), this.myMsg.getPriority(), true);
+
+              this.setNewApplicationMessage(this.myMsg);
+              // reset myMsg
+              this.myMsg = null;
+
+              StartSplay msg = new StartSplay();
+              sendDirect(msg, Tools.getNodeByID(this.currentSplayHandShake.getDstId()));
+
+              // reset ack flag
+              this.isAckMSGReceived = false;
+
+              //Log
+              this.data.addSequence(this.currentSplayHandShake.getSrcId() - 1,
+                  this.currentSplayHandShake.getDstId() - 1);
+
+              this.handShakeState = HandShakeState.MASTER;
+//          System.out.println("[3] node " + ID + " master: ack received go to start ("
+//              + this.currentSplayHandShake.getSrcId() + "," + this.currentSplayHandShake.getDstId()
+//              + ") at time " + Global.currentTime);
+            }
 //            System.out.println("[2] node " + ID + " sync: my Msg has higher priotiry than peer go to master ("
 //                + this.currentSplayHandShake.getSrcId() + "," + this.currentSplayHandShake.getDstId()
 //                + ") at time " + Global.currentTime);
@@ -160,26 +194,9 @@ public abstract class HandShakeLayer extends CommunicationLayer {
         break;
 
       case MASTER:
-        // init splay sending start msg
-        if (this.isAckMSGReceived) {
 
-          StartSplay msg = new StartSplay();
-          sendDirect(msg, Tools.getNodeByID(this.currentSplayHandShake.getDstId()));
-
-          this.handShakeState = HandShakeState.START;
-          // reset ack flag
-          this.isAckMSGReceived = false;
-
-          //Log
-          this.data.addSequence(this.currentSplayHandShake.getSrcId() - 1,
-              this.currentSplayHandShake.getDstId() - 1);
-
-//          System.out.println("[3] node " + ID + " master: ack received go to start ("
-//              + this.currentSplayHandShake.getSrcId() + "," + this.currentSplayHandShake.getDstId()
-//              + ") at time " + Global.currentTime);
-        }
-
-        break;
+        this.handShakeState = HandShakeState.START;
+        // break;
 
       case SLAVE:
         // wait the StartMsg
