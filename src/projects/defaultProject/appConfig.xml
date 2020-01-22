@@ -3,7 +3,7 @@
 	<ProjectSelector windowWidth="600" windowHeight="400" lastChosenProject="" windowPosX="50" windowPosY="50" isMaximized="false" selectedTab="1" />
 	<GUI windowWidth="1082" windowHeight="1919" windowPosX="-1" windowPosY="-22" isMaximized="false" ControlPanelExpandSimulation="true" ControlPanelShowFullViewPanel="true" ControlPanelShowTextPanel="true" ControlPanelShowProjectControl="true" RunOperationIsLimited="false" helpWindowWidth="500" helpWindowHeight="500" helpWindowPosX="200" helpWindowPosY="200" helpWindowIsMaximized="false" />
 	<RandomSeed seedFromPreviousRun="77654767234" />
-	<App lastSelectedFileDirectory="" checkForUpdatesAtStartup="true" updateCheckTimeStamp="1579655324675" runCmdLineArgs="-project displaynet -overwrite input=input/bursty/0.4-1/128/1_tor_128.txt output=test " />
+	<App lastSelectedFileDirectory="" checkForUpdatesAtStartup="true" updateCheckTimeStamp="1579655324675" runCmdLineArgs="-batch -project displaynet -overwrite input=input/bursty/0.4-1/128/1_tor_128.txt output=test " />
 	<GenNodesDlg numNodes="100" />
 </sinalgo>
 
