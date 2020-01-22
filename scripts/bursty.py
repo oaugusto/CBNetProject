@@ -34,7 +34,7 @@ x = [0.4, 0.8, 1]
 y = [0.4, 0.8, 1]
 
 #number of threads to simulation
-numThreads = 4
+numThreads = 10 
 
 java = 'java'
 classpath = 'binaries/bin:binaries/jdom.jar'
