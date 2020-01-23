@@ -80,8 +80,6 @@ for project in projects:
                     if cmd not in log:
                         commands.append(cmd)
 
-    print(commands)
-    break
     numCommands = len(commands)
 
     # if number of threads is greater than pairsLenght
