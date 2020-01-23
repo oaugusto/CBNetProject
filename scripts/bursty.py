@@ -28,17 +28,10 @@ projects = ["displaynet"]
 
 # parameters of simulation
 numNodes = [128, 256, 512, 1024]
-numSimulations = 30
+numSimulations = 5
 
-<<<<<<< HEAD
 x = [0.2, 0.4, 0.8, 1]
 y = [0.2, 0.4, 0.8, 1]
-=======
-#x = [0.4, 0.8, 1]
-#y = [0.4, 0.8, 1]
-x = [0.2]
-y = [0.2]
->>>>>>> a7362c3f42e3d3050ba776b605c8858ba1be2ce6
 
 #number of threads to simulation
 numThreads = 10 
