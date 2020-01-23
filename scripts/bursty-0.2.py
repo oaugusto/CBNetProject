@@ -22,26 +22,18 @@ file = open("scripts/logs/projectorLog.txt", "a+")
 file_lock = threading.Lock()
 
 #projects = ["optnet", "flattening", "flatnet", "cbnet", "seqcbnet", "splaynet", "displaynet", "simplenet"]
-#projects = ["optnet", "simplenet", "splaynet", "displaynet"]
-projects = ["displaynet"]
+projects = ["optnet", "splaynet", "displaynet", "simplenet"]
 # project = sys.argv[1]
 
 # parameters of simulation
 numNodes = [128, 256, 512, 1024]
 numSimulations = 30
 
-<<<<<<< HEAD
-x = [0.2, 0.4, 0.8, 1]
-y = [0.2, 0.4, 0.8, 1]
-=======
-#x = [0.4, 0.8, 1]
-#y = [0.4, 0.8, 1]
-x = [0.2]
-y = [0.2]
->>>>>>> a7362c3f42e3d3050ba776b605c8858ba1be2ce6
+x = [0.2,0.4, 0.8, 1]
+y = [0.2,0.4, 0.8, 1]
 
 #number of threads to simulation
-numThreads = 10 
+numThreads = 10
 
 java = 'java'
 classpath = 'binaries/bin:binaries/jdom.jar'
@@ -78,15 +70,24 @@ for project in projects:
     # generate all possibles inputs for simulation
     for n in numNodes:
         for idx_1 in x:
-            for idx_2 in y:
-                for i in range(1, numSimulations + 1):
-                    input = 'input/bursty/{}-{}/{}/{}_tor_{}.txt'.format(idx_1, idx_2, n, i, n)
-                    output = 'output/bursty/{}-{}/{}/{}/{}'.format(idx_1, idx_2, project, n, i)
-                    cmd = '{} {} -overwrite input={} output={} AutoStart=true > /dev/null'.format(command, project, input, output)
+            for i in range(1, numSimulations + 1):
+                input = 'input/bursty/{}-{}/{}/{}_tor_{}.txt'.format(idx_1, "0.2", n, i, n)
+                output = 'output/bursty/{}-{}/{}/{}/{}'.format(idx_1, "0.2", project, n, i)
+                cmd = '{} {} -overwrite input={} output={} AutoStart=true > /dev/null'.format(command, project, input, output)
 
-                    # not executed yet
-                    if cmd not in log:
-                        commands.append(cmd)
+                # not executed yet
+                if cmd not in log:
+                    commands.append(cmd)
+
+        for idx_2 in x:
+            for i in range(1, numSimulations + 1):
+                input = 'input/bursty/{}-{}/{}/{}_tor_{}.txt'.format("0.2", idx_2, n, i, n)
+                output = 'output/bursty/{}-{}/{}/{}/{}'.format("0.2", idx_2, project, n, i)
+                cmd = '{} {} -overwrite input={} output={} AutoStart=true > /dev/null'.format(command, project, input, output)
+
+                # not executed yet
+                if cmd not in log:
+                    commands.append(cmd)
 
     numCommands = len(commands)
 
