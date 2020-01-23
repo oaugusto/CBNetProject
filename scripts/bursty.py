@@ -22,13 +22,12 @@ file = open("scripts/logs/projectorLog.txt", "a+")
 file_lock = threading.Lock()
 
 #projects = ["optnet", "flattening", "flatnet", "cbnet", "seqcbnet", "splaynet", "displaynet", "simplenet"]
-#projects = ["optnet", "simplenet", "splaynet", "displaynet"]
-projects = ["displaynet"]
+projects = ["optnet", "simplenet", "splaynet", "displaynet"]
 # project = sys.argv[1]
 
 # parameters of simulation
 numNodes = [128, 256, 512, 1024]
-numSimulations = 5
+numSimulations = 30
 
 x = [0.2, 0.4, 0.8, 1]
 y = [0.2, 0.4, 0.8, 1]
@@ -69,10 +68,10 @@ for project in projects:
     commands = []
 
     # generate all possibles inputs for simulation
-    for n in numNodes:
-        for idx_1 in x:
-            for idx_2 in y:
-                for i in range(1, numSimulations + 1):
+    for idx_1 in x:
+        for idx_2 in y:
+            for i in range(1, numSimulations + 1):
+                for n in numNodes:
                     input = 'input/bursty/{}-{}/{}/{}_tor_{}.txt'.format(idx_1, idx_2, n, i, n)
                     output = 'output/bursty/{}-{}/{}/{}/{}'.format(idx_1, idx_2, project, n, i)
                     cmd = '{} {} -overwrite input={} output={} AutoStart=true > /dev/null'.format(command, project, input, output)
@@ -81,6 +80,8 @@ for project in projects:
                     if cmd not in log:
                         commands.append(cmd)
 
+    print(commands)
+    break
     numCommands = len(commands)
 
     # if number of threads is greater than pairsLenght

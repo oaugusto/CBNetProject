@@ -118,23 +118,23 @@ public class CustomGlobal extends AbstractCustomGlobal {
     public void preRound() {
         this.treeTopology.setPositions();
 
-        if(this.data.getNumbugerOfActiveSplays() < 1 && mustGenerateSplay){
+        if(this.data.getNumbugerOfActiveSplays() < 1 ){//&& mustGenerateSplay){
             if(requestQueue.hasNextRequest()){
                 Tuple<Integer, Integer> r = requestQueue.getNextRequest();
                 this.activateNextSplay(r.first, r.second);
             }
 
-            mustGenerateSplay = false;
-
-            double u = random.nextDouble();
-            double x = Math.log(1 - u) / (-lambda);
-            x = (int) x;
-            if (x <= 0) {
-                x = 1;
-            }
-
-            TriggerNodeOperation ted = new TriggerNodeOperation();
-            ted.startGlobalTimer(x);
+//            mustGenerateSplay = false;
+//
+//            double u = random.nextDouble();
+//            double x = Math.log(1 - u) / (-lambda);
+//            x = (int) x;
+//            if (x <= 0) {
+//                x = 1;
+//            }
+//
+//            TriggerNodeOperation ted = new TriggerNodeOperation();
+//            ted.startGlobalTimer(x);
         }
     }
 

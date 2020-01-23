@@ -69,8 +69,8 @@ for project in projects:
 
     # generate all possibles inputs for simulation
     for dataset in datasets: 
-        for n in numNodes:
-            for i in range(1, numSimulations + 1):
+        for i in range(1, numSimulations + 1):
+            for n in numNodes:
                 input = 'input/projectorDS/{}/{}/{}_tor_{}.txt'.format(dataset, n, i, n)
                 output = 'output/projector/{}/{}/{}/{}'.format(dataset, project, n, i)
                 cmd = '{} {} -overwrite input={} output={} AutoStart=true > /dev/null'.format(command, project, input, output)
