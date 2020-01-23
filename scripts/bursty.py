@@ -30,8 +30,8 @@ projects = ["displaynet"]
 numNodes = [128, 256, 512, 1024]
 numSimulations = 30
 
-x = [0.4, 0.8, 1]
-y = [0.4, 0.8, 1]
+x = [0.2, 0.4, 0.8, 1]
+y = [0.2, 0.4, 0.8, 1]
 
 #number of threads to simulation
 numThreads = 10 
