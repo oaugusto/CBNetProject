@@ -120,6 +120,7 @@ public class CustomGlobal extends AbstractCustomGlobal {
 //      CBNetApp node = (CBNetApp) Tools.getNodeByID(r.first);
 //      node.newMessage(r.second);
 //    }
+    
   }
 
   @Override

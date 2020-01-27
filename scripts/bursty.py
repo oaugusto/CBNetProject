@@ -22,12 +22,13 @@ file = open("scripts/logs/burstyLog.txt", "a+")
 file_lock = threading.Lock()
 
 #projects = ["optnet", "flattening", "flatnet", "cbnet", "seqcbnet", "splaynet", "displaynet", "simplenet"]
-projects = ["optnet", "simplenet", "splaynet", "displaynet"]
+#projects = ["optnet", "simplenet", "splaynet", "displaynet"]
+projects = ["optnet", "cbnet", "seqcbnet", "splaynet", "displaynet", "simplenet"]
 # project = sys.argv[1]
 
 # parameters of simulation
 numNodes = [128, 256, 512, 1024]
-numSimulations = 30
+numSimulations = 10
 
 x = [0.2, 0.4, 0.8, 1]
 y = [0.2, 0.4, 0.8, 1]
@@ -80,8 +81,6 @@ for project in projects:
                     if cmd not in log:
                         commands.append(cmd)
 
-    print(commands)
-    break
     numCommands = len(commands)
 
     # if number of threads is greater than pairsLenght
