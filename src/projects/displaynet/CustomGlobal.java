@@ -115,30 +115,30 @@ public class CustomGlobal extends AbstractCustomGlobal {
     /*
      * initiate sigma buffers with message
      */
-    while (this.requestQueue.hasNextRequest()) {
-      Tuple<Integer, Integer> r = this.requestQueue.getNextRequest();
-      DiSplayNetApp node = (DiSplayNetApp) Tools.getNodeByID(r.first);
-      node.sendMessage(new ApplicationMessage(r.first, r.second));
-    }
+//    while (this.requestQueue.hasNextRequest()) {
+//      Tuple<Integer, Integer> r = this.requestQueue.getNextRequest();
+//      DiSplayNetApp node = (DiSplayNetApp) Tools.getNodeByID(r.first);
+//      node.sendMessage(new ApplicationMessage(r.first, r.second));
+//    }
   }
 
   @Override
   public void preRound() {
     this.treeTopology.setPositions();
 
-//    if (mustGenerateSplay && this.requestQueue.hasNextRequest()) {
-//      mustGenerateSplay = false;
-//
-//      double u = random.nextDouble();
-//      double x = Math.log(1 - u) / (-lambda);
-//      x = (int) x;
-//      if (x <= 0) {
-//        x = 1;
-//      }
-//
-//      Tuple<Integer, Integer> r = this.requestQueue.getNextRequest();
-//      TriggerNodeOperation ted = new TriggerNodeOperation(new ApplicationMessage(r.first, r.second));
-//      ted.startGlobalTimer(x);
-//    }
+    if (mustGenerateSplay && this.requestQueue.hasNextRequest()) {
+      mustGenerateSplay = false;
+
+      double u = random.nextDouble();
+      double x = Math.log(1 - u) / (-lambda);
+      x = (int) x;
+      if (x <= 0) {
+        x = 1;
+      }
+
+      Tuple<Integer, Integer> r = this.requestQueue.getNextRequest();
+      TriggerNodeOperation ted = new TriggerNodeOperation(new ApplicationMessage(r.first, r.second));
+      ted.startGlobalTimer(x);
+    }
   }
 }

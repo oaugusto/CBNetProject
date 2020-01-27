@@ -49,7 +49,8 @@ public class CBNetNode extends RotationLayer {
 
             if (!this.bufferRequest.isEmpty()) {
                 Request rq = this.bufferRequest.poll();
-                this.sendCBNetMessage(rq.dstId, Global.currentTime + rand.nextDouble());
+//                this.sendCBNetMessage(rq.dstId, Global.currentTime + rand.nextDouble());
+                this.sendCBNetMessage(rq.dstId, rq.priority);
                 this.incrementCounter();
                 this.state = States.COMMUNICATING;
                 this.newMessageSent();
@@ -71,6 +72,7 @@ public class CBNetNode extends RotationLayer {
 
     public void newMessage(int dst) {
         Request splay = new Request(ID, dst);
+        splay.priority = Global.currentTime + rand.nextDouble();
         this.bufferRequest.add(splay);
     }
 

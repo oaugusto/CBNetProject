@@ -115,13 +115,11 @@ public class CustomGlobal extends AbstractCustomGlobal {
     /*
      * initiate sigma buffers with message
      */
-    /*
-    while (this.requestQueue.hasNextRequest()) {
-      Tuple<Integer, Integer> r = this.requestQueue.getNextRequest();
-      CBNetApp node = (CBNetApp) Tools.getNodeByID(r.first);
-      node.newMessage(r.second);
-    }
-    */
+//    while (this.requestQueue.hasNextRequest()) {
+//      Tuple<Integer, Integer> r = this.requestQueue.getNextRequest();
+//      CBNetApp node = (CBNetApp) Tools.getNodeByID(r.first);
+//      node.newMessage(r.second);
+//    }
   }
 
   @Override
