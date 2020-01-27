@@ -22,11 +22,12 @@ file = open("scripts/logs/facebookLog.txt", "a+")
 file_lock = threading.Lock()
 
 #projects = ["optnet", "flattening", "flatnet", "cbnet", "seqcbnet", "splaynet", "displaynet", "simplenet"]
-projects = ["optnet", "splaynet", "displaynet", "simplenet"]
+#projects = ["optnet", "splaynet", "displaynet", "simplenet"]
+projects = ["optnet", "cbnet", "seqcbnet", "splaynet", "displaynet", "simplenet"]
 # project = sys.argv[1]
 
 # parameters of simulation
-datasets = ["datasetC_pairs"]
+datasets = ["datasetA_pairs"]
 
 #number of threads to simulation
 numThreads = 10
