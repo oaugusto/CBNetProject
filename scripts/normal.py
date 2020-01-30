@@ -22,10 +22,11 @@ file = open("scripts/logs/normalLog.txt", "a+")
 file_lock = threading.Lock()
 
 #projects = ["flattening", "flatnet", "cbnet", "seqcbnet", "splaynet", "displaynet", "semisplaynet", "seqsemisplaynet", "simplenet"]
-projects = ["splaynet", "displaynet", "simplenet", "optnet"]
+#projects = ["splaynet", "displaynet", "simplenet", "optnet"]
 #projects = ["cbnet", "seqcbnet", "splaynet", "displaynet", "simplenet", "optnet"]
 #projects = ["cbnet", "displaynet"]
 # project = sys.argv[1]
+projects = ["cbnet"]
 
 # parameters of simulation
 numSimulations = 10

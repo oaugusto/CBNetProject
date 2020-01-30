@@ -21,8 +21,9 @@ log = set(line.rstrip() for line in open(os.path.join(log_path, log_file), 'r'))
 file = open("scripts/logs/pfabLog.txt", "a+")
 file_lock = threading.Lock()
 
-projects = ["optnet", "flattening", "flatnet", "cbnet", "seqcbnet", "splaynet", "displaynet", "simplenet"]
+#projects = ["optnet", "flattening", "flatnet", "cbnet", "seqcbnet", "splaynet", "displaynet", "simplenet"]
 # project = sys.argv[1]
+projects = ["optnet", "cbnet", "splaynet", "displaynet", "simplenet"]
 
 # parameters of simulation
 datasets = ["trace_0_1", "trace_0_5", "trace_0_8"]

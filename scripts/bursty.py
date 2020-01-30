@@ -23,9 +23,9 @@ file_lock = threading.Lock()
 
 #projects = ["optnet", "flattening", "flatnet", "cbnet", "seqcbnet", "splaynet", "displaynet", "simplenet"]
 #projects = ["optnet", "simplenet", "splaynet", "displaynet"]
-#projects = ["optnet", "cbnet", "seqcbnet", "splaynet", "displaynet", "simplenet"]
-projects = ["cbnet", "displaynet"]
+#projects = ["cbnet", "displaynet"]
 # project = sys.argv[1]
+projects = ["optnet", "cbnet", "splaynet", "displaynet", "simplenet"]
 
 # parameters of simulation
 numNodes = [128, 256, 512, 1024]

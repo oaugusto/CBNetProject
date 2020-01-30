@@ -21,8 +21,9 @@ log = set(line.rstrip() for line in open(os.path.join(log_path, log_file), 'r'))
 file = open("scripts/logs/hpcLog.txt", "a+")
 file_lock = threading.Lock()
 
-projects = ["optnet", "flattening", "flatnet", "cbnet", "seqcbnet", "splaynet", "displaynet", "simplenet"]
+#projects = ["optnet", "flattening", "flatnet", "cbnet", "seqcbnet", "splaynet", "displaynet", "simplenet"]
 # project = sys.argv[1]
+projects = ["optnet", "cbnet", "splaynet", "displaynet", "simplenet"]
 
 # parameters of simulation
 datasets = ["cesar_mocfe", "cesar_nekbone", "exact_boxlib_cns_nospec_large", "exact_boxlib_multigrid_c_large"]
