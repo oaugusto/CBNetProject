@@ -1,8 +1,8 @@
 #! /bin/bash
 
-python script/normal.py ; 
-python script/bursty.py ;
-python script/projector.py ;
-python script/facebook.py ;
-python script/hpc.py ;
-python script/pfab.py ;
+python scripts/normal.py ; 
+python scripts/bursty.py ;
+python scripts/projector.py ;
+python scripts/facebook.py ;
+python scripts/hpc.py ;
+python scripts/pfab.py ;

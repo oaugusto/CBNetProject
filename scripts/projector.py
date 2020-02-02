@@ -25,7 +25,9 @@ file_lock = threading.Lock()
 #projects = ["optnet", "splaynet", "displaynet", "simplenet"]
 #projects = ["optnet", "cbnet", "seqcbnet", "splaynet", "displaynet", "simplenet"]
 # project = sys.argv[1]
-projects = ["cbnet","displaynet"]
+#projects = ["cbnet","displaynet"]
+#projects = ["optnet", "splaynet", "simplenet"]
+projects = ["seqcbnet"]
 
 # parameters of simulation
 #datasets = ["random", "newTor", "tor"]
@@ -34,7 +36,7 @@ numNodes = [128, 256, 512, 1024]
 numSimulations = 10
 
 #number of threads to simulation
-numThreads = 10
+numThreads = 6
 
 java = 'java'
 classpath = 'binaries/bin:binaries/jdom.jar'
