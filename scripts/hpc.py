@@ -24,7 +24,7 @@ file_lock = threading.Lock()
 #projects = ["optnet", "flattening", "flatnet", "cbnet", "seqcbnet", "splaynet", "displaynet", "simplenet"]
 # project = sys.argv[1]
 #projects = ["optnet", "cbnet", "splaynet", "displaynet", "simplenet"]
-projects = ["seqcbnet"]
+projects = ["seqcbnet", "cbnet"]
 
 # parameters of simulation
 datasets = ["cesar_mocfe", "cesar_nekbone", "exact_boxlib_cns_nospec_large", "exact_boxlib_multigrid_c_large"]
