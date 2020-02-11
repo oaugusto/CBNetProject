@@ -7,7 +7,7 @@ import numpy
 
 # this file keep all completed experiments
 log_path = "./scripts/logs/"
-log_file = "burstyLog.txt"
+log_file = "skewedLog.txt"
 
 if not os.path.exists(log_path):
     os.makedirs(log_path)
@@ -18,7 +18,7 @@ open(os.path.join(log_path, log_file), 'a').close()
 log = set(line.rstrip() for line in open(os.path.join(log_path, log_file), 'r'))
 
 # open log file for append and create a lock variable
-file = open("scripts/logs/burstyLog.txt", "a+")
+file = open("scripts/logs/skewedLog.txt", "a+")
 file_lock = threading.Lock()
 
 #projects = ["optnet", "flattening", "flatnet", "cbnet", "seqcbnet", "splaynet", "displaynet", "simplenet"]
@@ -34,8 +34,8 @@ numSimulations = 10
 
 #x = [0.2, 0.4, 0.8, 1]
 #y = [0.2, 0.4, 0.8, 1]
-x = [0.4] #bursty
-y = [1] #bursty
+x = [1] #skewed
+y = [0.4] #skewed
 
 #number of threads to simulation
 numThreads = 10 
@@ -78,7 +78,7 @@ for project in projects:
             for i in range(1, numSimulations + 1):
                 for n in numNodes:
                     input = 'input/bursty/{}-{}/{}/{}_tor_{}.txt'.format(idx_1, idx_2, n, i, n)
-                    output = 'output/bursty/{}-{}/{}/{}/{}'.format(idx_1, idx_2, project, n, i)
+                    output = 'output/skewed/{}-{}/{}/{}/{}'.format(idx_1, idx_2, project, n, i)
                     cmd = '{} {} -overwrite input={} output={} AutoStart=true > /dev/null'.format(command, project, input, output)
 
                     # not executed yet
