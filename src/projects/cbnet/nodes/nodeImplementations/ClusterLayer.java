@@ -99,10 +99,22 @@ public abstract class ClusterLayer extends CBNetLayer {
             int position = requestMessage.getPosition();
 
             /**
-             * It is not possible to parent to be the dst because completion is check first
-             * and the grandparent being LCA has effect on the type of rotation
+                                  3- w
+                                    /
+                                2- z <ID == dst then set as final node; set zig operation>
+                                  /            
+                              1- y <if is LCA the set as final node; set zig operation>            
+                                / \            
+               current node-0- x   c     
+                              / \              
+                             a   b              
+             
              */
-            if (position == 3 || (position == 2 && ID == requestMessage.getDst())) {
+            if (position == 3 /*simple double operation*/
+            		/* just a zig because 2 is the dst node*/
+            		|| (position == 2 && ID == requestMessage.getDst())
+            		/* a single cluster to send the message*/
+            		|| (position == 1 && ID == requestMessage.getDst())) {
 
                 requestMessage.setFinalNode();
 
@@ -130,38 +142,46 @@ public abstract class ClusterLayer extends CBNetLayer {
             int position = requestMessage.getPosition();
 
             /**
-             * It is not possible to parent to be the dst because completion is check first
-             * and the grandparent being LCA has effect on the type of rotation
-             */
-            if (position == 3) {
-
-                requestMessage.setFinalNode();
-
-            } else if (position != 0) {
-
-                RequestClusterDownMessage newRequestMessage = new RequestClusterDownMessage(requestMessage);
-                newRequestMessage.shiftPosition();
-
-                if (ID == requestMessage.getDst()) {
-
-                    requestMessage.setFinalNode();
-
-                } else if (ID < newRequestMessage.getDst() && newRequestMessage.getDst() <= this.getMaxIdInSubtree()) {
-                    if (this.hasRightChild()) {
-                        // System.out.println("node " + ID + " forwarding cluster msg down left");
-                        this.sendToRightChild(newRequestMessage);
-                    } else {
-                        requestMessage.setFinalNode();
-                    }
-                } else if (this.getMinIdInSubtree() <= newRequestMessage.getDst() && newRequestMessage.getDst() < ID) {
-                    if (this.hasLeftChild()) {
-                        // System.out.println("node " + ID + " forwarding cluster msg down right");
-                        this.sendToLeftChild(newRequestMessage);
-                    } else {
-                        requestMessage.setFinalNode();
-                    }
-                }
-
+            
+                                  0- w
+                                    /
+                   current node-1- z
+                                  /            
+                              2- y <ID == dst then set as final node; set zig operation>            
+                                / \            
+                            3- x   c     
+                              / \              
+                             a   b              
+             
+            */
+            if (position != 0) { /* node 0 just add request to queue*/ 
+	            if (position == 3 /*simple flow, last node*/
+	            		|| (position == 2 && ID == requestMessage.getDst()) /*dst node found*/) {
+	
+	                requestMessage.setFinalNode();
+	
+	            } else {
+	                RequestClusterDownMessage newRequestMessage = new RequestClusterDownMessage(requestMessage);
+	                newRequestMessage.shiftPosition();
+	
+	                if (ID < newRequestMessage.getDst() 
+	                		&& newRequestMessage.getDst() <= this.getMaxIdInSubtree()) {
+	                    if (this.hasRightChild()) {
+	                        // System.out.println("node " + ID + " forwarding cluster msg down left");
+	                        this.sendToRightChild(newRequestMessage);
+	                    } else {
+	                        requestMessage.setFinalNode();
+	                    }
+	                } else if (this.getMinIdInSubtree() <= newRequestMessage.getDst() 
+	                		&& newRequestMessage.getDst() < ID) {
+	                    if (this.hasLeftChild()) {
+	                        // System.out.println("node " + ID + " forwarding cluster msg down right");
+	                        this.sendToLeftChild(newRequestMessage);
+	                    } else {
+	                        requestMessage.setFinalNode();
+	                    }
+	                }
+	            }
             }
 
             // add current request to queue
@@ -280,7 +300,8 @@ public abstract class ClusterLayer extends CBNetLayer {
 
     private CBInfo findTarget() {
         for (AckClusterMessage m : this.queueAckCluster) {
-            if (m.getDst() == m.getInfo().getNode().ID) {
+            if (m.getDst() == m.getInfo().getNode().ID 
+            		&& this.isNeighbor(m.getInfo().getNode())) {
                 return m.getInfo();
             }
         }
@@ -294,17 +315,17 @@ public abstract class ClusterLayer extends CBNetLayer {
      */
     @Override
     public void timeslot6() {
-        super.timeslot6();
+        super.timeslot6(); 
+        
+        if (!this.queueAckCluster.isEmpty() && this.isClusterGranted()) {
+        	
+        	CBInfo target = findTarget();
 
-        CBInfo target = findTarget();
+            if (target != null) {
 
-        if (target != null) {
+                this.targetNodeFound(target);
 
-            this.targetNodeFound(target);
-
-        } else if (!this.queueAckCluster.isEmpty() && this.isClusterGranted()) {
-            // This node has sent request cluster message
-            if (this.isClusterUp) {
+            } else if (this.isClusterUp) {
 
                 this.clusterCompletedBottomUp(this.getClusterSequenceFromAckBufferBottomUp());
 

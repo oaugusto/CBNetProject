@@ -31,29 +31,29 @@ public abstract class CBTreeLayer extends BinarySearchTreeLayer {
 
 
     // TODO : change the way weights are updated
-    public void updateWeights(int from, int to) {
-        CBTreeLayer aux = this;
-
-        if (!aux.isAncestorOf(to)) {
-            while (!aux.isAncestorOf(to)) {
-                aux.incrementWeight();
-                aux = (CBTreeLayer) aux.getParent();
-			} 
-			
-			aux.incrementWeight();
-        }
-
-        while (aux.ID != to) {
-			aux.incrementWeight();
-			if (aux.ID > to) {
-				aux = (CBTreeLayer) aux.getLeftChild();
-			} else {
-				aux = (CBTreeLayer) aux.getRightChild();
-			}
-		}
-		
-		aux.incrementWeight();
-    }
+//    public void updateWeights(int from, int to) {
+//        CBTreeLayer aux = this;
+//
+//        if (!aux.isAncestorOf(to)) {
+//            while (!aux.isAncestorOf(to)) {
+//                aux.incrementWeight();
+//                aux = (CBTreeLayer) aux.getParent();
+//			} 
+//			
+//			aux.incrementWeight();
+//        }
+//
+//        while (aux.ID != to) {
+//			aux.incrementWeight();
+//			if (aux.ID > to) {
+//				aux = (CBTreeLayer) aux.getLeftChild();
+//			} else {
+//				aux = (CBTreeLayer) aux.getRightChild();
+//			}
+//		}
+//		
+//		aux.incrementWeight();
+//    }
 
     @Override
     public CBInfo getNodeInfo() {

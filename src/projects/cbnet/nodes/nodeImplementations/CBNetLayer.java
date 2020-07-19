@@ -52,7 +52,7 @@ public abstract class CBNetLayer extends RPCLayer {
 
             if (ID == cbmsg.getDst()) {
                 this.receivedCBNetMessage(cbmsg);
-                this.updateWeights(ID, cbmsg.getSrc()); // dangerous
+//                this.updateWeights(ID, cbmsg.getSrc()); // dangerous
 
                 // ack message
                 this.sendDirect(new CompletionMessage(cbmsg), Tools.getNodeByID(cbmsg.getSrc()));
