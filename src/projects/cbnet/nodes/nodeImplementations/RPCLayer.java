@@ -56,6 +56,7 @@ public abstract class RPCLayer extends SynchronizerLayer {
 
         case "setWeight":
             this.setWeight(rpc.getValue());
+            System.out.println("set weight node " + ID + " at " + this.getCurrentTimeSlot());
             break;
 
         case "incrementWeight":

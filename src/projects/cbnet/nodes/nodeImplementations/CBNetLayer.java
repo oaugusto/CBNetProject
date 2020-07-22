@@ -11,13 +11,19 @@ import sinalgo.tools.Tools;
  * CBNetLayer
  */
 public abstract class CBNetLayer extends RPCLayer {
+	
+	private int test = 0;
 
+	private boolean recvCBNetMessage;
+	private int sourceID;
     private PriorityQueue<CBNetMessage> cbnetQueue;
 
     @Override
     public void init() {
         super.init();
 
+        this.recvCBNetMessage = false;
+        this.sourceID = -1;
         this.cbnetQueue = new PriorityQueue<>();
     }
 
@@ -34,6 +40,7 @@ public abstract class CBNetLayer extends RPCLayer {
     }
 
     public void sendCBNetMessage(int dst, double priority) {
+    	this.incrementCounter(); // increment local counter
         CBNetMessage msg = new CBNetMessage(ID, dst, priority);
         msg.initialTime = this.getCurrentRound();
         this.cbnetQueue.add(msg);
@@ -52,7 +59,8 @@ public abstract class CBNetLayer extends RPCLayer {
 
             if (ID == cbmsg.getDst()) {
                 this.receivedCBNetMessage(cbmsg);
-//                this.updateWeights(ID, cbmsg.getSrc()); // dangerous
+                this.sourceID = cbmsg.getSrc();
+                this.recvCBNetMessage = true;
 
                 // ack message
                 this.sendDirect(new CompletionMessage(cbmsg), Tools.getNodeByID(cbmsg.getSrc()));
@@ -68,6 +76,23 @@ public abstract class CBNetLayer extends RPCLayer {
 
             return;
         }
+    }
+    
+    @Override
+    public void timeslot11() {
+    	super.timeslot11();
+    	//if future improvement allow to 
+    	//receive multiples messages at same time
+    	//this procedure must be changed 
+    	if (this.recvCBNetMessage == true) {
+    		test++;
+    		this.recvCBNetMessage = false;
+    		//this.incrementCounter(); // increment local counter
+    		System.out.println("Update weight at: " + this.getCurrentTimeSlot());
+    		//if (test < 3) {
+    			this.updateWeights(ID, this.sourceID); //TODO
+    		//}
+    	}
     }
 
     public abstract void receivedCBNetMessage(CBNetMessage msg);
