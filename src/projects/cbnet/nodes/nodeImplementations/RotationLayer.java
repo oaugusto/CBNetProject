@@ -476,6 +476,10 @@ public abstract class RotationLayer extends ClusterLayer {
 
       long zNewWeight = zOldWeight - yOldWeight + bWeight;
       long yNewWeight = yOldWeight - bWeight + zNewWeight;
+      
+      System.out.println(this.getCurrentTimeSlot());
+      System.out.println("znew:" + zNewWeight);
+      System.out.println("ynew:" + yNewWeight);
       // ---------------------------------------------------------------------
 
       // left zig operetion on node y

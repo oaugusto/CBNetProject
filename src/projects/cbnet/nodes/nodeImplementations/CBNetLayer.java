@@ -64,7 +64,7 @@ public abstract class CBNetLayer extends RPCLayer {
                 this.sourceID = cbmsg.getSrc();
                 this.recvCBNetMessage = true;
 
-                // ack message
+                // send ack message
                 this.sendDirect(new CompletionMessage(cbmsg), Tools.getNodeByID(cbmsg.getSrc()));
 
             } else {
