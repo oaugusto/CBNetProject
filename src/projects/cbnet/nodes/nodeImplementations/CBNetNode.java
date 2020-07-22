@@ -50,7 +50,6 @@ public class CBNetNode extends RotationLayer {
             if (!this.bufferRequest.isEmpty()) {
                 Request rq = this.bufferRequest.poll();
                 this.sendCBNetMessage(rq.dstId, Global.currentTime + rand.nextDouble());
-                this.incrementCounter();
                 this.state = States.COMMUNICATING;
                 this.newMessageSent();
                 //Log

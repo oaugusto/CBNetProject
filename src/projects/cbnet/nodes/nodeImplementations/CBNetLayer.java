@@ -11,13 +11,21 @@ import sinalgo.tools.Tools;
  * CBNetLayer
  */
 public abstract class CBNetLayer extends RPCLayer {
-
+	
+	private boolean recvCBNetMessage;
+	private int sourceID;
+	private boolean recvAckCBNetMessage;
+	private CBNetMessage ackMessageReceived;
     private PriorityQueue<CBNetMessage> cbnetQueue;
 
     @Override
     public void init() {
         super.init();
 
+        this.recvCBNetMessage = false;
+        this.sourceID = -1;
+        this.recvAckCBNetMessage = false;
+        this.ackMessageReceived = null;
         this.cbnetQueue = new PriorityQueue<>();
     }
 
@@ -34,6 +42,7 @@ public abstract class CBNetLayer extends RPCLayer {
     }
 
     public void sendCBNetMessage(int dst, double priority) {
+    	this.incrementCounter(); // increment local counter
         CBNetMessage msg = new CBNetMessage(ID, dst, priority);
         msg.initialTime = this.getCurrentRound();
         this.cbnetQueue.add(msg);
@@ -52,7 +61,8 @@ public abstract class CBNetLayer extends RPCLayer {
 
             if (ID == cbmsg.getDst()) {
                 this.receivedCBNetMessage(cbmsg);
-//                this.updateWeights(ID, cbmsg.getSrc()); // dangerous
+                this.sourceID = cbmsg.getSrc();
+                this.recvCBNetMessage = true;
 
                 // ack message
                 this.sendDirect(new CompletionMessage(cbmsg), Tools.getNodeByID(cbmsg.getSrc()));
@@ -64,10 +74,28 @@ public abstract class CBNetLayer extends RPCLayer {
             return;
         } else if (msg instanceof CompletionMessage) {
             CompletionMessage completionMessage = (CompletionMessage) msg;
-            this.ackCBNetMessageReceived(completionMessage.getCbnetMessage());
-
+            this.recvAckCBNetMessage = true;
+            this.ackMessageReceived = completionMessage.getCbnetMessage();
             return;
         }
+    }
+    
+    @Override
+    public void timeslot11() {
+    	super.timeslot11();
+    	//if future improvement allow to 
+    	//receive multiples messages at same time
+    	//this procedure must be changed 
+    	if (this.recvCBNetMessage == true) {
+    		this.recvCBNetMessage = false;
+    		this.incrementCounter(); // increment local counter
+    		this.updateWeights(ID, this.sourceID); //TODO
+    	}
+    	
+    	if (this.recvAckCBNetMessage == true) {
+    		this.recvAckCBNetMessage = false;
+    		this.ackCBNetMessageReceived(this.ackMessageReceived);
+    	}
     }
 
     public abstract void receivedCBNetMessage(CBNetMessage msg);
