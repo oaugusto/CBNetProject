@@ -117,9 +117,9 @@ public abstract class RotationLayer extends ClusterLayer {
 
     double deltaRank = this.zigDiffRank(xInfo, yInfo);
 
-     if (true) {
-    // if (false) {
-    //if (deltaRank < this.epsilon) {
+    //if (true) {
+    //if (false) {
+    if (deltaRank < this.epsilon) {
       this.rotating = true;
 
       // DATA LOG
@@ -209,9 +209,9 @@ public abstract class RotationLayer extends ClusterLayer {
 
     double deltaRank = this.zigDiffRank(yInfo, zInfo);
 
-     if (true) {
-    // if (false) {
-    //if (deltaRank < this.epsilon) {
+    // if (true) {
+    //if (false) {
+    if (deltaRank < this.epsilon) {
       this.rotating = true;
 
       // DATA LOG
@@ -305,9 +305,9 @@ public abstract class RotationLayer extends ClusterLayer {
 
     double deltaRank = this.zigZagDiffRank(xInfo, yInfo, zInfo);
 
-    if (true) {
-    // if (false) {
-    //if (deltaRank < this.epsilon) {
+    //if (true) {
+    //if (false) {
+    if (deltaRank < this.epsilon) {
       this.rotating = true;
 
       // DATA LOG
@@ -445,9 +445,9 @@ public abstract class RotationLayer extends ClusterLayer {
 
     double deltaRank = this.zigDiffRank(yInfo, zInfo);
 
-    if (true) {
-    // if (false) {
-    //if (deltaRank < this.epsilon) {
+    //if (true) {
+    //if (false) {
+    if (deltaRank < this.epsilon) {
       this.rotating = true;
 
       // DATA LOG
@@ -541,9 +541,9 @@ public abstract class RotationLayer extends ClusterLayer {
 
     double deltaRank = this.zigZagDiffRank(xInfo, yInfo, zInfo);
 
-    if (true) {
-    // if (false) {
-    //if (deltaRank < this.epsilon) {
+    //if (true) {
+    //if (false) {
+    if (deltaRank < this.epsilon) {
       this.rotating = true;
 
       // DATA LOG
