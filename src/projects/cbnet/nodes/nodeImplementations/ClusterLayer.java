@@ -110,9 +110,9 @@ public abstract class ClusterLayer extends CBNetLayer {
                              a   b              
              
              */
+            /* just a zig because 2 is the dst node*/
+            //  || (position == 2 && ID == requestMessage.getDst())
             if (position == 3 /*simple double operation*/
-            		/* just a zig because 2 is the dst node*/
-            		|| (position == 2 && ID == requestMessage.getDst())
             		/* a single cluster to send the message*/
             		|| (position == 1 && ID == requestMessage.getDst())) {
 
