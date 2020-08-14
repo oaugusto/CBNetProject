@@ -302,6 +302,7 @@ public abstract class ClusterLayer extends CBNetLayer {
         for (AckClusterMessage m : this.queueAckCluster) {
             if (m.getDst() == m.getInfo().getNode().ID 
             		&& this.isNeighbor(m.getInfo().getNode())) {
+//            	System.out.println(ID + " Node found");
                 return m.getInfo();
             }
         }

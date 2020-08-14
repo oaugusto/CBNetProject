@@ -1,5 +1,7 @@
 package projects.cbnet.nodes.nodeImplementations;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.PriorityQueue;
 
 import projects.cbnet.nodes.messages.CBNetMessage;
@@ -15,7 +17,7 @@ public abstract class CBNetLayer extends RPCLayer {
 	private boolean recvCBNetMessage;
 	private int sourceID;
 	private boolean recvAckCBNetMessage;
-	private CBNetMessage ackMessageReceived;
+	private ArrayList<CBNetMessage> ackMessageReceived;
     private PriorityQueue<CBNetMessage> cbnetQueue;
 
     @Override
@@ -25,7 +27,7 @@ public abstract class CBNetLayer extends RPCLayer {
         this.recvCBNetMessage = false;
         this.sourceID = -1;
         this.recvAckCBNetMessage = false;
-        this.ackMessageReceived = null;
+        this.ackMessageReceived = new ArrayList<CBNetMessage>();
         this.cbnetQueue = new PriorityQueue<>();
     }
 
@@ -75,7 +77,7 @@ public abstract class CBNetLayer extends RPCLayer {
         } else if (msg instanceof CompletionMessage) {
             CompletionMessage completionMessage = (CompletionMessage) msg;
             this.recvAckCBNetMessage = true;
-            this.ackMessageReceived = completionMessage.getCbnetMessage();
+            this.ackMessageReceived.add(completionMessage.getCbnetMessage());
             return;
         }
     }
@@ -83,19 +85,25 @@ public abstract class CBNetLayer extends RPCLayer {
     @Override
     public void timeslot11() {
     	super.timeslot11();
-    	//if future improvement allow to 
+    	//if future improvements allow to 
     	//receive multiples messages at same time
     	//this procedure must be changed 
     	if (this.recvCBNetMessage == true) {
     		this.recvCBNetMessage = false;
     		this.incrementCounter(); // increment local counter
+    		this.incrementWeight();
     		this.updateWeights(ID, this.sourceID); //TODO
     	}
     	
     	if (this.recvAckCBNetMessage == true) {
     		this.recvAckCBNetMessage = false;
-    		this.ackCBNetMessageReceived(this.ackMessageReceived);
+    		Iterator<CBNetMessage> it = this.ackMessageReceived.iterator();
+    		while (it.hasNext()) {
+    			this.ackCBNetMessageReceived(it.next());
+    		}
     	}
+    	
+    	this.ackMessageReceived.clear();
     }
 
     public abstract void receivedCBNetMessage(CBNetMessage msg);
