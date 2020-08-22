@@ -105,6 +105,21 @@ public abstract class ControlLayer extends RotationLayer {
   public void communicationClusterCompleted() {
     this.connectionEstablished();
   }
+  
+  @Override
+  public void loggingBypass() {
+	  if (this.state == States.ACTIVE) {
+		  if (!this.hasClusterGranted) {
+			  if (this.hasParentChanged()) {
+				  //bypass
+				  this.getActiveSplayRequest().numOfBypass++;
+			  } else {
+				  //pause
+				  this.getActiveSplayRequest().numOfPauses++;
+			  }
+		  }
+	  }
+  }
 
   public abstract void newSplayStarted(Request currentRequest);
 

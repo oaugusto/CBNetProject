@@ -16,6 +16,9 @@ import sinalgo.nodes.messages.Message;
  */
 public abstract class ClusterLayer extends RPCLayer {
 
+  // workaround to compute number of bypass
+  public boolean hasClusterGranted;
+	
   // set with current splay request of this node
   private RequestClusterMessage currentClusterRequest;
 
@@ -28,7 +31,8 @@ public abstract class ClusterLayer extends RPCLayer {
   @Override
   public void init() {
     super.init();
-
+    
+    this.hasClusterGranted = false;
     this.currentClusterRequest = null;
     this.priorityQueueClusterRequest = new PriorityQueue<>();
     this.queueAckCluster = new LinkedList<>();
@@ -238,15 +242,19 @@ public abstract class ClusterLayer extends RPCLayer {
    */
   @Override
   public void clusterPhaseTwo() {
-
+	
+	this.hasClusterGranted = false;
+	
     // This node has sent request cluster message
     if (!this.queueAckCluster.isEmpty()) {
       if (this.isCommunicationClusterGranted()) {
 
+    	this.hasClusterGranted = true;
         this.communicationClusterCompleted();
 
       } else if (this.isClusterGranted()) {
-
+    	  
+    	this.hasClusterGranted = true;
         this.clusterCompleted(this.getClusterSequenceFromAckBuffer());
 
       }

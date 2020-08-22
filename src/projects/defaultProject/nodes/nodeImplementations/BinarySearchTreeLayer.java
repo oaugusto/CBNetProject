@@ -27,6 +27,7 @@ public abstract class BinarySearchTreeLayer extends Node implements
   private int minIdInSubtree;
   private int maxIdInSubtree;
   private boolean isRoot;
+  private boolean hasParentChanged; // a workaround to compute the number of bypasses
 
   public long getCounter() {
     return this.counter;
@@ -70,6 +71,14 @@ public abstract class BinarySearchTreeLayer extends Node implements
 
   public void unsetRoot() {
     this.isRoot = false;
+  }
+  
+  public boolean hasParentChanged() {
+	  return this.hasParentChanged;
+  }
+  
+  public void clearParentChanged() {
+	  this.hasParentChanged = false;
   }
 
   public boolean isAncestorOf(BinarySearchTreeLayer node) {
@@ -199,6 +208,7 @@ public abstract class BinarySearchTreeLayer extends Node implements
 
     if (node != null) {
       node.setParent(this);
+      node.hasParentChanged = true;
     }
   }
 
@@ -213,6 +223,7 @@ public abstract class BinarySearchTreeLayer extends Node implements
 
     if (node != null) {
       node.setParent(this);
+      node.hasParentChanged = true;
     }
   }
 
@@ -297,6 +308,8 @@ public abstract class BinarySearchTreeLayer extends Node implements
     this.minIdInSubtree = Integer.MIN_VALUE;
     this.maxIdInSubtree = Integer.MIN_VALUE;
     this.counter = 0;
+    
+    this.hasParentChanged = false;
   }
 
   @Override

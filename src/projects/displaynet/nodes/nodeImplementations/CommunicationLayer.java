@@ -44,6 +44,8 @@ public abstract class CommunicationLayer extends ControlLayer {
       // event
       Request ackReq = ackAppMsg.getRequest();
       ackReq.numOfRotations += this.getActiveSplayRequest().numOfRotations;
+      ackReq.numOfBypass += this.getActiveSplayRequest().numOfBypass;
+      ackReq.numOfPauses += this.getActiveSplayRequest().numOfPauses;
       ackReq.finalTime = this.getCurrentRound();
 
       this.ackMessage(ackAppMsg);

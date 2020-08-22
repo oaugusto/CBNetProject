@@ -17,6 +17,8 @@ public class Request implements Comparable<Request> {
   // log information
   public long numOfRotations = 0;
   public long numOfRouting = 0;
+  public long numOfBypass = 0;
+  public long numOfPauses = 0;
 
   public long initialTime = 0;
   public long finalTime = 0;

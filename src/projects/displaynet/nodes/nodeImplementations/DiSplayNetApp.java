@@ -36,6 +36,8 @@ public class DiSplayNetApp extends HandShakeLayer implements ApplicationNode {
     this.data.addRouting(1);
     this.data.addThroughput(this.getCurrentRound());
     this.data.addRoundsPerSplay(ackMsg.getRequest().finalTime - ackMsg.getRequest().initialTime);
+    this.data.addByPassPerSplay(ackMsg.getRequest().numOfBypass);
+    this.data.addPausesPerSplay(ackMsg.getRequest().numOfPauses);
     this.data.incrementCompletedRequests();
     requestCompleted = true;
   }
@@ -71,6 +73,7 @@ public class DiSplayNetApp extends HandShakeLayer implements ApplicationNode {
       requestCompleted = false;
       this.data.decrementActiveSplays();
     }
+    this.clearParentChanged();
   }
 
   /*-------------------------------------------------*/
