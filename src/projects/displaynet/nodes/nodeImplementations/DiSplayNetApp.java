@@ -26,7 +26,8 @@ public class DiSplayNetApp extends HandShakeLayer implements ApplicationNode {
 
   @Override
   public void sendMessage(ApplicationMessage msg) {
-    //msg.setPriority(Global.currentTime + rand.nextDouble());
+	// priority set when the message is generated
+    msg.setPriority(Global.currentTime + rand.nextDouble());
     this.myMsgBuffer.add(msg);
   }
 
