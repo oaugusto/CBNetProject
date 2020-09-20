@@ -120,8 +120,8 @@ public class CustomGlobal extends AbstractCustomGlobal {
       Tuple<Integer, Integer> r = this.requestQueue.getNextRequest();
       DiSplayNetApp node = (DiSplayNetApp) Tools.getNodeByID(r.first);
       node.sendMessage(new ApplicationMessage(r.first, r.second));
-    }
-    */
+    }*/
+
   }
 
   @Override

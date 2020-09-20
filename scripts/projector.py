@@ -21,16 +21,17 @@ log = set(line.rstrip() for line in open(os.path.join(log_path, log_file), 'r'))
 file = open("scripts/logs/projectorLog.txt", "a+")
 file_lock = threading.Lock()
 
+projects = ["optnet", "flattening", "flatnet", "splaynet", "displaynet", "semisplaynet", "seqsemisplaynet", "simplenet"]
 #projects = ["optnet", "flattening", "flatnet", "cbnet", "seqcbnet", "splaynet", "displaynet", "simplenet"]
 #projects = ["optnet", "flattening", "flatnet", "splaynet", "displaynet", "simplenet"]
-projects = ["optnet", "splaynet", "displaynet", "simplenet"]
+#projects = ["optnet", "splaynet", "displaynet", "simplenet"]
 # project = sys.argv[1]
 
 # parameters of simulation
 #datasets = ["random", "newTor", "tor"]
 datasets = ["newTor"]
 numNodes = [128, 256, 512, 1024]
-numSimulations = 30
+numSimulations = 10
 
 #number of threads to simulation
 numThreads = 10

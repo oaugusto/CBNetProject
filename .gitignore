@@ -3,3 +3,4 @@ binaries/bin/
 input/
 input
 logs/
+src/projects/defaultProject/appConfig.xml

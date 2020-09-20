@@ -26,6 +26,7 @@ public class DiSplayNetApp extends HandShakeLayer implements ApplicationNode {
 
   @Override
   public void sendMessage(ApplicationMessage msg) {
+    // priority set when the message is generated
     msg.setPriority(Global.currentTime + rand.nextDouble());
 //    System.out.println(Global.currentTime + rand.nextDouble());
     this.myMsgBuffer.add(msg);
@@ -37,6 +38,8 @@ public class DiSplayNetApp extends HandShakeLayer implements ApplicationNode {
     this.data.addRouting(1);
     this.data.addThroughput(this.getCurrentRound());
     this.data.addRoundsPerSplay(ackMsg.getRequest().finalTime - ackMsg.getRequest().initialTime);
+    this.data.addByPassPerSplay(ackMsg.getRequest().numOfBypass);
+    this.data.addPausesPerSplay(ackMsg.getRequest().numOfPauses);
     this.data.incrementCompletedRequests();
     requestCompleted = true;
   }
@@ -72,6 +75,7 @@ public class DiSplayNetApp extends HandShakeLayer implements ApplicationNode {
       requestCompleted = false;
       this.data.decrementActiveSplays();
     }
+    this.clearParentChanged();
   }
 
   /*-------------------------------------------------*/

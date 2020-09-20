@@ -5,7 +5,7 @@ package projects.cbnet.nodes.nodeImplementations;
  */
 public abstract class SynchronizerLayer extends CBTreeLayer {
 
-    private int MAX_TIMESLOT = 11;
+    private int MAX_TIMESLOT = 12;
     private int timeslot;
     private long round;
 
@@ -69,7 +69,11 @@ public abstract class SynchronizerLayer extends CBTreeLayer {
             break;
 
         case 10:
-            timeslot10();
+        	timeslot10();
+        	break;
+            
+        case 11:
+            timeslot11();
             posRound();
 
             this.round++;
@@ -126,8 +130,12 @@ public abstract class SynchronizerLayer extends CBTreeLayer {
     public void timeslot9() {
 
     } 
-
+    
     public void timeslot10() {
+    	
+    }
+
+    public void timeslot11() {
 
     }
 

@@ -282,10 +282,14 @@ public abstract class RotationLayer extends ClusterLayer {
       }
       this.rotating = false;
     }
+    
+    this.loggingBypass();
   }
 
   public abstract void zigCompleted();
 
   public abstract void rotationCompleted();
+  
+  public abstract void loggingBypass();
 
 }

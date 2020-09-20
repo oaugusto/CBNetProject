@@ -18,7 +18,7 @@ open(os.path.join(log_path, log_file), 'a').close()
 log = set(line.rstrip() for line in open(os.path.join(log_path, log_file), 'r'))
 
 # open log file for append and create a lock variable
-file = open("scripts/logs/projectorLog.txt", "a+")
+file = open("scripts/logs/burstyLog.txt", "a+")
 file_lock = threading.Lock()
 
 #projects = ["optnet", "flattening", "flatnet", "cbnet", "seqcbnet", "splaynet", "displaynet", "simplenet"]

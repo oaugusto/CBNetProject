@@ -19,6 +19,8 @@ public class DataCollection {
   private Logging rotations_per_splay;
   private Logging routing_per_splay;
   private Logging rounds_per_splay;
+  private Logging bypass_per_splay;
+  private Logging pauses_per_splay;
   private Logging total_time_log;
   private Logging active_requests_log;// number of active request per round
   private Logging active_clusters_log; // number of cluster per round
@@ -34,6 +36,8 @@ public class DataCollection {
     rotations_per_splay = Logging.getLogger(path + "/rotations_per_splay.txt");
     routing_per_splay = Logging.getLogger(path + "/routing_per_splay.txt");
     rounds_per_splay = Logging.getLogger(path + "/rounds_per_splay.txt");
+    bypass_per_splay = Logging.getLogger(path + "/bypass_per_splay.txt");
+    pauses_per_splay = Logging.getLogger(path + "/pauses_per_splay.txt");
     total_time_log = Logging.getLogger(path + "/total_time.txt");
     active_requests_log = Logging.getLogger(path + "/concurrent_req.txt");
     active_clusters_log = Logging.getLogger(path + "/clusters.txt");
@@ -88,6 +92,14 @@ public class DataCollection {
 
   public void addRoundsPerSplay(long num) {
     this.rounds_per_splay.logln(num + "");
+  }
+  
+  public void addByPassPerSplay(long num) {
+	this.bypass_per_splay.logln(num + "");
+  }
+  
+  public void addPausesPerSplay(long num) {
+	this.pauses_per_splay.logln(num + "");
   }
 
   public void incrementActiveSplays() {
