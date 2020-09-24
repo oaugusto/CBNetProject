@@ -1,11 +1,14 @@
 package projects.seqsemisplaynet.nodes.nodeImplementation;
 
+import java.awt.Color;
+import java.awt.Graphics;
 import java.util.HashMap;
 
 import projects.cbnet.nodes.messages.CBNetMessage;
 import projects.cbnet.nodes.tableEntry.CBInfo;
 import projects.defaultProject.DataCollection;
 import projects.semisplaynet.nodes.nodeImplementations.CBNetNode;
+import sinalgo.gui.transformation.PositionTransformation;
 
 /**
  * CBNetApp
@@ -67,5 +70,14 @@ public class CBNetApp extends CBNetNode {
             this.msgSent = false;
             this.data.decrementActiveSplays();
         }
+    }
+    
+    @Override
+    public void draw(Graphics g, PositionTransformation pt, boolean highlight) {
+      // String text = ID + " l:" + this.minIdInSubtree + " r:" + this.maxIdInSubtree;
+      String text = "" + ID;// + ": " + this.getWeight();
+
+      // draw the node as a circle with the text inside
+      super.drawNodeAsDiskWithText(g, pt, highlight, text, 12, Color.YELLOW);
     }
 }
