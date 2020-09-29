@@ -28,8 +28,8 @@ projects = ["optnet", "flattening", "flatnet", "splaynet", "displaynet", "semisp
 # project = sys.argv[1]
 
 # parameters of simulation
-#datasets = ["random", "newTor", "tor"]
-datasets = ["newTor"]
+datasets = ["random", "newTor", "tor"]
+#datasets = ["newTor"]
 numNodes = [128, 256, 512, 1024]
 numSimulations = 10
 

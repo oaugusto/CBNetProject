@@ -2,8 +2,8 @@
 <sinalgo>
 	<ProjectSelector windowWidth="600" windowHeight="400" lastChosenProject="" windowPosX="50" windowPosY="50" isMaximized="false" selectedTab="1" />
 	<GUI windowWidth="800" windowHeight="600" windowPosX="50" windowPosY="50" isMaximized="false" ControlPanelExpandSimulation="true" ControlPanelShowFullViewPanel="true" ControlPanelShowTextPanel="true" ControlPanelShowProjectControl="true" RunOperationIsLimited="true" helpWindowWidth="500" helpWindowHeight="500" helpWindowPosX="200" helpWindowPosY="200" helpWindowIsMaximized="false" />
-	<RandomSeed seedFromPreviousRun="-6522734464007958113" />
-	<App lastSelectedFileDirectory="" checkForUpdatesAtStartup="true" updateCheckTimeStamp="1598486614047" runCmdLineArgs="-batch -project simplenet -overwrite input=input/facebookDS/datasetC_pairs.txt output=output/facebook/simplenet AutoStart=true " />
+	<RandomSeed seedFromPreviousRun="-6312727098062005046" />
+	<App lastSelectedFileDirectory="" checkForUpdatesAtStartup="true" updateCheckTimeStamp="1601155532140" runCmdLineArgs="-batch -project displaynet -overwrite input=input/hpcDS/cesar_nekbone.txt output=output/hpc/displaynet/cesar_nekbone AutoStart=true " />
 	<GenNodesDlg numNodes="100" />
 </sinalgo>
 

@@ -21,12 +21,12 @@ log = set(line.rstrip() for line in open(os.path.join(log_path, log_file), 'r'))
 file = open("scripts/logs/skewedLog.txt", "a+")
 file_lock = threading.Lock()
 
+projects = ["optnet", "flattening", "flatnet", "splaynet", "displaynet", "semisplaynet", "seqsemisplaynet", "simplenet"]
 #projects = ["optnet", "flattening", "flatnet", "cbnet", "seqcbnet", "splaynet", "displaynet", "simplenet"]
 #projects = ["optnet", "simplenet", "splaynet", "displaynet"]
 #projects = ["cbnet", "displaynet"]
 # project = sys.argv[1]
 #projects = ["optnet","seqcbnet", "cbnet", "splaynet", "displaynet", "simplenet"]
-projects = ["cbnet"]
 
 # parameters of simulation
 numNodes = [128, 256, 512, 1024]
