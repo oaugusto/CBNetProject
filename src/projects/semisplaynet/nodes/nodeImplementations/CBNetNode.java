@@ -12,80 +12,84 @@ import sinalgo.gui.transformation.PositionTransformation;
 import sinalgo.runtime.Global;
 import sinalgo.tools.Tools;
 
+import projects.defaultProject.DataCollection;
+
 /**
  * CBNetNode
  */
 public class CBNetNode extends RotationLayer {
 
-  // to break ties in priority
-  private Random rand = Tools.getRandomNumberGenerator();
+    private DataCollection data = DataCollection.getInstance();
 
-  private Queue<Request> bufferRequest;
+    // to break ties in priority
+    private Random rand = Tools.getRandomNumberGenerator();
 
-  private enum States {
-    PASSIVE, COMMUNICATING
-  }
+    private Queue<Request> bufferRequest;
 
-  private States state;
-
-  @Override
-  public void init() {
-    super.init();
-
-    this.bufferRequest = new LinkedList<>();
-    this.state = States.PASSIVE;
-  }
-
-  @Override
-  public void updateState() {
-    super.updateState();
-
-    switch (this.state) {
-      case PASSIVE:
-
-        if (!this.bufferRequest.isEmpty()) {
-          Request rq = this.bufferRequest.poll();
-          this.sendCBNetMessage(rq.dstId, Global.currentTime + rand.nextDouble());
-
-          this.state = States.COMMUNICATING;
-          this.newMessageSent();
-        }
-
-        break;
-
-      case COMMUNICATING:
-        break;
-
-      default:
-        Tools.fatalError("Invalid CBNetNode state");
-        break;
+    private enum States {
+        PASSIVE, COMMUNICATING
     }
 
-  }
+//    private States state;
 
-  public void newMessage(int dst) {
-    Request splay = new Request(ID, dst);
-    this.bufferRequest.add(splay);
-  }
+    @Override
+    public void init() {
+        super.init();
 
-  @Override
-  public void ackCBNetMessageReceived(CBNetMessage msg) {
-    this.state = States.PASSIVE;
-    msg.finalTime = this.getCurrentRound();
-    this.communicationCompleted(msg);
-  }
+        this.bufferRequest = new LinkedList<>();
+//        this.state = States.PASSIVE;
+    }
 
-  public void newMessageSent() {
+    @Override
+    public void updateState() {
+        super.updateState();
 
-  }
+//        switch (this.state) {
+//        case PASSIVE:
 
-  public void communicationCompleted(CBNetMessage msg) {
+            if (!this.bufferRequest.isEmpty()) {
+                Request rq = this.bufferRequest.poll();
+                this.sendCBNetMessage(rq.dstId, Global.currentTime + rand.nextDouble());
+//                this.state = States.COMMUNICATING;
+                this.newMessageSent();
+                //Log
+                this.data.addSequence(rq.srcId - 1, rq.dstId - 1);
+            }
 
-  }
+//            break;
+//
+//        case COMMUNICATING:
+//            break;
+//
+//        default:
+//            Tools.fatalError("Invalid CBNetNode state");
+//            break;
+//        }
 
-  @Override
-  public void receivedCBNetMessage(CBNetMessage msg) {
-    // System.out.println("Node " + ID + ": message received from " + msg.getSrc());
-  }
+    }
 
+    public void newMessage(int dst) {
+        Request splay = new Request(ID, dst);
+        this.bufferRequest.add(splay);
+    }
+
+    @Override
+    public void ackCBNetMessageReceived(CBNetMessage msg) {
+//        this.state = States.PASSIVE;
+        msg.finalTime = this.getCurrentRound();
+        this.communicationCompleted(msg);
+    }
+
+    public void newMessageSent() {
+        
+    }
+
+    public void communicationCompleted(CBNetMessage msg) {
+
+    }
+
+    @Override
+    public void receivedCBNetMessage(CBNetMessage msg) {
+        // System.out.println("Node " + ID + ": message received from " + msg.getSrc());
+    }
 }
