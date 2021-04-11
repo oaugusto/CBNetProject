@@ -1,4 +1,4 @@
-package projects.opticalNet.nodes.nodeImplementations;
+package projects.opticalNet.nodes.infrastructureImplementations;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -17,12 +17,11 @@ public class InputNode extends Node {
 
 	@Override
 	public void draw(Graphics g, PositionTransformation pt, boolean highlight) {
-		String text = "I: " + this.index;	
-	    // draw the node as a circle with the text inside
-	    super.drawNodeAsDiskWithText(g, pt, highlight, text, 12, Color.BLACK);
+		String text = "" + this.index;
+	    super.drawNodeAsSquareWithText(g, pt, highlight, text, 12, Color.BLACK);
 	}
 
-	private int index = 0;
+	private int index = -1;
   	private Node connectedNode = null;
   	private OutputNode outputNode = null;
   	  	
@@ -41,22 +40,40 @@ public class InputNode extends Node {
   	public OutputNode getOutputNode() {
   		return this.outputNode;
   	}
- 
-    private void addLinkTo(Node node) {
-        if (node != null) {
-          this.outgoingConnections.add(this, node, false);
-          node.outgoingConnections.add(node, this, false);
-        }
-    }
-
+    
   	public void setConnectedNode(Node node) {
   		this.connectedNode = node;
-  		this.addLinkTo(node);
   	}
   	
   	public Node getConnectedNode() {
   		return this.connectedNode;
   	}
+
+    private boolean isConnectedTo(Node node) {
+        return this.outgoingConnections.contains(this, node);
+    }
+  	
+    private void addLinkTo(Node node) {
+        if (node != null) {
+          this.outgoingConnections.add(this, node, false);
+        }
+    }
+
+    /**
+     * Remove a link to a node that is not null.
+     *
+     * @param node
+     */
+    private void removeLinkTo(Node node) {
+    	if (node == null) {
+    		return;
+    	}
+    	if (this.isConnectedTo(node)) {
+    		this.outgoingConnections.remove(this, node);
+    	} else {
+    		Tools.fatalError("Trying to remove a non-existing connection to node " + node.ID);
+    	}
+    }
     
     /**
      * Set the link to outputNode
@@ -64,16 +81,26 @@ public class InputNode extends Node {
      * @param node
      */
     public void addLinkToOutputNode(OutputNode node) {
-		this.addLinkTo(node);
-		this.setOutputNode(node);
-		
-		if (node != null) {
-			node.setInputNode(this);
-		}
+    	// set outputNode
+    	this.setOutputNode(node);
+    	this.addLinkTo(node);
+    }
+    
+    /**
+     * Update the link to a new outputNode
+     *
+     * @param node
+     */
+    public void updateLinkToOutputNode(OutputNode node) {
+		// remove the previous connection
+    	this.removeLinkTo(this.outputNode);
+    	// set the new outputNode
+    	this.setOutputNode(node);
+    	this.addLinkTo(node);
     }
   	
-	protected void sendToOutput(Message msg) {
-		if (this.outgoingConnections.contains(this, this.outputNode)) {
+	protected void sendToOutputNode(Message msg) {
+		if (this.isConnectedTo(this.outputNode)) {
 			send(msg, this.outputNode);
 		} else {
 			Tools.fatalError("Trying to send message through a non-existing connection with outputNode");
@@ -84,7 +111,7 @@ public class InputNode extends Node {
 	public void handleMessages(Inbox inbox) {
 		while (inbox.hasNext()) {
 			Message msg = inbox.next();
-			this.sendToOutput(msg);
+			this.sendToOutputNode(msg);
 		}
 	}
 	

@@ -1,13 +1,20 @@
 package projects.opticalNet.nodes.infrastructureImplementations;
 
+import java.awt.Color;
+import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import projects.opticalNet.nodes.nodeImplementations.InputNode;
-import projects.opticalNet.nodes.nodeImplementations.OutputNode;
+import sinalgo.configuration.WrongConfigurationException;
+import sinalgo.gui.transformation.PositionTransformation;
+import sinalgo.nodes.Node;
+import sinalgo.nodes.messages.Inbox;
 import sinalgo.runtime.Global;
 
-public class NetworkSwitch {
+public class NetworkSwitch extends Node {
+	
+	// switch id
+	private int index = -1;
 	
 	// the number of entries of the switch
 	private int size = 0;
@@ -15,10 +22,7 @@ public class NetworkSwitch {
 	// map the relative Id to the actual node
 	private HashMap<Integer, InputNode> inputId2Node;
 	private HashMap<Integer, OutputNode> outputId2Node;
-	
-	// keep the pair of connected nodes
-	//private HashMap<InputNode, OutputNode> connections;
-	
+		
 	private ArrayList<InputNode> inputNodes;
 	private ArrayList<OutputNode> outputNodes;
 	
@@ -27,14 +31,23 @@ public class NetworkSwitch {
 	private double y = 0;
 	
 	// switch dimensions
-	private double length = 0;
-	private double width = 0;
+	private int width = 0;
+	private int height = 0;
+	// small unit
+	private int unitSize = 0;
+	
+	public void setIndex(int index) {
+		this.index = index;
+	}
+	
+	public int getIndex() {
+		return this.index;
+	}
 	
 	// initialize variables
 	private void setup() {
 		this.inputId2Node = new HashMap<>();
 		this.outputId2Node = new HashMap<>();
-		//this.connections = new HashMap<>();
 		this.inputNodes = new ArrayList<>();
 		this.outputNodes = new ArrayList<>();
 		
@@ -69,35 +82,11 @@ public class NetworkSwitch {
 		this.setup();
 	}
 	
-	public void setSwitchPosition(double x, double y) {
-		this.x = x;
-		this.y = y;
-	}
-	
-	private void updatePositions() {
-		if (!Global.isGuiMode) {
-			return;
-		}
-		double y_space = this.length / this.size; 
-		for (int i = 0; i < this.size; ++i) {
-			this.inputNodes.get(i).setPosition(this.x, this.y + (y_space * i), 0);
-			this.outputNodes.get(i).setPosition(this.x + this.width, this.y + (y_space * i), 0);
-		}
-	}
-	
-	public void setSwitchDimension(double length, double width) {
-		this.length = length;
-		this.width = width;
-		
-		updatePositions();
-	}
-	
-	// connect the input in to the output out changing
-	// old connections
+	// connect the input in to the output out changing old connections
 	public void connectNodes(int in, int out) {
 		InputNode inNode = this.inputId2Node.get(in);
 		OutputNode outNode = this.outputId2Node.get(out);
-		inNode.addLinkToOutputNode(outNode);
+		inNode.updateLinkToOutputNode(outNode);
 	}
 	
 	public InputNode getInputNode(int index) {
@@ -106,5 +95,87 @@ public class NetworkSwitch {
 	
 	public OutputNode getOutputNode(int index) {
 		return this.outputNodes.get(index);
+	}
+
+	@Override
+	public void handleMessages(Inbox inbox) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void preStep() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void init() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void neighborhoodChange() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void postStep() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void checkRequirements() throws WrongConfigurationException {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	public void setSwitchPosition(double x, double y) {
+		this.x = x;
+		this.y = y;
+		this.setPosition(x, y, 0);
+	}
+	
+	private void updateInternalNodesPositions(double x_offset, double y_offset) {
+		for (int i = 0; i < this.size; ++i) {
+			this.inputNodes.get(i).setPosition(this.x, this.y + (y_offset * i), 0);
+			this.outputNodes.get(i).setPosition(this.x + x_offset, this.y + (y_offset * i), 0);
+		}
+	}
+	
+	public void setSwitchDimension(int length, int height) {
+		this.width = length;
+		this.height = height;
+		this.unitSize = this.height / ((6 * this.size) - 1); // unit used to construct internal nodes
+	}
+	
+	@Override
+	public void draw(Graphics g, PositionTransformation pt, boolean highlight) {
+		if (!Global.isGuiMode) {
+			return;
+		}
+		Color backupColor = g.getColor();
+		drawingSizeInPixels = (int) (defaultDrawingSizeInPixels* pt.getZoomFactor()); // half the side-length in pixels of the square
+		int widthInPixels = this.width * drawingSizeInPixels;
+		int heightInPixels = this.height * drawingSizeInPixels;
+		pt.translateToGUIPosition(this.getPosition());
+		int x = pt.guiX - (this.width >> 1);
+		int y = pt.guiY - (this.height >> 1);
+		Color color = getColor();
+		if(highlight) {
+			// a highlighted node is surrounded by a red square
+			g.setColor(color == Color.RED ? Color.BLACK : Color.RED);
+			g.drawRect(x-2, y-2, widthInPixels+4, heightInPixels+4);
+		}
+		g.setColor(color);
+		g.drawRect(x, y, widthInPixels, heightInPixels);
+		g.setColor(backupColor);
+	}
+	
+	@Override
+	protected void nodePositionUpdated() {
 	}
 }

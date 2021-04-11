@@ -18,7 +18,7 @@ public class NetworkManager {
 		this.numberOfnodes = numberOfNodes;
 	}
 	
-	public void connectNodesToInterface(ArrayList<NetworkNode> nodes) {
+	public void connectNodesToInterfaces(ArrayList<NetworkNode> nodes) {
 		this.nodes = nodes;
 		
 		for (int i = 0; i < this.numberOfnodes; ++i) {

@@ -5,6 +5,7 @@ import java.awt.Graphics;
 import java.util.ArrayList;
 
 import projects.cbnet.nodes.messages.CBNetMessage;
+import projects.opticalNet.nodes.infrastructureImplementations.InputNode;
 import sinalgo.nodes.Node;
 import sinalgo.nodes.messages.Inbox;
 import sinalgo.nodes.messages.Message;
