@@ -47,7 +47,7 @@
         <initializeConnectionsOnStartup value="false" />
 
         <!--Defines how often the GUI is updated. The GUI is redrawn after every refreshRate-th round.-->
-        <refreshRate value="12" />
+        <refreshRate value="1" />
 
         <!--If set to true, the framework will inform a sender whenever  a unicast message is dropped. In synchronous mode, the sender  is informed in the round after the message should have arrived, and  immediately upon arrival in asynchronous mode.-->
         <generateNAckMessages value="false" />
@@ -98,7 +98,7 @@
         <extendedControl value="false" />
 
         <!--If true, the graph edges are drawn as directed arrows,  otherwise simple lines.-->
-        <drawArrows value="false" />
+        <drawArrows value="true" />
 
         <!--Fraction of the old and new zoom values for a zoom step.-->
         <zoomStep value="1.2" />

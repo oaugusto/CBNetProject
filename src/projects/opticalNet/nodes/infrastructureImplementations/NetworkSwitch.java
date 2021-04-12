@@ -74,7 +74,7 @@ public class NetworkSwitch extends Node {
 	    	InputNode in = this.inputNodes.get(i);
 	    	OutputNode out = this.outputNodes.get(i);
 	    	in.addLinkToOutputNode(out);
-	    }   
+	    }
 	}
 	
 	public NetworkSwitch(int size) {
@@ -152,28 +152,28 @@ public class NetworkSwitch extends Node {
 		this.unitSize = this.height / ((6 * this.size) - 1); // unit used to construct internal nodes
 	}
 	
-	@Override
-	public void draw(Graphics g, PositionTransformation pt, boolean highlight) {
-		if (!Global.isGuiMode) {
-			return;
-		}
-		Color backupColor = g.getColor();
-		drawingSizeInPixels = (int) (defaultDrawingSizeInPixels* pt.getZoomFactor()); // half the side-length in pixels of the square
-		int widthInPixels = this.width * drawingSizeInPixels;
-		int heightInPixels = this.height * drawingSizeInPixels;
-		pt.translateToGUIPosition(this.getPosition());
-		int x = pt.guiX - (this.width >> 1);
-		int y = pt.guiY - (this.height >> 1);
-		Color color = getColor();
-		if(highlight) {
-			// a highlighted node is surrounded by a red square
-			g.setColor(color == Color.RED ? Color.BLACK : Color.RED);
-			g.drawRect(x-2, y-2, widthInPixels+4, heightInPixels+4);
-		}
-		g.setColor(color);
-		g.drawRect(x, y, widthInPixels, heightInPixels);
-		g.setColor(backupColor);
-	}
+//	@Override
+//	public void draw(Graphics g, PositionTransformation pt, boolean highlight) {
+//		if (!Global.isGuiMode) {
+//			return;
+//		}
+//		Color backupColor = g.getColor();
+//		drawingSizeInPixels = (int) (defaultDrawingSizeInPixels* pt.getZoomFactor()); // half the side-length in pixels of the square
+//		int widthInPixels = this.width * drawingSizeInPixels;
+//		int heightInPixels = this.height * drawingSizeInPixels;
+//		pt.translateToGUIPosition(this.getPosition());
+//		int x = pt.guiX - (this.width >> 1);
+//		int y = pt.guiY - (this.height >> 1);
+//		Color color = getColor();
+//		if(highlight) {
+//			// a highlighted node is surrounded by a red square
+//			g.setColor(color == Color.RED ? Color.BLACK : Color.RED);
+//			g.drawRect(x-2, y-2, widthInPixels+4, heightInPixels+4);
+//		}
+//		g.setColor(Color.BLACK);
+//		g.fillRect(x, y, widthInPixels, heightInPixels);
+//		g.setColor(backupColor);
+//	}
 	
 	@Override
 	protected void nodePositionUpdated() {

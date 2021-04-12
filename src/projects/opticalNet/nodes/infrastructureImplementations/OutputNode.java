@@ -14,11 +14,11 @@ import sinalgo.gui.transformation.PositionTransformation;
  */
 public class OutputNode extends Node {
 
-	@Override
-	public void draw(Graphics g, PositionTransformation pt, boolean highlight) {
-		String text = "" + this.index;
-	    super.drawNodeAsSquareWithText(g, pt, highlight, text, 12, Color.BLACK);
-	}
+//	@Override
+//	public void draw(Graphics g, PositionTransformation pt, boolean highlight) {
+//		String text = "" + this.index;
+//	    super.drawNodeAsSquareWithText(g, pt, highlight, text, 12, Color.BLACK);
+//	}
 
 	private int index = -1;
   	private Node connectedNode = null;

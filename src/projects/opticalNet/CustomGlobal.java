@@ -15,7 +15,7 @@ import sinalgo.tools.Tuple;
 public class CustomGlobal extends AbstractCustomGlobal {
 
 	// simulation
-	public int numberOfNodes = 5;
+	public int numberOfNodes = 2;
 	public ArrayList<NetworkNode> nodes = null;
 	public NetworkManager networkManager = null;
 

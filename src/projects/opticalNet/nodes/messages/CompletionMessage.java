@@ -10,9 +10,9 @@ public class CompletionMessage extends Message {
     private int src;
     private int dst;
 
-    private CBNetMessage cbnetMessage;
+    private NetworkMessage cbnetMessage;
 
-    public CompletionMessage(CBNetMessage msg) {
+    public CompletionMessage(NetworkMessage msg) {
         this.cbnetMessage = msg;
     }
 
@@ -33,7 +33,7 @@ public class CompletionMessage extends Message {
     /**
      * @return the cbnetMessage
      */
-    public CBNetMessage getCbnetMessage() {
+    public NetworkMessage getCbnetMessage() {
         return cbnetMessage;
     }
 
@@ -54,7 +54,7 @@ public class CompletionMessage extends Message {
     /**
      * @param cbnetMessage the cbnetMessage to set
      */
-    public void setCbnetMessage(CBNetMessage cbnetMessage) {
+    public void setCbnetMessage(NetworkMessage cbnetMessage) {
         this.cbnetMessage = cbnetMessage;
     }
 
