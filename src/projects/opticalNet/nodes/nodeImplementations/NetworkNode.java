@@ -4,27 +4,16 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.util.ArrayList;
 
-import projects.cbnet.nodes.messages.CBNetMessage;
+import projects.opticalNet.nodes.messages.NetworkMessage;
 import projects.opticalNet.nodes.infrastructureImplementations.InputNode;
-import sinalgo.nodes.Node;
 import sinalgo.nodes.messages.Inbox;
 import sinalgo.nodes.messages.Message;
-import sinalgo.tools.Tools;
-import sinalgo.configuration.WrongConfigurationException;
 import sinalgo.gui.transformation.PositionTransformation;
 
 /**
  * InputNode
  */
-public class NetworkNode extends Node {
-
-	@Override
-	public void draw(Graphics g, PositionTransformation pt, boolean highlight) {
-		String text = "" + ID;
-	    // draw the node as a circle with the text inside
-	    super.drawNodeAsDiskWithText(g, pt, highlight, text, 12, Color.BLACK);
-	}
-
+public class NetworkNode extends SynchronizerLayer {
 	private ArrayList<InputNode> interfaces = new ArrayList<>();
 	
 	private InputNode parent = null;
@@ -76,25 +65,18 @@ public class NetworkNode extends Node {
 	}
 	
 	@Override
-	public void init() { }
-	
-	@Override
-	public void preStep() { }
-	
-	@Override
-	public void neighborhoodChange() { }
-	
-	@Override
-	public void postStep() { }
+	public void init() {
+		super.init();
+	}
 	
 	@Override
 	public void handleMessages(Inbox inbox) {
 		while (inbox.hasNext()) {
 			Message msg = inbox.next();
-	        if (!(msg instanceof CBNetMessage)) {
+	        if (!(msg instanceof NetworkMessage)) {
 	        	continue;
 	        }
-	        CBNetMessage cbmsg = (CBNetMessage) msg;
+	        NetworkMessage cbmsg = (NetworkMessage) msg;
 	        if (cbmsg.getDst() == this.ID) {
 	        	System.out.println("Message received from node " + cbmsg.getSrc());
 	        	continue;
@@ -109,7 +91,11 @@ public class NetworkNode extends Node {
 	        }
 		}
 	}
-	
+		
 	@Override
-	public void checkRequirements() throws WrongConfigurationException { }
+	public void draw(Graphics g, PositionTransformation pt, boolean highlight) {
+		String text = "" + ID;
+	    // draw the node as a circle with the text inside
+	    super.drawNodeAsDiskWithText(g, pt, highlight, text, 12, Color.YELLOW);
+	}
 }

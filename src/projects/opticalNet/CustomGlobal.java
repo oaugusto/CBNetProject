@@ -15,25 +15,14 @@ import sinalgo.tools.Tuple;
 public class CustomGlobal extends AbstractCustomGlobal {
 
 	// simulation
-	public int numberOfNodes = 2;
+	public int numberOfNodes = 7;
 	public ArrayList<NetworkNode> nodes = null;
 	public NetworkManager networkManager = null;
 
   	@Override
 	public void preRun() {
-  		/*
-  		 * create the nodes and constructs the topology
-  		 */
-  		this.nodes = new ArrayList<NetworkNode>();
-
-  		for (int i = 0; i < numberOfNodes; ++i) {
-  			NetworkNode n = new NetworkNode();
-  			n.finishInitializationWithDefaultModels(true);
-  			this.nodes.add(n);
-  		}
-  		
   		this.networkManager = new NetworkManager(this.numberOfNodes);
-  		this.networkManager.connectNodesToInterfaces(nodes);
+  		this.networkManager.renderTopology(Configuration.dimX, Configuration.dimY);;
   	}
 
 	@Override

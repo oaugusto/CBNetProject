@@ -1,6 +1,8 @@
 package projects.opticalNet.nodes.infrastructureImplementations;
 
 import java.awt.Color;
+import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,15 +28,13 @@ public class NetworkSwitch extends Node {
 	private ArrayList<InputNode> inputNodes;
 	private ArrayList<OutputNode> outputNodes;
 	
-	// keep the position of the switch
-	private double x = 0;
-	private double y = 0;
-	
 	// switch dimensions
 	private int width = 0;
 	private int height = 0;
+	
 	// small unit
 	private int unitSize = 0;
+	private int internalNodeSize = 0;
 	
 	public void setIndex(int index) {
 		this.index = index;
@@ -133,49 +133,85 @@ public class NetworkSwitch extends Node {
 		
 	}
 	
-	public void setSwitchPosition(double x, double y) {
-		this.x = x;
-		this.y = y;
-		this.setPosition(x, y, 0);
-	}
-	
-	private void updateInternalNodesPositions(double x_offset, double y_offset) {
+	private void updateInternalNodesPositions() {
+		double xCof = this.getPosition().xCoord - (this.width/2) + (this.internalNodeSize/2);
+		double yCof = this.getPosition().yCoord - (this.height/2) + (this.internalNodeSize/2);
 		for (int i = 0; i < this.size; ++i) {
-			this.inputNodes.get(i).setPosition(this.x, this.y + (y_offset * i), 0);
-			this.outputNodes.get(i).setPosition(this.x + x_offset, this.y + (y_offset * i), 0);
+			this.inputNodes.get(i).setPosition(xCof, yCof + (6 * this.unitSize * i) ,0);
+		}
+		
+		xCof = this.getPosition().xCoord + (this.width/2.0) - (this.internalNodeSize/2.0);
+		yCof = this.getPosition().yCoord - (this.height/2.0) + (this.internalNodeSize/2.0);
+		for (int i = 0; i < this.size; ++i) {
+			this.outputNodes.get(i).setPosition(xCof, yCof + (6 * this.unitSize * i) ,0);
 		}
 	}
 	
-	public void setSwitchDimension(int length, int height) {
-		this.width = length;
+	public void setSwitchDimension(int height) {
 		this.height = height;
 		this.unitSize = this.height / ((6 * this.size) - 1); // unit used to construct internal nodes
+		this.internalNodeSize = 5 * this.unitSize;
+		this.width = this.internalNodeSize * 4;
+		
+		for (int i = 0; i < this.size; ++i) {
+			this.inputNodes.get(i).setDefaultDrawingSizeInPixels(this.internalNodeSize);
+			this.outputNodes.get(i).setDefaultDrawingSizeInPixels(this.internalNodeSize);
+		}
+		this.updateInternalNodesPositions();
 	}
 	
-//	@Override
-//	public void draw(Graphics g, PositionTransformation pt, boolean highlight) {
-//		if (!Global.isGuiMode) {
-//			return;
-//		}
-//		Color backupColor = g.getColor();
-//		drawingSizeInPixels = (int) (defaultDrawingSizeInPixels* pt.getZoomFactor()); // half the side-length in pixels of the square
-//		int widthInPixels = this.width * drawingSizeInPixels;
-//		int heightInPixels = this.height * drawingSizeInPixels;
-//		pt.translateToGUIPosition(this.getPosition());
-//		int x = pt.guiX - (this.width >> 1);
-//		int y = pt.guiY - (this.height >> 1);
-//		Color color = getColor();
-//		if(highlight) {
-//			// a highlighted node is surrounded by a red square
-//			g.setColor(color == Color.RED ? Color.BLACK : Color.RED);
-//			g.drawRect(x-2, y-2, widthInPixels+4, heightInPixels+4);
-//		}
-//		g.setColor(Color.BLACK);
-//		g.fillRect(x, y, widthInPixels, heightInPixels);
-//		g.setColor(backupColor);
-//	}
+	@Override
+	public void draw(Graphics g, PositionTransformation pt, boolean highlight) {
+		if (!Global.isGuiMode) {
+			return;
+		}		
+		int widthInPixels = (int) (this.width * pt.getZoomFactor());
+		int heightInPixels = (int) (this.height * pt.getZoomFactor());
+		pt.translateToGUIPosition(this.getPosition());
+		int x = pt.guiX - (widthInPixels >> 1);
+		int y = pt.guiY - (heightInPixels >> 1);
+		Color backupColor = g.getColor();
+		Color color = getColor();
+		if(highlight) {
+			// a highlighted node is surrounded by a red square
+			g.setColor(color == Color.RED ? Color.BLACK : Color.RED);
+			g.drawRect(x-2, y-2, widthInPixels+4, heightInPixels+4);
+		}
+		g.setColor(Color.BLACK);
+		g.drawRect(x, y, widthInPixels, heightInPixels);
+		g.setColor(backupColor);
+
+		int internalNodeSize = (int)(this.internalNodeSize * pt.getZoomFactor());
+		// Set the font 
+		String text_in = "In";
+		int fontSize = (int) (internalNodeSize * 0.5);
+		Font font = new Font(null, 0, (int) (fontSize)); 
+	    g.setFont(font);
+		// Determine the height and width of the text to be written
+		FontMetrics fm = g.getFontMetrics(font); 
+		int h = (int) Math.ceil(fm.getHeight());
+		int w = (int) Math.ceil(fm.stringWidth(text_in));
+		g.setColor(Color.BLACK);
+		g.drawRect(x, y - internalNodeSize, internalNodeSize, internalNodeSize);
+		g.setColor(Color.BLACK);
+		g.drawString(text_in, x + internalNodeSize/2 - w/2, y - internalNodeSize/2 + h/2 - 2); // print the text onto the circle
+		g.setColor(backupColor); // restore color
+		
+		String text_out = "Out";
+	    g.setFont(font);
+		// Determine the height and width of the text to be written
+		fm = g.getFontMetrics(font); 
+		h = (int) Math.ceil(fm.getHeight());
+		w = (int) Math.ceil(fm.stringWidth(text_out));
+		g.setColor(Color.BLACK);
+		g.drawRect(x + widthInPixels - internalNodeSize, y - internalNodeSize, internalNodeSize, internalNodeSize);
+		g.setColor(Color.BLACK);
+		g.drawString(text_out, x - internalNodeSize/2 - w/2 + widthInPixels, y - internalNodeSize/2 + h/2 - 2); // print the text onto the circle
+		g.setColor(backupColor); // restore color
+	}
 	
 	@Override
 	protected void nodePositionUpdated() {
+		this.updateInternalNodesPositions();
 	}
 }
