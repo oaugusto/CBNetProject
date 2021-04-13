@@ -90,12 +90,12 @@ public class NetworkManager {
 		int switch_height = 5 * unit;
 		int switch_width= switch_height / 2;
 		this.leftSwitchInput.setPosition(3 * x_space, 3.5 * unit, 0);
-		this.leftSwitchInput.setSwitchDimension(switch_height);
+		this.leftSwitchInput.setSwitchDimension(switch_height/3, switch_height);
 		this.leftSwitchOutput.setPosition(3 * x_space, 9.5 * unit, 0);
-		this.leftSwitchOutput.setSwitchDimension(switch_height);
+		this.leftSwitchOutput.setSwitchDimension(switch_height/3, switch_height);
 		this.rightSwitchInput.setPosition(3 * x_space, 15.5 * unit, 0);
-		this.rightSwitchInput.setSwitchDimension(switch_height);
+		this.rightSwitchInput.setSwitchDimension(switch_height/3, switch_height);
 		this.rightSwitchOutput.setPosition(3 * x_space, 21.5 * unit, 0);
-		this.rightSwitchOutput.setSwitchDimension(switch_height);
+		this.rightSwitchOutput.setSwitchDimension(switch_height/3, switch_height);
 	}
 }

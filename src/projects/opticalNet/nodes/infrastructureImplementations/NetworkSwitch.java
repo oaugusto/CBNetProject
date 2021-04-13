@@ -12,6 +12,7 @@ import sinalgo.gui.transformation.PositionTransformation;
 import sinalgo.nodes.Node;
 import sinalgo.nodes.messages.Inbox;
 import sinalgo.runtime.Global;
+import sinalgo.tools.Tools;
 
 public class NetworkSwitch extends Node {
 	
@@ -84,8 +85,16 @@ public class NetworkSwitch extends Node {
 	
 	// connect the input in to the output out changing old connections
 	public void connectNodes(int in, int out) {
+		if (in > this.size || out > this.size) {
+			Tools.fatalError("ID out of the valid range");
+		}
 		InputNode inNode = this.inputId2Node.get(in);
 		OutputNode outNode = this.outputId2Node.get(out);
+		// update old connection to out node
+		int oldInNodeIndex = outNode.getInputNode().getIndex();
+		InputNode oldInNode = this.inputId2Node.get(oldInNodeIndex);
+		oldInNode.updateLinkToOutputNode(inNode.getOutputNode());
+		// update new connection
 		inNode.updateLinkToOutputNode(outNode);
 	}
 	
@@ -98,40 +107,39 @@ public class NetworkSwitch extends Node {
 	}
 
 	@Override
+	public void init() {
+	}
+
+	@Override
 	public void handleMessages(Inbox inbox) {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void preStep() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void init() {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void neighborhoodChange() {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void postStep() {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void checkRequirements() throws WrongConfigurationException {
-		// TODO Auto-generated method stub
 		
 	}
+		
+	//-----------------------------------------------------------------------------------
+	//-----------------------------------------------------------------------------------
+	// Drawing methods of the switch node
+	//-----------------------------------------------------------------------------------
+	//-----------------------------------------------------------------------------------
 	
 	private void updateInternalNodesPositions() {
 		double xCof = this.getPosition().xCoord - (this.width/2) + (this.internalNodeSize/2);
@@ -147,12 +155,12 @@ public class NetworkSwitch extends Node {
 		}
 	}
 	
-	public void setSwitchDimension(int height) {
+	public void setSwitchDimension(int width, int height) {
+		this.width = width;
 		this.height = height;
 		this.unitSize = this.height / ((6 * this.size) - 1); // unit used to construct internal nodes
 		this.internalNodeSize = 5 * this.unitSize;
-		this.width = this.internalNodeSize * 4;
-		
+				
 		for (int i = 0; i < this.size; ++i) {
 			this.inputNodes.get(i).setDefaultDrawingSizeInPixels(this.internalNodeSize);
 			this.outputNodes.get(i).setDefaultDrawingSizeInPixels(this.internalNodeSize);
@@ -160,6 +168,7 @@ public class NetworkSwitch extends Node {
 		this.updateInternalNodesPositions();
 	}
 	
+	// TODO: improve this method, separate into other methods
 	@Override
 	public void draw(Graphics g, PositionTransformation pt, boolean highlight) {
 		if (!Global.isGuiMode) {

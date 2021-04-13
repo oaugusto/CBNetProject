@@ -17,6 +17,7 @@ import sinalgo.gui.transformation.PositionTransformation;
 public class OutputNode extends Node {
 	private int index = -1;
   	private Node connectedNode = null;
+  	private InputNode inputNode = null;
   	
   	public void setIndex(int index) {
   		this.index = index;
@@ -24,6 +25,14 @@ public class OutputNode extends Node {
   	
   	public int getIndex() {
   		return this.index;
+  	}
+  	
+  	public void setInputNode(InputNode node) {
+  		this.inputNode = node;
+  	}
+  	
+  	public InputNode getInputNode() {
+  		return this.inputNode;
   	}
   	
   	public void connectToNode(Node node) {
@@ -61,6 +70,12 @@ public class OutputNode extends Node {
 	@Override
 	public void checkRequirements() throws WrongConfigurationException { }
 
+	//-----------------------------------------------------------------------------------
+	//-----------------------------------------------------------------------------------
+	// Drawing method of the output node
+	//-----------------------------------------------------------------------------------
+	//-----------------------------------------------------------------------------------
+	
 	@Override
 	public void draw(Graphics g, PositionTransformation pt, boolean highlight) {
 		// Set the font 

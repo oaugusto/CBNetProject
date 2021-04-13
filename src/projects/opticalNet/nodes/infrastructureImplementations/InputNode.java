@@ -78,6 +78,7 @@ public class InputNode extends Node {
     public void addLinkToOutputNode(OutputNode node) {
     	// set outputNode
     	this.setOutputNode(node);
+    	node.setInputNode(this);
     	this.addLinkTo(node);
     }
     
@@ -91,6 +92,7 @@ public class InputNode extends Node {
     	this.removeLinkTo(this.outputNode);
     	// set the new outputNode
     	this.setOutputNode(node);
+    	node.setInputNode(this);
     	this.addLinkTo(node);
     }
   	
@@ -125,6 +127,12 @@ public class InputNode extends Node {
 	@Override
 	public void checkRequirements() throws WrongConfigurationException { }
 	
+	//-----------------------------------------------------------------------------------
+	//-----------------------------------------------------------------------------------
+	// Drawing method of the input node
+	//-----------------------------------------------------------------------------------
+	//-----------------------------------------------------------------------------------
+
 	@Override
 	public void draw(Graphics g, PositionTransformation pt, boolean highlight) {
 		// Set the font 
