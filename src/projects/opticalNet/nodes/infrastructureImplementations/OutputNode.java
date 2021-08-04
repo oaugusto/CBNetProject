@@ -12,7 +12,7 @@ import sinalgo.configuration.WrongConfigurationException;
 import sinalgo.gui.transformation.PositionTransformation;
 
 /**
- * InputNode
+ * OutputNode
  */
 public class OutputNode extends Node {
 	private int index = -1;

@@ -10,9 +10,6 @@ import sinalgo.nodes.messages.Inbox;
 import sinalgo.nodes.messages.Message;
 import sinalgo.gui.transformation.PositionTransformation;
 
-/**
- * InputNode
- */
 public class NetworkNode extends SynchronizerLayer {
 	private ArrayList<InputNode> interfaces = new ArrayList<>();
 	

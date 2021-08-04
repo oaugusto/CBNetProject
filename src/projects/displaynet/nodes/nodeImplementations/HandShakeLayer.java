@@ -26,7 +26,7 @@ public abstract class HandShakeLayer extends CommunicationLayer {
   //----------------------------------------------------------
 
   private enum HandShakeState {
-    IDLE, SYNC, MASTER, SLAVE, START, SPLAY
+    IDLE, SYNC, PRIMARY, SECONDARY, START, SPLAY
   }
 
   private HandShakeState handShakeState;
@@ -123,7 +123,7 @@ public abstract class HandShakeLayer extends CommunicationLayer {
             this.data.addSequence(this.currentSplayHandShake.getSrcId() - 1,
                 this.currentSplayHandShake.getDstId() - 1);
 
-            this.handShakeState = HandShakeState.MASTER;
+            this.handShakeState = HandShakeState.PRIMARY;
 //          System.out.println("[3] node " + ID + " master: ack received go to start ("
 //              + this.currentSplayHandShake.getSrcId() + "," + this.currentSplayHandShake.getDstId()
 //              + ") at time " + Global.currentTime);
@@ -137,7 +137,7 @@ public abstract class HandShakeLayer extends CommunicationLayer {
           AckSplay msg = new AckSplay();
           sendDirect(msg, Tools.getNodeByID(this.currentSplayHandShake.getDstId()));
 
-          this.handShakeState = HandShakeState.SLAVE;
+          this.handShakeState = HandShakeState.SECONDARY;
 //          System.out.println("[2] node " + ID + " sync: myMsg is empty go to slave ("
 //              + this.currentSplayHandShake.getSrcId() + "," + this.currentSplayHandShake.getDstId()
 //              + ") at time " + Global.currentTime);
@@ -166,7 +166,7 @@ public abstract class HandShakeLayer extends CommunicationLayer {
               this.data.addSequence(this.currentSplayHandShake.getSrcId() - 1,
                   this.currentSplayHandShake.getDstId() - 1);
 
-              this.handShakeState = HandShakeState.MASTER;
+              this.handShakeState = HandShakeState.PRIMARY;
 //          System.out.println("[3] node " + ID + " master: ack received go to start ("
 //              + this.currentSplayHandShake.getSrcId() + "," + this.currentSplayHandShake.getDstId()
 //              + ") at time " + Global.currentTime);
@@ -185,7 +185,7 @@ public abstract class HandShakeLayer extends CommunicationLayer {
             AckSplay msg = new AckSplay();
             sendDirect(msg, Tools.getNodeByID(this.currentSplayHandShake.getDstId()));
 
-            this.handShakeState = HandShakeState.SLAVE;
+            this.handShakeState = HandShakeState.SECONDARY;
 //            System.out.println("[2] node " + ID + " sync: peer has higher priotiry than myMsg go to slave ("
 //                + this.currentSplayHandShake.getSrcId() + "," + this.currentSplayHandShake.getDstId()
 //                + ") at time " + Global.currentTime);
@@ -194,12 +194,12 @@ public abstract class HandShakeLayer extends CommunicationLayer {
 
         break;
 
-      case MASTER:
+      case PRIMARY:
 
         this.handShakeState = HandShakeState.START;
         // break;
 
-      case SLAVE:
+      case SECONDARY:
         // wait the StartMsg
         if (this.isStartMSGReceived) {
 

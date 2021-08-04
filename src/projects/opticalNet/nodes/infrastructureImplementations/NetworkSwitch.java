@@ -142,24 +142,25 @@ public class NetworkSwitch extends Node {
 	//-----------------------------------------------------------------------------------
 	
 	private void updateInternalNodesPositions() {
-		double xCof = this.getPosition().xCoord - (this.width/2) + (this.internalNodeSize/2);
-		double yCof = this.getPosition().yCoord - (this.height/2) + (this.internalNodeSize/2);
+		double unitSize = this.height / (double)((6 * this.size) - 1);
+		double xCof = this.getPosition().xCoord - (this.width/2.0) + (this.internalNodeSize/2.0);
+		double yCof = this.getPosition().yCoord - (this.height/2.0) + (this.internalNodeSize/2.0);
 		for (int i = 0; i < this.size; ++i) {
-			this.inputNodes.get(i).setPosition(xCof, yCof + (6 * this.unitSize * i) ,0);
+			this.inputNodes.get(i).setPosition(xCof, yCof + (6 * unitSize * i) ,0);
 		}
 		
 		xCof = this.getPosition().xCoord + (this.width/2.0) - (this.internalNodeSize/2.0);
 		yCof = this.getPosition().yCoord - (this.height/2.0) + (this.internalNodeSize/2.0);
 		for (int i = 0; i < this.size; ++i) {
-			this.outputNodes.get(i).setPosition(xCof, yCof + (6 * this.unitSize * i) ,0);
+			this.outputNodes.get(i).setPosition(xCof, yCof + (6 * unitSize * i) ,0);
 		}
 	}
 	
 	public void setSwitchDimension(int width, int height) {
-		this.width = width;
 		this.height = height;
 		this.unitSize = this.height / ((6 * this.size) - 1); // unit used to construct internal nodes
 		this.internalNodeSize = 5 * this.unitSize;
+		this.width = Math.max(width, 4 * this.internalNodeSize);
 				
 		for (int i = 0; i < this.size; ++i) {
 			this.inputNodes.get(i).setDefaultDrawingSizeInPixels(this.internalNodeSize);
@@ -167,7 +168,7 @@ public class NetworkSwitch extends Node {
 		}
 		this.updateInternalNodesPositions();
 	}
-	
+		
 	// TODO: improve this method, separate into other methods
 	@Override
 	public void draw(Graphics g, PositionTransformation pt, boolean highlight) {

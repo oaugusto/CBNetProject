@@ -1,7 +1,5 @@
 package projects.opticalNet;
 
-import java.awt.Color;
-import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -15,7 +13,7 @@ import sinalgo.tools.Tuple;
 public class CustomGlobal extends AbstractCustomGlobal {
 
 	// simulation
-	public int numberOfNodes = 15;
+	public int numberOfNodes = 6;
 	public ArrayList<NetworkNode> nodes = null;
 	public NetworkManager networkManager = null;
 
