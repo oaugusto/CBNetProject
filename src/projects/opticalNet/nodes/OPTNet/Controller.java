@@ -81,7 +81,7 @@ public class Controller {
       this.mapConn(z, c, false);
     }
 
-    private void zigZigTopDown (Node z) {
+    private void zigZigLeftTopDown (Node z) {
       /*
                 *z                   y
                 / \                 /   \
@@ -91,14 +91,19 @@ public class Controller {
             / \
           a   b
       */
-      boolean leftZigZig = (z.getLeftChild() && y.getId() == z.getLeftChild().getId());
-      Node y = (leftZigZig) ? z.getLeftChild() : z.getRightChild();
-      Node c = (leftZigZig) ? y.getRightChild() : y.getLeftChild();
+      Node y = z.getLeftChild()
+      Node c = y.getRightChild()
+      this.mapConn(y, z, false);
+      this.mapConn(z, c, false);
+    }
+		private void zigZigRightTopDown (Node z) {
+      Node y = z.getRightChild();
+      Node c = y.getLeftChild();
       this.mapConn(y, z, false);
       this.mapConn(z, c, false);
     }
 
-    private void zigZagTopDown (Node z) {
+    private void zigZagLeftTopDown (Node z) {
       /*
               *z                     x
               / \        -->       /   \
@@ -108,17 +113,25 @@ public class Controller {
               / \
             b   c
       */
-      boolean leftZigZag = (z.getLeftChild() && y.getId() == z.getLeftChild().getId());
-      Node y = (leftZigZag) ? z.getLeftChild() : z.getRightChild();
-      Node x = (leftZigZag) ? y.getRightChild() : y.getLeftChild();
-      Node b = (leftZigZag) ? x.getLeftChild() : x.getRightChild();
-      Node c = (leftZigZag) ? x.getRightChild() : x.getLeftChild();
+      Node y = z.getLeftChild();
+      Node x = y.getRightChild();
+      Node b = x.getLeftChild();
+      Node c = x.getRightChild();
       this.mapConn(x, y, false);
       this.mapConn(x, z, false);
       this.mapConn(y, b, false);
       this.mapConn(z, c, false);
     }
-
+    private void zigZagRightTopDown (Node z) {
+      Node y = z.getRightChild();
+      Node x = y.getLeftChild();
+      Node b = x.getRightChild();
+      Node c = x.getLeftChild();
+      this.mapConn(x, y, false);
+      this.mapConn(x, z, false);
+      this.mapConn(y, b, false);
+      this.mapConn(z, c, false);
+    }
     /* End of Setters */
 
     /* Private Getters */
@@ -497,10 +510,16 @@ public class Controller {
               this.zigZagBottomUp(node);
               break;
           case 3:
-              this.zigZagTopDown(node);
+              this.zigZigLeftTopDown(node);
               break;
           case 4:
-              this.zigZagTopDown(node);
+              this.zigZigRightTopDown(node);
+              break;
+          case 5:
+              this.zigZagLeftTopDown(node);
+              break;
+          case 6:
+              this.zigZagRightTopDown(node);
               break;
           default:
               break;
