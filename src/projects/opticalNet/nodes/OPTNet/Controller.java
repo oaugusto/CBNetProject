@@ -147,9 +147,9 @@ public class Controller {
       /*
               y                   x
             /   \               /   \
-          x     c     -->     a     y
+           x     c     -->     a     y
           / \                       / \
-        a   b                     b   c
+        a   b                      b    c
       */
       // type of operation
       boolean leftZig = (y.getLeftChild() != null && x.getId() == y.getLeftChild().getId());
@@ -210,6 +210,8 @@ public class Controller {
 
       return deltaRank;
     }
+    
+
     private int getRotationToPerforme (Node x) {
       double maxDelta = 0;
       int operation = 0;
@@ -258,14 +260,7 @@ public class Controller {
       }
 
       /*top-down - BEGIN*/
-      if (x.getFather() != null && x.getFather().getFather() != null) {
-          Node y = x.getFather();
-          Node z = y.getFather();
-          if (x.getId() == y.getLeftChild().getId() && y.getId() == z.getLeftChild().getId()) {
-
-          }
-      }
-
+      
       if (x.getLeftChild() != null) {
           Node y = x.getLeftChild();
 
@@ -536,21 +531,23 @@ public class Controller {
     	Node node = this.tree.get(i);
         switch (getRotationToPerforme(node)) {
           case 1:
+          case 2:
               ret = this.zigZigBottomUp(node);
               break;
-          case 2:
+          case 3:
+          case 4:
               ret = this.zigZagBottomUp(node);
               break;
-          case 3:
+          case 5:
               ret = this.zigZigLeftTopDown(node);
               break;
-          case 4:
+          case 6:
               ret = this.zigZigRightTopDown(node);
               break;
-          case 5:
+          case 7:
               ret = this.zigZagLeftTopDown(node);
               break;
-          case 6:
+          case 8:
               ret = this.zigZagRightTopDown(node);
               break;
           default:
