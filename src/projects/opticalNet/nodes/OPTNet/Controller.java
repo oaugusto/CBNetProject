@@ -19,25 +19,6 @@ public class Controller {
     private static final int SIZE_CLUSTER_TYPE2 = 4;
 
     /* Setters */
-//    private void zigBottomUp (Node x) {
-//      /*
-//                z                 z
-//                /                 /
-//              y                *x
-//              / \               / \
-//            *x   c     -->     a   y
-//            / \                   / \
-//          a   b                 b   c
-//      */
-//      Node y = x.getFather();
-//      Node z = y.getFather();
-//      boolean leftZig = (x.getId() == y.getLeftChild().getId());
-//      Node b = (leftZig) ? x.getRightChild() : x.getLeftChild();
-//      this.mapConn(z, y, false);
-//      this.mapConn(x, y, false);
-//      this.mapConn(x, b, false);
-//    }
-
     private ArrayList<Alt> zigZigBottomUp (Node x) {
       /*
                 z                 *y
@@ -54,11 +35,11 @@ public class Controller {
       boolean leftZigZig = (y.getId() == z.getLeftChild().getId());
       Node c = (leftZigZig) ? y.getRightChild() : y.getLeftChild();
 
-			ArrayList<Alt> ret;
+	  ArrayList<Alt> ret = new ArrayList<>();
       ret.add(this.mapConn(y, z, false));
       ret.add(this.mapConn(z, c, false));
 
-			return ret;
+      return ret;
     }
 
     private ArrayList<Alt> zigZagBottomUp (Node x) {
@@ -80,14 +61,14 @@ public class Controller {
       Node b = (leftZigZag) ? x.getLeftChild() : x.getRightChild();
       Node c = (leftZigZag) ? x.getRightChild() : x.getLeftChild();
 
-			ArrayList<Alt> ret;
+      ArrayList<Alt> ret= new ArrayList<>();
       ret.add(this.mapConn(w, x, false));
       ret.add(this.mapConn(x, y, false));
       ret.add(this.mapConn(x, z, false));
       ret.add(this.mapConn(y, b, false));
       ret.add(this.mapConn(z, c, false));
 
-			return ret;
+      return ret;
     }
 
     private ArrayList<Alt> zigZigLeftTopDown (Node z) {
@@ -100,24 +81,25 @@ public class Controller {
             / \
           a   b
       */
-      Node y = z.getLeftChild()
-      Node c = y.getRightChild()
+      Node y = z.getLeftChild();
+      Node c = y.getRightChild();
 
-			ArrayList<Alt> ret;
+      ArrayList<Alt> ret = new ArrayList<>();
       ret.add(this.mapConn(y, z, false));
       ret.add(this.mapConn(z, c, false));
 
-			return ret;
+      return ret;
     }
-		private ArrayList<Alt> zigZigRightTopDown (Node z) {
+
+    private ArrayList<Alt> zigZigRightTopDown (Node z) {
       Node y = z.getRightChild();
       Node c = y.getLeftChild();
 
-			ArrayList<Alt> ret;
+      ArrayList<Alt> ret = new ArrayList<>();
       ret.add(this.mapConn(y, z, false));
       ret.add(this.mapConn(z, c, false));
 
-			return ret;
+      return ret;
     }
 
     private ArrayList<Alt> zigZagLeftTopDown (Node z) {
@@ -135,27 +117,28 @@ public class Controller {
       Node b = x.getLeftChild();
       Node c = x.getRightChild();
 
-			ArrayList<Alt> ret;
+      ArrayList<Alt> ret = new ArrayList<>();
       ret.add(this.mapConn(x, y, false));
       ret.add(this.mapConn(x, z, false));
       ret.add(this.mapConn(y, b, false));
       ret.add(this.mapConn(z, c, false));
 
-			return ret;
+      return ret;
     }
+
     private ArrayList<Alt> zigZagRightTopDown (Node z) {
       Node y = z.getRightChild();
       Node x = y.getLeftChild();
       Node b = x.getRightChild();
       Node c = x.getLeftChild();
 
-			ArrayList<Alt> ret;
+      ArrayList<Alt> ret = new ArrayList<>();
       ret.add(this.mapConn(x, y, false));
       ret.add(this.mapConn(x, z, false));
       ret.add(this.mapConn(y, b, false));
       ret.add(this.mapConn(z, c, false));
 
-			return ret;
+      return ret;
     }
     /* End of Setters */
 
@@ -169,7 +152,7 @@ public class Controller {
         a   b                     b   c
       */
       // type of operation
-      boolean leftZig = (y.getLeftChild() && x.getId() == y.getLeftChild().getId());
+      boolean leftZig = (y.getLeftChild() != null && x.getId() == y.getLeftChild().getId());
 
       Node b = (leftZig) ? x.getRightChild() : x.getLeftChild();
 
@@ -200,7 +183,7 @@ public class Controller {
             / \
             b   c
       */
-      boolean lefZigZag = (z.getLeftChild() && y.getId() == z.getLeftChild().getId());
+      boolean lefZigZag = (z.getLeftChild() != null && y.getId() == z.getLeftChild().getId());
 
       Node b = lefZigZag ? x.getLeftChild() : x.getRightChild();
       Node c = lefZigZag ? x.getRightChild() : x.getLeftChild();
@@ -236,8 +219,8 @@ public class Controller {
       {
           Node y = x.getFather();
           Node z = y.getFather();
-          if (y.getLeftChild() && x.getId() == y.getLeftChild().getId() &&
-              z.getLeftChild() && y.getId() == z.getLeftChild().getId()) {
+          if (y.getLeftChild() != null && x.getId() == y.getLeftChild().getId() &&
+              z.getLeftChild() != null && y.getId() == z.getLeftChild().getId()) {
               // zigzigLeft
               double aux = zigDiffRank(y, z);
               if (aux > maxDelta) {
@@ -245,8 +228,8 @@ public class Controller {
                   operation = 1;
               }
           } else
-          if (y.getRightChild() && x.getId() == y.getRightChild().getId() &&
-              z.getRightChild() && y.getId() == z.getRightChild().getId()) {
+          if (y.getRightChild() != null && x.getId() == y.getRightChild().getId() &&
+              z.getRightChild() != null && y.getId() == z.getRightChild().getId()) {
               // zigzigRight
               double aux = zigDiffRank(y, z);
               if (aux > maxDelta) {
@@ -254,8 +237,8 @@ public class Controller {
                   operation = 2;
               }
           } else
-          if (y.getRightChild() && x.getId() == y.getRightChild().getId() &&
-              z.getLeftChild() && y.getId() == z.getLeftChild().getId()) {
+          if (y.getRightChild() != null && x.getId() == y.getRightChild().getId() &&
+              z.getLeftChild() != null && y.getId() == z.getLeftChild().getId()) {
               // zigzagLeft
               double aux = zigZagDiffRank(x, y, z);
               if (aux > maxDelta) {
@@ -263,8 +246,8 @@ public class Controller {
                   operation = 3;
               }
           } else
-          if (y.getLeftChild() && x.getId() == y.getLeftChild().getId() &&
-              z.getRightChild() && y.getId() == z.getRightChild().getId()) {
+          if (y.getLeftChild() != null && x.getId() == y.getLeftChild().getId() &&
+              z.getRightChild() != null && y.getId() == z.getRightChild().getId()) {
               // zigzagRight
               double aux = zigZagDiffRank(x, y, z);
               if (aux > maxDelta) {
@@ -283,11 +266,11 @@ public class Controller {
           }
       }
 
-      if (x.getLeftChild()) {
+      if (x.getLeftChild() != null) {
           Node y = x.getLeftChild();
 
           // zigzig left top-down
-          if (y.getLeftChild()) {
+          if (y.getLeftChild() != null) {
               Node z = y.getLeftChild();
               double aux = zigDiffRank(y, z);
               if (aux > maxDelta) {
@@ -297,7 +280,7 @@ public class Controller {
           }
 
           // zigzag left top-down
-          if (y.getRightChild()) {
+          if (y.getRightChild() != null) {
               Node z = y.getRightChild();
               double aux = zigDiffRank(y, z);
               if (aux > maxDelta) {
@@ -307,11 +290,11 @@ public class Controller {
           }
       }
 
-      if (x->getRightChild()) {
+      if (x.getRightChild() != null) {
           Node y = x.getRightChild();
 
           // zigzig right top-down
-          if (y.getRightChild()) {
+          if (y.getRightChild() != null) {
               Node z = y.getRightChild();
               double aux = zigDiffRank(y, z);
               if (aux > maxDelta) {
@@ -321,8 +304,8 @@ public class Controller {
           }
 
           // zigzag right top-down
-          if (y.getleftChild()) {
-              Node z = y.getlefttChild();
+          if (y.getLeftChild() != null) {
+              Node z = y.getLeftChild();
               double aux = zigDiffRank(y, z);
               if (aux > maxDelta) {
                   maxDelta = aux;
@@ -414,23 +397,23 @@ public class Controller {
       return this.switchSize;
     }
 
-		ArrayList<Alt> getTreeConfiguration () {
-			ArrayList<Alt> ret;
+	ArrayList<Alt> getTreeConfiguration () {
+		ArrayList<Alt> ret = new ArrayList<>();
 
-			for (int i = 0; i < this.numNodes; i++) {
-				Node node = this.tree.get(i);
-				if (node.getLeftChild()) {
-					Node child = node.getLeftChild();
-					ret.add(this.getSwitchId(node.getId(), child.getId()), node.getId(), child.getId());
-				}
-				if (node.getRightChild()) {
-					Node child = node.getRightChild();
-					ret.add(this.getSwitchId(node.getId(), child.getId()), node.getId(), child.getId());
-				}
+		for (int i = 0; i < this.numNodes; i++) {
+			Node node = this.tree.get(i);
+			if (node.getLeftChild() != null) {
+				Node child = node.getLeftChild();
+				ret.add(new Alt(this.getSwitchId(this.tree.get(node.getId()), this.tree.get(child.getId())), node.getId(), child.getId()));
 			}
-
-			return ret;
+			if (node.getRightChild() != null) {
+				Node child = node.getRightChild();
+				ret.add(new Alt(this.getSwitchId(this.tree.get(node.getId()), this.tree.get(child.getId())), node.getId(), child.getId()));
+			}
 		}
+
+		return ret;
+	}
 
     Node getNode (int nodeId) {
       return this.tree.get(nodeId);
@@ -520,6 +503,7 @@ public class Controller {
 			return new Alt(swtId, fromNode.getId(), toNode.getId());
     }
     /* End of Setters */
+
     /* Auxiliary Functions */
     int unionPos (int clsId1, int clsId2) {
       /*
@@ -544,8 +528,9 @@ public class Controller {
       );
       return apSum + clsId2 - clsId1 - 1;
     }
+
     ArrayList<Alt> updateConnections () {
-			ArrayList<Alt> ret;
+      ArrayList<Alt> ret = new ArrayList<>();
 
       for (int i = 0; i < this.numNodes; i++) {
     	Node node = this.tree.get(i);
@@ -573,7 +558,7 @@ public class Controller {
         }
       }
 
-			return ret;
+      return ret;
     }
     // void debug (void) //
 
