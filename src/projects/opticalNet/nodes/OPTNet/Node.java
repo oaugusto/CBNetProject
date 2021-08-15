@@ -13,13 +13,13 @@ public class Node {
     	this.minId = this.id;
     	this.maxId = this.id;
     }
- 
+
     Node (int dummy) {
     	this.id = dummy;
     	this.minId = this.id;
     	this.maxId = this.id;
     }
-    
+
     Node (Node father, Node leftChild, Node rightChild) {
     	this.id = ID++;
     	this.father = father;
@@ -29,44 +29,44 @@ public class Node {
     	this.maxId = this.rightChild.getId() == -1 ? this.getId() : this.rightChild.getId();
     }
     /* End of Constructors */
-    
+
     /* Getters */
     int getId () {
         return this.id;
     }
-    
+
     Node getFather () {
         return this.father;
     }
-    
+
     Node getLeftChild () {
         return this.leftChild;
     }
-    
+
     Node getRightChild () {
         return this.rightChild;
     }
-    
+
     int getLeftSwitch () {
         return this.leftSwitch;
     }
-    
+
     int getRightSwitch () {
         return this.rightSwitch;
     }
-    
+
     int getMinId () {
         return this.minId;
     }
-    
+
     int getMaxId () {
         return this.maxId;
     }
-    
+
     int getWeight () {
         return this.weight;
     }
-    
+
     /* End of Getters */
     /* Setters */
     void setFather (Node father) {
@@ -75,7 +75,7 @@ public class Node {
 
         this.father = father;
     }
-    
+
     int setLeftChild (Node child, int switchId /*= -1*/) {
         if (this.getId() == -1)
             return -1;
@@ -90,7 +90,7 @@ public class Node {
 
         return switchId;
     }
-    
+
     int setRightChild (Node child, int switchId /*= -1*/) {
         if (this.getId() == -1)
             return -1;
@@ -105,7 +105,7 @@ public class Node {
 
         return switchId;
     }
-    
+
     void resetNode (Node rstNode) {
         if (this.getId() == -1)
             return;
@@ -119,7 +119,7 @@ public class Node {
             this.father = null;
         }
     }
-    
+
     void updateMinMax (Node child, boolean remove /*= false*/) {
         if (remove) {
             if (child.getId() > this.getId())
@@ -139,16 +139,16 @@ public class Node {
             }
         }
     }
-    
+
     void setMinId (int minId) {
         this.minId = minId;
     }
-    
+
     void setMaxId (int maxId) {
         this.maxId = maxId;
     }
     /* End of Setters */
-	
+
 	/* Attributes */
     Node father;
     Node leftChild;
@@ -161,9 +161,9 @@ public class Node {
     private int maxId = -1;
 
     private int weight = 0;
-	
+
 	private int id = 0;
 	private static int ID = 0;
 	/* End of Attributes */
-	
+
 }

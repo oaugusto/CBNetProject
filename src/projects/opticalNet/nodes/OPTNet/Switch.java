@@ -9,7 +9,7 @@ public class Switch {
 	ArrayList<Conn> getRConnections () {
 	    return this.rConnections;
 	}
-	
+
 	Conn getRConnection (int toNode) {
 	    return this.rConnections.get(this.rNodesIds.get(toNode));
 	}
@@ -31,7 +31,7 @@ public class Switch {
 	        );
 	    }
 	}
-	
+
 	Switch (int minId1, int maxId1, int minId2, int maxId2) {
 		this.id = ID++;
 	    int halfSize = maxId1 - minId1 + 1;
@@ -52,20 +52,20 @@ public class Switch {
 	int getId () {
 	    return this.id;
 	}
-	
+
 	ArrayList<Conn> getConnections () {
 	    return this.connections;
 	}
-	
+
 	Conn getConnection (int fromNode) {
 	    return this.connections.get(this.nodesIds.get(fromNode));
 	}
-	
+
 	int getSize () {
 	    return this.nodesIds.size() * 2;
 	}
 	/* End of Getters */
-	
+
 	/* Setters */
 	void updateConn (int fromNode, int toNode, boolean dummy  /*=false*/) {
 	    int oldTo = this.getConnection(fromNode).getToNode();
@@ -79,7 +79,7 @@ public class Switch {
 	    this.getConnection(fromNode).setConnection(toNode, dummy);
 	    this.getRConnection(toNode).setConnection(fromNode, dummy);
 	}
-	
+
 	void removeConn (int fromNode){
 	    int toNode = this.getConnection(fromNode).getToNode();
 
@@ -87,7 +87,7 @@ public class Switch {
 	    this.getRConnection(toNode).removeConnection();
 	}
 	/* End of Setters */
-	
+
 	/* Attributes */
     private static int ID = 0;
     private int id;
