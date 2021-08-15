@@ -414,6 +414,24 @@ public class Controller {
       return this.switchSize;
     }
 
+		ArrayList<Alt> getTreeConfiguration () {
+			ArrayList<Alt> ret;
+
+			for (int i = 0; i < this.numNodes; i++) {
+				Node node = this.tree.get(i);
+				if (node.getLeftChild()) {
+					Node child = node.getLeftChild();
+					ret.add(this.getSwitchId(node.getId(), child.getId()), node.getId(), child.getId());
+				}
+				if (node.getRightChild()) {
+					Node child = node.getRightChild();
+					ret.add(this.getSwitchId(node.getId(), child.getId()), node.getId(), child.getId());
+				}
+			}
+
+			return ret;
+		}
+
     Node getNode (int nodeId) {
       return this.tree.get(nodeId);
     }
