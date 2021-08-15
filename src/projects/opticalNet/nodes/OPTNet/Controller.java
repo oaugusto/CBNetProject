@@ -1,5 +1,7 @@
 package projects.opticalNet.nodes.OPTNet;
 
+import java.util.ArrayList;
+
 public class Controller {
 
     /* Attributes */
@@ -17,24 +19,25 @@ public class Controller {
     private static final int SIZE_CLUSTER_TYPE2 = 4;
 
     /* Setters */
-    private void zigBottomUp (Node x) {
-      /*
-                z                 z
-                /                 /
-              y                *x
-              / \               / \
-            *x   c     -->     a   y
-            / \                   / \
-          a   b                 b   c
-      */
-      Node y = x.getFather();
-      Node z = y.getFather();
-      boolean leftZig = (x.getId() == y.getLeftChild().getId());
-      Node b = (leftZig) ? x.getRightChild() : x.getLeftChild();
-      this.mapConn(z, y, false);
-      this.mapConn(x, y, false);
-      this.mapConn(x, b, false);
-    }
+//    private void zigBottomUp (Node x) {
+//      /*
+//                z                 z
+//                /                 /
+//              y                *x
+//              / \               / \
+//            *x   c     -->     a   y
+//            / \                   / \
+//          a   b                 b   c
+//      */
+//      Node y = x.getFather();
+//      Node z = y.getFather();
+//      boolean leftZig = (x.getId() == y.getLeftChild().getId());
+//      Node b = (leftZig) ? x.getRightChild() : x.getLeftChild();
+//      this.mapConn(z, y, false);
+//      this.mapConn(x, y, false);
+//      this.mapConn(x, b, false);
+//    }
+
     private void zigZigBottomUp (Node x) {
       /*
                 z                 *y
@@ -52,6 +55,7 @@ public class Controller {
       this.mapConn(y, z, false);
       this.mapConn(z, c, false);
     }
+
     private void zigZagBottomUp (Node x) {
       /*
                 w                 w
@@ -76,6 +80,7 @@ public class Controller {
       this.mapConn(y, b, false);
       this.mapConn(z, c, false);
     }
+
     private void zigZigTopDown (Node z) {
       /*
                 *z                   y
@@ -92,6 +97,7 @@ public class Controller {
       this.mapConn(y, z, false);
       this.mapConn(z, c, false);
     }
+
     private void zigZagTopDown (Node z) {
       /*
               *z                     x
@@ -112,6 +118,7 @@ public class Controller {
       this.mapConn(y, b, false);
       this.mapConn(z, c, false);
     }
+
     /* End of Setters */
 
     /* Private Getters */
@@ -136,10 +143,10 @@ public class Controller {
       long yNewWeight = yOldWeight - xOldWeight + bWeight;
       long xNewWeight = xOldWeight - bWeight + yNewWeight;
 
-      double xOldRank = (xOldWeight == 0) ? 0 : log2(xOldWeight);
-      double yOldRank = (yOldWeight == 0) ? 0 : log2(yOldWeight);
-      double xNewRank = (xNewWeight == 0) ? 0 : log2(xNewWeight);
-      double yNewRank = (yNewWeight == 0) ? 0 : log2(yNewWeight);
+      double xOldRank = (xOldWeight == 0) ? 0 : Math.log(xOldWeight);
+      double yOldRank = (yOldWeight == 0) ? 0 : Math.log(yOldWeight);
+      double xNewRank = (xNewWeight == 0) ? 0 : Math.log(xNewWeight);
+      double yNewRank = (yNewWeight == 0) ? 0 : Math.log(yNewWeight);
 
       double deltaRank = yNewRank + xNewRank - yOldRank - xOldRank;
 
@@ -171,12 +178,12 @@ public class Controller {
       long zNewWeight = zOldWeight - yOldWeight + cWeight;
       long xNewWeight = xOldWeight - bWeight - cWeight + yNewWeight + zNewWeight;
 
-      double xOldRank = (xOldWeight == 0) ? 0 : log2(xOldWeight);
-      double yOldRank = (yOldWeight == 0) ? 0 : log2(yOldWeight);
-      double zOldRank = (zOldWeight == 0) ? 0 : log2(zOldWeight);
-      double xNewRank = (xNewWeight == 0) ? 0 : log2(xNewWeight);
-      double yNewRank = (yNewWeight == 0) ? 0 : log2(yNewWeight);
-      double zNewRank = (zNewWeight == 0) ? 0 : log2(zNewWeight);
+      double xOldRank = (xOldWeight == 0) ? 0 : Math.log(xOldWeight);
+      double yOldRank = (yOldWeight == 0) ? 0 : Math.log(yOldWeight);
+      double zOldRank = (zOldWeight == 0) ? 0 : Math.log(zOldWeight);
+      double xNewRank = (xNewWeight == 0) ? 0 : Math.log(xNewWeight);
+      double yNewRank = (yNewWeight == 0) ? 0 : Math.log(yNewWeight);
+      double zNewRank = (zNewWeight == 0) ? 0 : Math.log(zNewWeight);
 
       double deltaRank = xNewRank + yNewRank + zNewRank - xOldRank - yOldRank - zOldRank;
 
@@ -291,8 +298,8 @@ public class Controller {
     /* End of Private Getters */
 
     /* Constructors */
-    ControllerNode (
-        int _numNodes, int _switchSize, ArrayList<int> edgeList
+    Controller (
+        int _numNodes, int _switchSize, ArrayList<Integer> edgeList
     ) {
       /*
           Clusters of Type 1 can represent up to half of the switch size nodes
@@ -312,65 +319,65 @@ public class Controller {
       );
 
       for (int nodeId = 0; nodeId < this.numNodes; nodeId++) {
-          this.tree.push_back(new Node());
+          this.tree.add(new Node());
       }
 
       // Adding all Switches of Type 1
       for (int clsId = 0; clsId < this.numClusters; clsId++) {
-          Switch swt(clsId * this.clusterSize, (clsId + 1) * this.clusterSize - 1);
-          this.switches.push_back(swt);
-          this.switches.push_back(swt);
-          this.switches.push_back(swt);
-          this.switches.push_back(swt);
+          Switch swt = new Switch(clsId * this.clusterSize, (clsId + 1) * this.clusterSize - 1);
+          this.switches.add(swt);
+          this.switches.add(swt);
+          this.switches.add(swt);
+          this.switches.add(swt);
       }
       // Adding all Switches of Type 2
       for (int clsId1 = 0; clsId1 < this.numClusters; clsId1++) {
           for (int clsId2 = clsId1 + 1; clsId2 < this.numClusters; clsId2++) {
-              Switch swt(
+              Switch swt = new Switch(
                   clsId1 * this.clusterSize, (clsId1 + 1) * this.clusterSize - 1,
                   clsId2 * this.clusterSize, (clsId2 + 1) * this.clusterSize - 1
               );
-              Switch swt2 = Switch(
+              Switch swt2 = new Switch(
                   clsId2 * this.clusterSize, (clsId2 + 1) * this.clusterSize - 1,
                   clsId1 * this.clusterSize, (clsId1 + 1) * this.clusterSize - 1
               );
 
-              this.switches.push_back(swt);
-              this.switches.push_back(swt2);
-              this.switches.push_back(swt2);
-              this.switches.push_back(swt);
+              this.switches.add(swt);
+              this.switches.add(swt2);
+              this.switches.add(swt2);
+              this.switches.add(swt);
           }
       }
 
       for (int i = 0; i < this.numNodes; i++) {
-          if (edgeList[i] != -1)
-            this.mapConn(edgeList[i], i, false);
+          if (edgeList.get(i) != -1)
+            this.mapConn(this.tree.get(edgeList.get(i)), this.tree.get(i), false);
       }
     };
     /* End of Constructors */
 
     /* Getters */
-    int getNumNodes (void) {
+    int getNumNodes () {
       return this.numNodes;
     }
-    int getNumSwitches (void) {
+    int getNumSwitches () {
       return this.numSwitches;
     }
-    int getNumClusters (void) {
+    int getNumClusters () {
       return this.numClusters;
     }
-    int getNumUnionClusters (void) {
+    int getNumUnionClusters () {
       return this.numUnionClusters;
     }
-    int getClusterSize (void) {
+    int getClusterSize () {
       return this.clusterSize;
     }
-    int getSwitchSize (void) {
+    int getSwitchSize () {
       return this.switchSize;
     }
 
     Node getNode (int nodeId) {
-      return this.tree[nodeId];
+      return this.tree.get(nodeId);
     }
     Conn getConnection (Node fromNode, Node toNode) {
         return this.getSwitch(fromNode, toNode).getConnection(fromNode.getId());
@@ -421,14 +428,14 @@ public class Controller {
           ) * SIZE_CLUSTER_TYPE2
       );
 
-      return previousSwitches + 2 * (fromNode.getId() > toNode.getId());
+      return previousSwitches + 2 * (fromNode.getId() > toNode.getId() ? 1 : 0);
     }
 
     Switch getSwitch (Node fromNode, Node toNode) {
-      return this.switches[this.getSwitchId(fromNode, toNode)];
+      return this.switches.get(this.getSwitchId(fromNode, toNode));
     }
     Switch getSwitch (int switchId) {
-      return this.switches[switchId];
+      return this.switches.get(switchId);
     }
 
     boolean areSameCluster (Node node1, Node node2) {
@@ -463,8 +470,11 @@ public class Controller {
           and add to the result the distance between clsId1 to clsId2.
       */
 
-      if (clsId1 > clsId2)
-          std::swap(clsId1, clsId2);
+      if (clsId1 > clsId2) {
+    	  int aux = clsId1;
+    	  clsId1 = clsId2;
+    	  clsId2 = aux;
+      }
       // AP(n) = ((a0 + an) * n) / 2
       // a0 = NUM_CLUSTERS - 1
       // an = NUM_CLUSTER - 1 - clsId1 + 1
@@ -476,8 +486,9 @@ public class Controller {
       );
       return apSum + clsId2 - clsId1 - 1;
     }
-    void updateConnections (void) {
-      for (const auto& node : this.tree) {
+    void updateConnections () {
+      for (int i = 0; i < this.numNodes; i++) {
+    	Node node = this.tree.get(i);
         switch (getRotationToPerforme(node)) {
           case 1:
               this.zigZigBottomUp(node);
