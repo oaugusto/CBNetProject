@@ -14,6 +14,8 @@ public class NetworkManager {
 	private NetworkSwitch rightSwitchInput = null;
 	private NetworkSwitch rightSwitchOutput = null;
 	
+//	private NetworkController net
+	
 	public NetworkManager(int numberOfNodes) {	
 		this.numberOfNodes = numberOfNodes;
 		

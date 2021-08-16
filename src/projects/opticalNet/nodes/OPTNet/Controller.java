@@ -314,7 +314,7 @@ public class Controller {
     /* End of Private Getters */
 
     /* Constructors */
-    Controller (
+    public Controller (
         int _numNodes, int _switchSize, ArrayList<Integer> edgeList
     ) {
       /*
