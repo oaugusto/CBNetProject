@@ -12,43 +12,43 @@ import sinalgo.gui.transformation.PositionTransformation;
 
 public class NetworkNode extends SynchronizerLayer {
 	private ArrayList<InputNode> interfaces = new ArrayList<>();
-	
+
 	private InputNode parent = null;
 	private InputNode leftChild = null;
 	private InputNode rightChild = null;
-	
+
 	private int minIdInSubtree = 0;
 	private int maxIdInSubtree = 0;
-	
+
 	public void connectToInputNode(InputNode node) {
 		this.interfaces.add(node);
 		this.addConnectionTo(node);
 	}
-	
+
 	public void setParent(InputNode node) {
 		this.parent = node;
 	}
-	
+
 	public InputNode getParent() {
 		return this.parent;
 	}
-	
+
 	public void setLeftChild(InputNode node) {
 		this.leftChild = node;
 	}
-	
+
 	public InputNode getLeftChild() {
 		return this.leftChild;
 	}
-	
+
 	public void setRightChild(InputNode node) {
 		this.rightChild = node;
 	}
-	
+
 	public void setMinIdInSubtree(int value) {
 		this.minIdInSubtree = value;
 	}
-	
+
 	public int getMinIdInSubtree() {
 		return this.minIdInSubtree;
 	}
@@ -56,16 +56,20 @@ public class NetworkNode extends SynchronizerLayer {
 	public void setMaxIdInSubtree(int value) {
 		this.maxIdInSubtree = value;
 	}
-	
+
 	public int getMaxIdInSubtree() {
 		return this.maxIdInSubtree;
 	}
-	
+
+	public int getId() {
+		return this.ID;
+	}
+
 	@Override
 	public void init() {
 		super.init();
 	}
-	
+
 	@Override
 	public void handleMessages(Inbox inbox) {
 		while (inbox.hasNext()) {
@@ -88,7 +92,7 @@ public class NetworkNode extends SynchronizerLayer {
 	        }
 		}
 	}
-		
+
 	@Override
 	public void draw(Graphics g, PositionTransformation pt, boolean highlight) {
 		String text = "" + ID;
