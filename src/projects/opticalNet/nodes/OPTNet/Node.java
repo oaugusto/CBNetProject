@@ -5,9 +5,9 @@ import java.util.Collections;
 public class Node {
 
 	/* Attributes */
-    Node father;
-    Node leftChild;
-    Node rightChild;
+    Node father = null;
+    Node leftChild = null;
+    Node rightChild = null;
 
     private int minId = -1;
     private int maxId = -1;
@@ -21,9 +21,9 @@ public class Node {
 	/* Constructors */
     public Node () {
     	this.id = ID++;
-    	this.father = null;
-    	this.leftChild = null;
-    	this.rightChild = null;
+    	this.father = new Node(-1);
+    	this.leftChild = new Node(-1);
+    	this.rightChild = new Node(-1);
     	this.minId = this.id;
     	this.maxId = this.id;
     }

@@ -62,7 +62,7 @@ public class NetworkSwitch extends Node {
             inNode.finishInitializationWithDefaultModels(true);
             inNode.setIndex(minId + i);
 
-            NetworkNode node = netNodes.get(minId + 1);
+            NetworkNode node = netNodes.get(minId + i - 1);
             node.connectToInputNode(inNode);
             inNode.connectToNode(node);
 
@@ -76,7 +76,7 @@ public class NetworkSwitch extends Node {
             outNode.finishInitializationWithDefaultModels(true);
             outNode.setIndex(minId + i);
 
-            NetworkNode node = netNodes.get(minId + i);
+            NetworkNode node = netNodes.get(minId + i - 1);
             outNode.connectToNode(node);
 
             this.outputNodes.add(outNode);
@@ -108,7 +108,7 @@ public class NetworkSwitch extends Node {
             inNode.finishInitializationWithDefaultModels(true);
             inNode.setIndex(minId1 + i);
 
-            NetworkNode node = netNodes.get(minId1 + 1);
+            NetworkNode node = netNodes.get(minId1 + i - 1);
             node.connectToInputNode(inNode);
             inNode.connectToNode(node);
 
@@ -122,7 +122,7 @@ public class NetworkSwitch extends Node {
             outNode.finishInitializationWithDefaultModels(true);
             outNode.setIndex(minId2 + i);
 
-            NetworkNode node = netNodes.get(minId2 + i);
+            NetworkNode node = netNodes.get(minId2 + i - 1);
             outNode.connectToNode(node);
 
             this.outputNodes.add(outNode);
@@ -140,9 +140,6 @@ public class NetworkSwitch extends Node {
 
     // connect the input in to the output out changing old connections
     public void connectNodes(int in, int out) {
-        if (in > this.size || out > this.size) {
-            Tools.fatalError("ID out of the valid range");
-        }
         InputNode inNode = this.inputId2Node.get(in);
         OutputNode outNode = this.outputId2Node.get(out);
         // update old connection to out node
@@ -248,7 +245,8 @@ public class NetworkSwitch extends Node {
 
         int internalNodeSize = (int)(this.internalNodeSize * pt.getZoomFactor());
         // Set the font
-        String text_in = "In";
+//        String text_in = "In";
+        String text_in = this.index + "";
         int fontSize = (int) (internalNodeSize * 0.5);
         Font font = new Font(null, 0, (int) (fontSize));
         g.setFont(font);

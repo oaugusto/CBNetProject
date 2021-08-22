@@ -2,8 +2,8 @@
 <sinalgo>
 	<ProjectSelector windowWidth="600" windowHeight="400" lastChosenProject="opticalNet" windowPosX="655" windowPosY="198" isMaximized="false" selectedTab="1" />
 	<GUI windowWidth="800" windowHeight="558" windowPosX="1068" windowPosY="42" isMaximized="true" ControlPanelExpandSimulation="true" ControlPanelShowFullViewPanel="true" ControlPanelShowTextPanel="true" ControlPanelShowProjectControl="true" RunOperationIsLimited="true" helpWindowWidth="500" helpWindowHeight="500" helpWindowPosX="200" helpWindowPosY="200" helpWindowIsMaximized="false" />
-	<RandomSeed seedFromPreviousRun="6460944720364821943" />
-	<App lastSelectedFileDirectory="" checkForUpdatesAtStartup="true" updateCheckTimeStamp="1629054794200" runCmdLineArgs="" />
+	<RandomSeed seedFromPreviousRun="-4673469977995612075" />
+	<App lastSelectedFileDirectory="" checkForUpdatesAtStartup="true" updateCheckTimeStamp="1629657041059" runCmdLineArgs="" />
 	<GenNodesDlg numNodes="100" />
 </sinalgo>
 
