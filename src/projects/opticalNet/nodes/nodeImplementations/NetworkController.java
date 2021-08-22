@@ -35,7 +35,7 @@ public class NetworkController extends SynchronizerLayer {
     	this.tree = new ArrayList<>();
     	this.switches = new ArrayList<>();
     	this.netNodes = netNodes;
-    	
+
     	this.clusterSize = this.switchSize / 2;
         this.numClusters = (this.numNodes - this.clusterSize + 1) / this.clusterSize + 1;
         this.numUnionClusters = (
@@ -120,7 +120,7 @@ public class NetworkController extends SynchronizerLayer {
 
         this.setup(edgeList);
     }
-    
+
     @Override
     public void init() {
         super.init();
@@ -541,11 +541,10 @@ public class NetworkController extends SynchronizerLayer {
     /* Setters */
     Alt mapConn (Node fromNode, Node toNode) {
         int swtId = this.getSwitchId(fromNode, toNode);
+        int subtreeId = fromNode.setChild(toNode) + 1;
 
-        fromNode.setChild(toNode);
-
-        this.getSwitch(swtId).connectNodes(fromNode.getId() + 1, toNode.getId() + 1);
-        this.getSwitch(swtId + 1).connectNodes(toNode.getId() + 1, fromNode.getId() + 1);
+        this.getSwitch(swtId).updateSwitch(fromNode.getId() + 1, toNode.getId() + 1);
+        this.getSwitch(swtId + 1).updateSwitch(toNode.getId() + 1, fromNode.getId() + 1, subtreeId);
 
         return new Alt(swtId, fromNode.getId() + 1, toNode.getId() + 1);
     }
@@ -629,7 +628,7 @@ public class NetworkController extends SynchronizerLayer {
         // draw the node as a circle with the text inside
         super.drawNodeAsDiskWithText(g, pt, highlight, text, 12, Color.YELLOW);
     }
-    
+
     public void renderTopology(int width, int height) {
 		// set network nodes position
 		double x_space = width / 4.0;
@@ -638,7 +637,7 @@ public class NetworkController extends SynchronizerLayer {
 			NetworkNode n = this.netNodes.get(i);
 			n.setPosition(x_space, y_space * (i+1), 0);
 		}
-		
+
 		//set network switches position
 		int unit = height / ((6 * this.numSwitches) + 1);
 		int switch_height = 5 * unit;
@@ -656,7 +655,7 @@ public class NetworkController extends SynchronizerLayer {
 			n.setPosition(3 * x_space, (i + 1) * 5 * unit, 0);
 			n.setSwitchDimension(switch_height/3, switch_height);
 		}
-		
+
 		// set controller node position
 		this.setPosition(4 * x_space, height / 2, 0);
 	}
