@@ -463,10 +463,6 @@ public class NetworkController extends SynchronizerLayer {
         return this.tree.get(nodeId);
     }
 
-    NetworkSwitch getSwitch (int switchId) {
-        return this.switches.get(switchId);
-    }
-
     int getClusterId (NetworkNode fromNode, NetworkNode toNode) {
         /*
                 The clusterId of two nodes in the same cluster is calculated
@@ -575,11 +571,11 @@ public class NetworkController extends SynchronizerLayer {
         return apSum + clsId2 - clsId1 - 1;
     }
 
-    ArrayList<Alt> updateConnections () {
+    ArrayList<Alt> updateConn () {
         ArrayList<Alt> ret = new ArrayList<>();
 
         for (int i = 0; i < this.numNodes; i++) {
-        Node node = this.tree.get(i);
+        	Node node = this.tree.get(i);
             switch (getRotationToPerforme(node)) {
                 case 1:
                 case 2:

@@ -62,7 +62,7 @@ public class NetworkSwitch extends Node {
             inNode.finishInitializationWithDefaultModels(true);
             inNode.setIndex(minId + i);
 
-            NetworkNode node = this.tree.get(minId + 1);
+            NetworkNode node = tree.get(minId + 1);
             node.connectToInputNode(inNode);
             inNode.connectToNode(node);
 
@@ -76,7 +76,7 @@ public class NetworkSwitch extends Node {
             outNode.finishInitializationWithDefaultModels(true);
             outNode.setIndex(minId + i);
 
-            NetworkNode node = this.tree.get(minId + i);
+            NetworkNode node = tree.get(minId + i);
             outNode.connectToNode(node);
 
             this.outputNodes.add(outNode);
@@ -108,7 +108,7 @@ public class NetworkSwitch extends Node {
             inNode.finishInitializationWithDefaultModels(true);
             inNode.setIndex(minId1 + i);
 
-            NetworkNode node = this.tree.get(minId1 + 1);
+            NetworkNode node = tree.get(minId1 + 1);
             node.connectToInputNode(inNode);
             inNode.connectToNode(node);
 
@@ -122,7 +122,7 @@ public class NetworkSwitch extends Node {
             outNode.finishInitializationWithDefaultModels(true);
             outNode.setIndex(minId2 + i);
 
-            NetworkNode node = this.tree.get(minId2 + i);
+            NetworkNode node = tree.get(minId2 + i);
             outNode.connectToNode(node);
 
             this.outputNodes.add(outNode);
