@@ -82,20 +82,21 @@ public class Node {
         this.father = father;
     }
 
-    public void setChild (Node child) {
+    public int setChild (Node child) {
         if (child.getId() == -1) {
             if (this.getLeftChild().getId() == -1)
-                this.setLeftChild(child);
+                return this.setLeftChild(child);
             else
-                this.setRightChild(child);
+                return this.setRightChild(child);
+
         } else if (this.getId() > child.getId()) {
-            this.setLeftChild(child);
+            return this.setLeftChild(child);
         } else {
-            this.setRightChild(child);
+            return this.setRightChild(child);
         }
     }
 
-    public void setLeftChild (Node child) {
+    public int setLeftChild (Node child) {
         if (this.getId() == -1)
             return;
 
@@ -104,7 +105,7 @@ public class Node {
 
         this.leftChild = child;
         this.leftChild.setFather(this);
-        this.updateMinMax(child, false);
+        return this.updateMinMax(child, false);
     }
 
     public void setRightChild (Node child) {
@@ -116,7 +117,8 @@ public class Node {
 
         this.rightChild = child;
         this.rightChild.setFather(this);
-        this.updateMinMax(child, false);
+
+        return this.updateMinMax(child, false);
     }
 
     public void resetNode (Node rstNode) {
@@ -125,15 +127,15 @@ public class Node {
 
         this.updateMinMax(rstNode, true);
         if (this.leftChild.getId() == rstNode.getId()) {
-            this.leftChild = null;
+            this.leftChild = new Node(-1);
         } else if (this.rightChild.getId() == rstNode.getId()) {
-            this.rightChild = null;
+            this.rightChild = new Node(-1);
         } else if (this.father.getId() == rstNode.getId()) {
-            this.father = null;
+            this.father = new Node(-1);
         }
     }
 
-    public void updateMinMax (Node child, boolean remove /*= false*/) {
+    public int updateMinMax (Node child, boolean remove /*= false*/) {
         if (remove) {
             if (child.getId() > this.getId())
                 this.maxId = this.getId();
@@ -151,6 +153,8 @@ public class Node {
                 this.getFather().updateMinMax(child, remove);
             }
         }
+
+        return (this.minId == child.getMinId() ? this.minId : this.maxId);
     }
 
     public void setMinId (int minId) {

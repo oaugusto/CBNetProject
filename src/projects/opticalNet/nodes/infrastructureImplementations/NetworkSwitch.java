@@ -138,10 +138,24 @@ public class NetworkSwitch extends Node {
         }
 	}
 
-    // connect the input in to the output out changing old connections
-    public void connectNodes(int in, int out) {
+    public void updateSwitch (int in, int out, int subtreeId) {
         InputNode inNode = this.inputId2Node.get(in);
         OutputNode outNode = this.outputId2Node.get(out);
+
+        outNode.getConnectedNode().setChild(inNode, subtreeId);
+        this.connectNodes(inNode, outNode);
+    }
+
+    public void updateSwitch (int in, int out) {
+        InputNode inNode = this.inputId2Node.get(in);
+        OutputNode outNode = this.outputId2Node.get(out);
+
+        outNode.getConnectedNode().setFather(inNode);
+        this.connectNodes(inNode, outNode);
+    }
+
+    // connect the input in to the output out changing old connections
+    public void connectNodes (InputNode inNode, OutputNode outNode) {
         // update old connection to out node
         int oldInNodeIndex = outNode.getInputNode().getIndex();
         InputNode oldInNode = this.inputId2Node.get(oldInNodeIndex);
