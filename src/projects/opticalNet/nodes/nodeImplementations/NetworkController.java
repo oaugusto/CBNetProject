@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.util.ArrayList;
 
+import projects.opticalNet.nodes.OPTNet.Alt;
 import projects.opticalNet.nodes.OPTNet.Controller;
 import projects.opticalNet.nodes.infrastructureImplementations.NetworkSwitch;
 import projects.opticalNet.nodes.infrastructureImplementations.treeStructure.Tree;
@@ -18,6 +19,7 @@ public class NetworkController extends SynchronizerLayer {
     private ArrayList<NetworkNode> tree;
 
     private int numNodes = 0;
+    private int switchSize = 0;
     private int numSwitches = 0;
     private int numClusters = 0;
     private int numUnionClusters = 0;
@@ -26,14 +28,13 @@ public class NetworkController extends SynchronizerLayer {
     private static final int SIZE_CLUSTER_TYPE1 = 4;
     private static final int SIZE_CLUSTER_TYPE2 = 4;
 
+    
     /* End of Attributes */
 
     @Override
-    public void init(int numNodes, int switchSize) {
+    public void init() {
         super.init();
 
-        this.numNodes = numNodes;
-        this.switchSize = switchSize;
         this.clusterSize = this.switchSize / 2;
         this.numClusters = (this.numNodes - this.clusterSize + 1) / this.clusterSize + 1;
         this.numUnionClusters = (
@@ -66,7 +67,7 @@ public class NetworkController extends SynchronizerLayer {
                     clsId * this.clusterSize, (clsId + 1) * this.clusterSize - 1, this.tree
                 );
 		        swt.finishInitializationWithDefaultModels(true);
-                swt.setIndex(this.switches.size() + 1)
+                swt.setIndex(this.switches.size() + 1);
 
                 this.switches.add(swt);
             }
@@ -80,7 +81,7 @@ public class NetworkController extends SynchronizerLayer {
                         this.tree
                 );
 		        swt.finishInitializationWithDefaultModels(true);
-                swt.setIndex(this.switches.size() + 1)
+                swt.setIndex(this.switches.size() + 1);
 
                 this.switches.add(swt);
 
@@ -91,7 +92,7 @@ public class NetworkController extends SynchronizerLayer {
                 );
 
                 swt2.finishInitializationWithDefaultModels(true);
-                swt2.setIndex(this.switches.size() + 1)
+                swt2.setIndex(this.switches.size() + 1);
 
                 this.switches.add(swt2);
 
@@ -102,7 +103,7 @@ public class NetworkController extends SynchronizerLayer {
                 );
 
                 swt2.finishInitializationWithDefaultModels(true);
-                swt2.setIndex(this.switches.size() + 1)
+                swt2.setIndex(this.switches.size() + 1);
 
                 this.switches.add(swt2);
 
@@ -112,7 +113,7 @@ public class NetworkController extends SynchronizerLayer {
                         this.tree
                 );
 		        swt.finishInitializationWithDefaultModels(true);
-                swt.setIndex(this.switches.size() + 1)
+                swt.setIndex(this.switches.size() + 1);
 
                 this.switches.add(swt);
             }

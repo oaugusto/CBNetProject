@@ -11,6 +11,7 @@ import sinalgo.nodes.messages.Message;
 import sinalgo.gui.transformation.PositionTransformation;
 
 public class NetworkNode extends SynchronizerLayer {
+	private int weights = 0;
 	private ArrayList<InputNode> interfaces = new ArrayList<>();
 
 	private InputNode parent = null;
@@ -59,6 +60,10 @@ public class NetworkNode extends SynchronizerLayer {
 
 	public int getMaxIdInSubtree() {
 		return this.maxIdInSubtree;
+	}
+	
+	public int getWeight() {
+		return this.weights;
 	}
 
 	public int getId() {
