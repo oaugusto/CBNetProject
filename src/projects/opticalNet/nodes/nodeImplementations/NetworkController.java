@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import projects.opticalNet.nodes.OPTNet.Alt;
 import projects.opticalNet.nodes.OPTNet.Node;
 import projects.opticalNet.nodes.infrastructureImplementations.NetworkSwitch;
+import projects.opticalNet.nodes.messages.ConnectNodesMessage;
 import sinalgo.gui.transformation.PositionTransformation;
 import sinalgo.nodes.messages.Inbox;
 
@@ -130,7 +131,7 @@ public class NetworkController extends SynchronizerLayer {
         for (int i = 0; i < this.numNodes; i++) {
             if (edgeList.get(i) != -1) {
             	Alt tmp = this.mapConn(this.tree.get(edgeList.get(i)), this.tree.get(i));
-            	System.out.println(tmp.getSwitchId() + ", " + tmp.getInNodeId() + ": " + tmp.getOutNodeId());
+//            	System.out.println(tmp.getSwitchId() + ", " + tmp.getInNodeId() + ": " + tmp.getOutNodeId());
             }
         }
     }
@@ -544,11 +545,20 @@ public class NetworkController extends SynchronizerLayer {
 
         fromNode.setChild(toNode);
 
-        this.getSwitch(swtId).connectNodes(fromNode.getId() + 1, toNode.getId() + 1);
-        this.getSwitch(swtId + 1).connectNodes(toNode.getId() + 1, fromNode.getId() + 1);
+//        this.getSwitch(swtId).connectNodes(fromNode.getId() + 1, toNode.getId() + 1);
+//        this.getSwitch(swtId + 1).connectNodes(toNode.getId() + 1, fromNode.getId() + 1);
+        
+        this.sendConnectNodesMessage(swtId, fromNode.getId() + 1, toNode.getId() + 1);
+        this.sendConnectNodesMessage(swtId + 1, toNode.getId() + 1, fromNode.getId() + 1);
 
         return new Alt(swtId, fromNode.getId() + 1, toNode.getId() + 1);
     }
+    
+    private void sendConnectNodesMessage(int switchId, int from, int to) {
+    	ConnectNodesMessage msg = new ConnectNodesMessage(from, to);
+    	this.send(msg, this.getSwitch(switchId));
+    }
+
     /* End of Setters
 
     /* Auxiliary Functions */
