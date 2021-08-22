@@ -5,7 +5,7 @@ import java.awt.Graphics;
 import java.util.ArrayList;
 
 import projects.opticalNet.nodes.OPTNet.Alt;
-import projects.opticalNet.nodes.OPTNet.Controller;
+import projects.opticalNet.nodes.OPTNet.Node;
 import projects.opticalNet.nodes.infrastructureImplementations.NetworkSwitch;
 import projects.opticalNet.nodes.infrastructureImplementations.treeStructure.Tree;
 import sinalgo.gui.transformation.PositionTransformation;
@@ -14,9 +14,9 @@ import sinalgo.nodes.messages.Inbox;
 public class NetworkController extends SynchronizerLayer {
 
     /* Attributes */
-    private Tree treeStructure;
+    private ArrayList<Node> tree;
     private ArrayList<NetworkSwitch> switches;
-    private ArrayList<NetworkNode> tree;
+    private ArrayList<NetworkNode> netNodes;
 
     private int numNodes = 0;
     private int switchSize = 0;
@@ -28,7 +28,6 @@ public class NetworkController extends SynchronizerLayer {
     private static final int SIZE_CLUSTER_TYPE1 = 4;
     private static final int SIZE_CLUSTER_TYPE2 = 4;
 
-    
     /* End of Attributes */
 
     @Override
@@ -49,10 +48,12 @@ public class NetworkController extends SynchronizerLayer {
 
         ArrayList<Integer> edgeList = new ArrayList<Integer>();
         for (int i = 0; i < this.numNodes; i++) {
-            NetworkNode newNode = new NetworkNode();
+            Node newNode = new Node();
+            NetworkNode newNetNode = new NetworkNode();
             newNode.finishInitializationWithDefaultModels(true);
 
             this.tree.add(newNode);
+            this.netNodes.add(newNode);
             if (i != numNodes - 1) {
                 edgeList.add(i + 1);
             } else {
@@ -64,7 +65,7 @@ public class NetworkController extends SynchronizerLayer {
         for (int clsId = 0; clsId < this.numClusters; clsId++) {
             for (int i = 0; i < 4; i++) {
                 NetworkSwitch swt = new NetworkSwitch(
-                    clsId * this.clusterSize, (clsId + 1) * this.clusterSize - 1, this.tree
+                    clsId * this.clusterSize, (clsId + 1) * this.clusterSize - 1, this.netNodes
                 );
 		        swt.finishInitializationWithDefaultModels(true);
                 swt.setIndex(this.switches.size() + 1);
@@ -78,7 +79,7 @@ public class NetworkController extends SynchronizerLayer {
                 NetworkSwitch swt = new NetworkSwitch(
                         clsId1 * this.clusterSize, (clsId1 + 1) * this.clusterSize - 1,
                         clsId2 * this.clusterSize, (clsId2 + 1) * this.clusterSize - 1,
-                        this.tree
+                        this.netNodes
                 );
 		        swt.finishInitializationWithDefaultModels(true);
                 swt.setIndex(this.switches.size() + 1);
@@ -88,7 +89,7 @@ public class NetworkController extends SynchronizerLayer {
                 NetworkSwitch swt2 = new NetworkSwitch(
                         clsId2 * this.clusterSize, (clsId2 + 1) * this.clusterSize - 1,
                         clsId1 * this.clusterSize, (clsId1 + 1) * this.clusterSize - 1,
-                        this.tree
+                        this.netNodes
                 );
 
                 swt2.finishInitializationWithDefaultModels(true);
@@ -99,7 +100,7 @@ public class NetworkController extends SynchronizerLayer {
                 swt2 = new NetworkSwitch(
                         clsId2 * this.clusterSize, (clsId2 + 1) * this.clusterSize - 1,
                         clsId1 * this.clusterSize, (clsId1 + 1) * this.clusterSize - 1,
-                        this.tree
+                        this.netNodes
                 );
 
                 swt2.finishInitializationWithDefaultModels(true);
@@ -110,7 +111,7 @@ public class NetworkController extends SynchronizerLayer {
                 swt = new NetworkSwitch(
                         clsId1 * this.clusterSize, (clsId1 + 1) * this.clusterSize - 1,
                         clsId2 * this.clusterSize, (clsId2 + 1) * this.clusterSize - 1,
-                        this.tree
+                        this.netNodes
                 );
 		        swt.finishInitializationWithDefaultModels(true);
                 swt.setIndex(this.switches.size() + 1);
@@ -118,93 +119,102 @@ public class NetworkController extends SynchronizerLayer {
                 this.switches.add(swt);
             }
         }
+
+        this.setup(edgeList);
+    }
+
+    private void setup (ArrayList<Integer> edgeList) {
+        for (int i = 0; i < this.numNodes; i++) {
+            if (edgeList.get(i) != -1)
+                this.mapConn(this.tree.get(edgeList.get(i)), this.tree.get(i));
+        }
     }
 
     /* Rotations */
-    private ArrayList<Alt> zigZigBottomUp (NetworkNode x) {
+    private ArrayList<Alt> zigZigBottomUp (Node x) {
         /*
-                    z                 *y
+                 z                 *y
                 / \               /   \
-                y   d             x     z
-                / \      -->      / \   / \
+               y   d             x     z
+              / \      -->      / \   / \
             *x   c             a   b c   d
             / \
-            a   b
+           a   b
         */
 
-        NetworkNode y = x.getFather();
-        NetworkNode z = y.getFather();
+        Node y = x.getFather();
+        Node z = y.getFather();
         boolean leftZigZig = (y.getId() == z.getLeftChild().getId());
-        NetworkNode c = (leftZigZig) ? y.getRightChild() : y.getLeftChild();
+        Node c = (leftZigZig) ? y.getRightChild() : y.getLeftChild();
 
         ArrayList<Alt> ret = new ArrayList<>();
-        ret.add(this.mapConn(y, z, false));
-        ret.add(this.mapConn(z, c, false));
+        ret.add(this.mapConn(y, z));
+        ret.add(this.mapConn(z, c));
 
         return ret;
     }
 
-    private ArrayList<Alt> zigZagBottomUp (NetworkNode x) {
+    private ArrayList<Alt> zigZagBottomUp (Node x) {
         /*
-                            w                 w
-                            /                 /
-                        z				 *x
-                        / \               /   \
-                    y   d             y     z
-                    / \	   -->     / \   / \
-                a   x*            a   b c   d
-                        / \
-                    b   c
+                  w               w
+                 /               /
+                z		      *x
+               / \            /   \
+              y   d          y     z
+             / \	   -->     / \   / \
+            a   x*         a   b c   d
+               / \
+              b   c
         */
-        NetworkNode y = x.getFather();
-        NetworkNode z = y.getFather();
-        NetworkNode w = z.getFather();
+        Node y = x.getFather();
+        Node z = y.getFather();
+        Node w = z.getFather();
         boolean leftZigZag = (y.getId() == z.getLeftChild().getId());
-        NetworkNode b = (leftZigZag) ? x.getLeftChild() : x.getRightChild();
-        NetworkNode c = (leftZigZag) ? x.getRightChild() : x.getLeftChild();
+        Node b = (leftZigZag) ? x.getLeftChild() : x.getRightChild();
+        Node c = (leftZigZag) ? x.getRightChild() : x.getLeftChild();
 
         ArrayList<Alt> ret= new ArrayList<>();
-        ret.add(this.mapConn(w, x, false));
-        ret.add(this.mapConn(x, y, false));
-        ret.add(this.mapConn(x, z, false));
-        ret.add(this.mapConn(y, b, false));
-        ret.add(this.mapConn(z, c, false));
+        ret.add(this.mapConn(w, x));
+        ret.add(this.mapConn(x, y));
+        ret.add(this.mapConn(x, z));
+        ret.add(this.mapConn(y, b));
+        ret.add(this.mapConn(z, c));
 
         return ret;
     }
 
-    private ArrayList<Alt> zigZigLeftTopDown (NetworkNode z) {
+    private ArrayList<Alt> zigZigLeftTopDown (Node z) {
         /*
-                            *z                   y
-                            / \                 /   \
-                        y   d     -->      *x     z
-                        / \                 / \   / \
-                    x   c               a   b c   d
-                    / \
-                a   b
+                 *z                    y
+                 / \                 /   \
+                y   d     -->      *x     z
+               / \                 / \   / \
+              x   c               a   b c   d
+             / \
+            a   b
         */
-        NetworkNode y = z.getLeftChild();
-        NetworkNode c = y.getRightChild();
+        Node y = z.getLeftChild();
+        Node c = y.getRightChild();
 
         ArrayList<Alt> ret = new ArrayList<>();
-        ret.add(this.mapConn(y, z, false));
-        ret.add(this.mapConn(z, c, false));
+        ret.add(this.mapConn(y, z));
+        ret.add(this.mapConn(z, c));
 
         return ret;
     }
 
-    private ArrayList<Alt> zigZigRightTopDown (NetworkNode z) {
-        NetworkNode y = z.getRightChild();
-        NetworkNode c = y.getLeftChild();
+    private ArrayList<Alt> zigZigRightTopDown (Node z) {
+        Node y = z.getRightChild();
+        Node c = y.getLeftChild();
 
         ArrayList<Alt> ret = new ArrayList<>();
-        ret.add(this.mapConn(y, z, false));
-        ret.add(this.mapConn(z, c, false));
+        ret.add(this.mapConn(y, z));
+        ret.add(this.mapConn(z, c));
 
         return ret;
     }
 
-    private ArrayList<Alt> zigZagLeftTopDown (NetworkNode z) {
+    private ArrayList<Alt> zigZagLeftTopDown (Node z) {
         /*
                         *z                     x
                         / \        -->       /   \
@@ -214,38 +224,38 @@ public class NetworkController extends SynchronizerLayer {
                         / \
                     b   c
         */
-        NetworkNode y = z.getLeftChild();
-        NetworkNode x = y.getRightChild();
-        NetworkNode b = x.getLeftChild();
-        NetworkNode c = x.getRightChild();
+        Node y = z.getLeftChild();
+        Node x = y.getRightChild();
+        Node b = x.getLeftChild();
+        Node c = x.getRightChild();
 
         ArrayList<Alt> ret = new ArrayList<>();
-        ret.add(this.mapConn(x, y, false));
-        ret.add(this.mapConn(x, z, false));
-        ret.add(this.mapConn(y, b, false));
-        ret.add(this.mapConn(z, c, false));
+        ret.add(this.mapConn(x, y));
+        ret.add(this.mapConn(x, z));
+        ret.add(this.mapConn(y, b));
+        ret.add(this.mapConn(z, c));
 
         return ret;
     }
 
-    private ArrayList<Alt> zigZagRightTopDown (NetworkNode z) {
-        NetworkNode y = z.getRightChild();
-        NetworkNode x = y.getLeftChild();
-        NetworkNode b = x.getRightChild();
-        NetworkNode c = x.getLeftChild();
+    private ArrayList<Alt> zigZagRightTopDown (Node z) {
+        Node y = z.getRightChild();
+        Node x = y.getLeftChild();
+        Node b = x.getRightChild();
+        Node c = x.getLeftChild();
 
         ArrayList<Alt> ret = new ArrayList<>();
-        ret.add(this.mapConn(x, y, false));
-        ret.add(this.mapConn(x, z, false));
-        ret.add(this.mapConn(y, b, false));
-        ret.add(this.mapConn(z, c, false));
+        ret.add(this.mapConn(x, y));
+        ret.add(this.mapConn(x, z));
+        ret.add(this.mapConn(y, b));
+        ret.add(this.mapConn(z, c));
 
         return ret;
     }
     /* End of Rotations */
 
     /* Private Getters */
-    private double zigDiffRank (NetworkNode x, NetworkNode y) {
+    private double zigDiffRank (Node x, Node y) {
         /*
                         y                   x
                     /   \               /   \
@@ -256,7 +266,7 @@ public class NetworkController extends SynchronizerLayer {
         // type of operation
         boolean leftZig = (y.getLeftChild() != null && x.getId() == y.getLeftChild().getId());
 
-        NetworkNode b = (leftZig) ? x.getRightChild() : x.getLeftChild();
+        Node b = (leftZig) ? x.getRightChild() : x.getLeftChild();
 
         long xOldWeight = x.getWeight();
         long yOldWeight = y.getWeight();
@@ -275,7 +285,7 @@ public class NetworkController extends SynchronizerLayer {
 
         return deltaRank;
     }
-    private double zigZagDiffRank (NetworkNode x, NetworkNode y, NetworkNode z) {
+    private double zigZagDiffRank (Node x, Node y, Node z) {
         /*
                 z					   *x
             / \                   /   \
@@ -287,8 +297,8 @@ public class NetworkController extends SynchronizerLayer {
         */
         boolean lefZigZag = (z.getLeftChild() != null && y.getId() == z.getLeftChild().getId());
 
-        NetworkNode b = lefZigZag ? x.getLeftChild() : x.getRightChild();
-        NetworkNode c = lefZigZag ? x.getRightChild() : x.getLeftChild();
+        Node b = lefZigZag ? x.getLeftChild() : x.getRightChild();
+        Node c = lefZigZag ? x.getRightChild() : x.getLeftChild();
 
         long xOldWeight = x.getWeight();
         long yOldWeight = y.getWeight();
@@ -313,15 +323,15 @@ public class NetworkController extends SynchronizerLayer {
         return deltaRank;
     }
 
-    private int getRotationToPerforme (NetworkNode x) {
+    private int getRotationToPerforme (Node x) {
         double maxDelta = 0;
         int operation = 0;
 
         /*bottom-up - BEGIN*/
         if (x.getFather() != null && x.getFather().getFather() != null)
         {
-                NetworkNode y = x.getFather();
-                NetworkNode z = y.getFather();
+                Node y = x.getFather();
+                Node z = y.getFather();
                 if (y.getLeftChild() != null && x.getId() == y.getLeftChild().getId() &&
                         z.getLeftChild() != null && y.getId() == z.getLeftChild().getId()) {
                         // zigzigLeft
@@ -362,11 +372,11 @@ public class NetworkController extends SynchronizerLayer {
 
         /*top-down - BEGIN*/
         if (x.getLeftChild() != null) {
-                NetworkNode y = x.getLeftChild();
+                Node y = x.getLeftChild();
 
                 // zigzig left top-down
                 if (y.getLeftChild() != null) {
-                        NetworkNode z = y.getLeftChild();
+                        Node z = y.getLeftChild();
                         double aux = zigDiffRank(y, z);
                         if (aux > maxDelta) {
                                 maxDelta = aux;
@@ -376,7 +386,7 @@ public class NetworkController extends SynchronizerLayer {
 
                 // zigzag left top-down
                 if (y.getRightChild() != null) {
-                        NetworkNode z = y.getRightChild();
+                        Node z = y.getRightChild();
                         double aux = zigDiffRank(y, z);
                         if (aux > maxDelta) {
                                 maxDelta = aux;
@@ -386,11 +396,11 @@ public class NetworkController extends SynchronizerLayer {
         }
 
         if (x.getRightChild() != null) {
-                NetworkNode y = x.getRightChild();
+                Node y = x.getRightChild();
 
                 // zigzig right top-down
                 if (y.getRightChild() != null) {
-                        NetworkNode z = y.getRightChild();
+                        Node z = y.getRightChild();
                         double aux = zigDiffRank(y, z);
                         if (aux > maxDelta) {
                                 maxDelta = aux;
@@ -400,7 +410,7 @@ public class NetworkController extends SynchronizerLayer {
 
                 // zigzag right top-down
                 if (y.getLeftChild() != null) {
-                        NetworkNode z = y.getLeftChild();
+                        Node z = y.getLeftChild();
                         double aux = zigDiffRank(y, z);
                         if (aux > maxDelta) {
                                 maxDelta = aux;
@@ -437,7 +447,7 @@ public class NetworkController extends SynchronizerLayer {
         ArrayList<Alt> ret = new ArrayList<>();
 
         for (int i = 0; i < this.numNodes; i++) {
-            NetworkNode node = this.tree.get(i);
+            Node node = this.tree.get(i);
             if (node.getLeftChild() != null) {
                 Node child = node.getLeftChild();
                 ret.add(new Alt(
@@ -459,11 +469,11 @@ public class NetworkController extends SynchronizerLayer {
         return ret;
     }
 
-    NetworkNode getNode (int nodeId) {
+    Node getNode (int nodeId) {
         return this.tree.get(nodeId);
     }
 
-    int getClusterId (NetworkNode fromNode, NetworkNode toNode) {
+    int getClusterId (Node fromNode, Node toNode) {
         /*
                 The clusterId of two nodes in the same cluster is calculated
                 by the floor of the division between any of the nodes ids and the
@@ -481,7 +491,7 @@ public class NetworkController extends SynchronizerLayer {
                 );
         }
     }
-    int getClusterId (NetworkNode node) {
+    int getClusterId (Node node) {
         /*
                 The clusterId of a given node is calculated by the floor of the
                 division between the Node Id and the size of the clusters of the
@@ -490,7 +500,7 @@ public class NetworkController extends SynchronizerLayer {
         return node.getId() / this.clusterSize;
     }
 
-    int getSwitchId (NetworkNode fromNode, NetworkNode toNode) {
+    int getSwitchId (Node fromNode, Node toNode) {
         /*
                 To find the switchId between two nodes from the same cluster
                 we need to multiply by 4 the numbers of clusters of type 1
@@ -511,38 +521,28 @@ public class NetworkController extends SynchronizerLayer {
         return previousSwitches + 2 * (fromNode.getId() > toNode.getId() ? 1 : 0);
     }
 
-    NetworkSwitch getSwitch (NetworkNode fromNode, NetworkNode toNode) {
+    NetworkSwitch getSwitch (Node fromNode, Node toNode) {
         return this.switches.get(this.getSwitchId(fromNode, toNode));
     }
     NetworkSwitch getSwitch (int switchId) {
         return this.switches.get(switchId);
     }
 
-    boolean areSameCluster (NetworkNode node1, NetworkNode node2) {
+    boolean areSameCluster (Node node1, Node node2) {
         return this.getClusterId(node1) == this.getClusterId(node2);
     }
     /* End of Getters */
 
     /* Setters */
-    Alt mapConn (Node fromNode, Node toNode, boolean dummy /*=false*/) {
+    Alt mapConn (Node fromNode, Node toNode) {
         int swtId = this.getSwitchId(fromNode, toNode);
-        int oldSwt = -1;
 
-        if (fromNode.getId() > toNode.getId()) {
-            oldSwt = fromNode.setLeftChild(toNode, swtId);
-        } else{
-            oldSwt = fromNode.setRightChild(toNode, swtId);
-        }
+        fromNode.setChild(toNode);
 
-        if (oldSwt != -1 && swtId != oldSwt) {
-            this.getSwitch(swtId).removeConn(fromNode.getId());
-            this.getSwitch(swtId + 1).removeConn(toNode.getId());
-        }
+        this.getSwitch(swtId).connectNodes(fromNode.getId() + 1, toNode.getId() + 1);
+        this.getSwitch(swtId + 1).connectNodes(toNode.getId() + 1, fromNode.getId() + 1);
 
-        this.getSwitch(swtId).updateConn(fromNode.getId(), toNode.getId(), false);
-        this.getSwitch(swtId + 1).updateConn(toNode.getId(), fromNode.getId(), false);
-
-        return new Alt(swtId, fromNode.getId(), toNode.getId());
+        return new Alt(swtId, fromNode.getId() + 1, toNode.getId() + 1);
     }
     /* End of Setters
 

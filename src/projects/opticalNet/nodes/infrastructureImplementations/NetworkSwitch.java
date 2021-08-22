@@ -49,7 +49,7 @@ public class NetworkSwitch extends Node {
     // initialize variables
 
     // Switch de Cluster de Tipo 1
-    public NetworkSwitch (int minId, int maxId, ArrayList<NetworkNode> tree) {
+    public NetworkSwitch (int minId, int maxId, ArrayList<NetworkNode> netNodes) {
         this.size = maxId - minId + 1;
         this.inputId2Node = new HashMap<>();
         this.outputId2Node = new HashMap<>();
@@ -62,7 +62,7 @@ public class NetworkSwitch extends Node {
             inNode.finishInitializationWithDefaultModels(true);
             inNode.setIndex(minId + i);
 
-            NetworkNode node = tree.get(minId + 1);
+            NetworkNode node = netNodes.get(minId + 1);
             node.connectToInputNode(inNode);
             inNode.connectToNode(node);
 
@@ -76,7 +76,7 @@ public class NetworkSwitch extends Node {
             outNode.finishInitializationWithDefaultModels(true);
             outNode.setIndex(minId + i);
 
-            NetworkNode node = tree.get(minId + i);
+            NetworkNode node = netNodes.get(minId + i);
             outNode.connectToNode(node);
 
             this.outputNodes.add(outNode);
@@ -94,7 +94,7 @@ public class NetworkSwitch extends Node {
 
     // Switch de Cluster de Tipo 2
 	public NetworkSwitch (
-        int minId1, int maxId1, int minId2, int maxId2, ArrayList<NetworkNode> tree
+        int minId1, int maxId1, int minId2, int maxId2, ArrayList<NetworkNode> netNodes
     ) {
         this.size = maxId1 - minId1 + 1;
         this.inputId2Node = new HashMap<>();
@@ -108,7 +108,7 @@ public class NetworkSwitch extends Node {
             inNode.finishInitializationWithDefaultModels(true);
             inNode.setIndex(minId1 + i);
 
-            NetworkNode node = tree.get(minId1 + 1);
+            NetworkNode node = netNodes.get(minId1 + 1);
             node.connectToInputNode(inNode);
             inNode.connectToNode(node);
 
@@ -122,7 +122,7 @@ public class NetworkSwitch extends Node {
             outNode.finishInitializationWithDefaultModels(true);
             outNode.setIndex(minId2 + i);
 
-            NetworkNode node = tree.get(minId2 + i);
+            NetworkNode node = netNodes.get(minId2 + i);
             outNode.connectToNode(node);
 
             this.outputNodes.add(outNode);
