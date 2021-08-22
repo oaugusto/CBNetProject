@@ -5,19 +5,21 @@ public class Alt {
     private int outNodeID = -1;
     private int switchID = -1;
 
-    Alt (int _inNodeID, int _outNodeID, int _switchID) {
+    public Alt (int _inNodeID, int _outNodeID, int _switchID) {
       this.inNodeID = _inNodeID;
       this.outNodeID = _outNodeID;
       this.switchID = _switchID;
     }
 
-    int getSwitchId () {
+    public int getSwitchId () {
       return this.switchID;
     }
-    int getInNodeId () {
+
+    public int getInNodeId () {
       return this.inNodeID;
     }
-    int getOutNodeId () {
+
+    public int getOutNodeId () {
       return this.outNodeID;
     }
 }

@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import projects.opticalNet.nodes.OPTNet.Alt;
 import projects.opticalNet.nodes.OPTNet.Node;
 import projects.opticalNet.nodes.infrastructureImplementations.NetworkSwitch;
-import projects.opticalNet.nodes.infrastructureImplementations.treeStructure.Tree;
 import sinalgo.gui.transformation.PositionTransformation;
 import sinalgo.nodes.messages.Inbox;
 
@@ -50,10 +49,10 @@ public class NetworkController extends SynchronizerLayer {
         for (int i = 0; i < this.numNodes; i++) {
             Node newNode = new Node();
             NetworkNode newNetNode = new NetworkNode();
-            newNode.finishInitializationWithDefaultModels(true);
+            newNetNode.finishInitializationWithDefaultModels(true);
 
             this.tree.add(newNode);
-            this.netNodes.add(newNode);
+            this.netNodes.add(newNetNode);
             if (i != numNodes - 1) {
                 edgeList.add(i + 1);
             } else {
