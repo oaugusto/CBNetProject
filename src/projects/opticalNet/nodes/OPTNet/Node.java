@@ -10,7 +10,7 @@ public class Node {
     private int minId = -1;
     private int maxId = -1;
 
-    private int weight = 0;
+    private long weight = 0;
 
 	private int id = 0;
 	private static int ID = 0;
@@ -67,7 +67,7 @@ public class Node {
         return this.maxId;
     }
 
-    public int getWeight () {
+    public long getWeight () {
         return this.weight;
     }
 
@@ -161,6 +161,14 @@ public class Node {
 
     public void setMaxId (int maxId) {
         this.maxId = maxId;
+    }
+    
+    public void setWeight(long weight) {
+    	this.weight = weight;
+    }
+    
+    public void incrementWeight() {
+        this.weight++;
     }
     /* End of Setters */
 }

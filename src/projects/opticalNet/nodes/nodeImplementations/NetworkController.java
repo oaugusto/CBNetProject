@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.util.ArrayList;
 
+import projects.cbnet.nodes.nodeImplementations.RotationLayer;
 import projects.opticalNet.nodes.OPTNet.Alt;
 import projects.opticalNet.nodes.OPTNet.Node;
 import projects.opticalNet.nodes.infrastructureImplementations.NetworkSwitch;
@@ -24,6 +25,8 @@ public class NetworkController extends SynchronizerLayer {
     private int numClusters = 0;
     private int numUnionClusters = 0;
     private int clusterSize;
+    
+    private double epsilon = -1.5;
 
     private static final int SIZE_CLUSTER_TYPE1 = 4;
     private static final int SIZE_CLUSTER_TYPE2 = 4;
@@ -156,6 +159,22 @@ public class NetworkController extends SynchronizerLayer {
         ArrayList<Alt> ret = new ArrayList<>();
         ret.add(this.mapConn(y, z));
         ret.add(this.mapConn(z, c));
+        
+        // calculate the new rank of nodes
+        // type of operation----------------------------------------------------
+        Node b = ((leftZigZig) ? y.getRightChild() : y.getLeftChild());
+
+        long yOldWeight = y.getWeight();
+        long zOldWeight = z.getWeight();
+
+        long bWeight = (b != null) ? b.getWeight() : 0;
+
+        long zNewWeight = zOldWeight - yOldWeight + bWeight;
+        long yNewWeight = yOldWeight - bWeight + zNewWeight;
+        
+        z.setWeight(zNewWeight);
+        y.setWeight(yNewWeight);
+        // ---------------------------------------------------------------------
 
         return ret;
     }
@@ -186,6 +205,23 @@ public class NetworkController extends SynchronizerLayer {
         ret.add(this.mapConn(y, b));
         ret.add(this.mapConn(z, c));
 
+        // new weights------------------------------------------------------
+        long xOldWeight = x.getWeight();
+        long yOldWeight = y.getWeight();
+        long zOldWeight = z.getWeight();
+
+        long bWeight = (b != null) ? b.getWeight() : 0;
+        long cWeight = (c != null) ? c.getWeight() : 0;
+
+        long yNewWeight = yOldWeight - xOldWeight + bWeight;
+        long zNewWeight = zOldWeight - yOldWeight + cWeight;
+        long xNewWeight = xOldWeight - bWeight - cWeight + yNewWeight + zNewWeight;
+        
+        y.setWeight(yNewWeight);
+        z.setWeight(zNewWeight);
+        x.setWeight(xNewWeight);
+        // ---------------------------------------------------------------
+        
         return ret;
     }
 
@@ -206,6 +242,22 @@ public class NetworkController extends SynchronizerLayer {
         ret.add(this.mapConn(y, z));
         ret.add(this.mapConn(z, c));
 
+        // calculate the new rank of nodes
+        // type of operation----------------------------------------------------
+        Node b = y.getRightChild();
+
+        long yOldWeight = y.getWeight();
+        long zOldWeight = z.getWeight();
+
+        long bWeight = (b != null) ? b.getWeight() : 0;
+
+        long zNewWeight = zOldWeight - yOldWeight + bWeight;
+        long yNewWeight = yOldWeight - bWeight + zNewWeight;
+        
+        z.setWeight(zNewWeight);
+        y.setWeight(yNewWeight);
+        // ---------------------------------------------------------------------
+        
         return ret;
     }
 
@@ -216,6 +268,22 @@ public class NetworkController extends SynchronizerLayer {
         ArrayList<Alt> ret = new ArrayList<>();
         ret.add(this.mapConn(y, z));
         ret.add(this.mapConn(z, c));
+        
+        // calculate the new rank of nodes
+        // type of operation----------------------------------------------------
+        Node b = y.getLeftChild();
+
+        long yOldWeight = y.getWeight();
+        long zOldWeight = z.getWeight();
+
+        long bWeight = (b != null) ? b.getWeight() : 0;
+
+        long zNewWeight = zOldWeight - yOldWeight + bWeight;
+        long yNewWeight = yOldWeight - bWeight + zNewWeight;
+        
+        z.setWeight(zNewWeight);
+        y.setWeight(yNewWeight);
+        // ---------------------------------------------------------------------
 
         return ret;
     }
@@ -240,6 +308,23 @@ public class NetworkController extends SynchronizerLayer {
         ret.add(this.mapConn(x, z));
         ret.add(this.mapConn(y, b));
         ret.add(this.mapConn(z, c));
+        
+        // new weights------------------------------------------------------
+        long xOldWeight = x.getWeight();
+        long yOldWeight = y.getWeight();
+        long zOldWeight = z.getWeight();
+
+        long bWeight = (b != null) ? b.getWeight() : 0;
+        long cWeight = (c != null) ? c.getWeight() : 0;
+
+        long yNewWeight = yOldWeight - xOldWeight + bWeight;
+        long zNewWeight = zOldWeight - yOldWeight + cWeight;
+        long xNewWeight = xOldWeight - bWeight - cWeight + yNewWeight + zNewWeight;
+        
+        y.setWeight(yNewWeight);
+        z.setWeight(zNewWeight);
+        x.setWeight(xNewWeight);
+        // ---------------------------------------------------------------
 
         return ret;
     }
@@ -255,12 +340,33 @@ public class NetworkController extends SynchronizerLayer {
         ret.add(this.mapConn(x, z));
         ret.add(this.mapConn(y, b));
         ret.add(this.mapConn(z, c));
+        
+        // new weights------------------------------------------------------
+        long xOldWeight = x.getWeight();
+        long yOldWeight = y.getWeight();
+        long zOldWeight = z.getWeight();
+
+        long bWeight = (b != null) ? b.getWeight() : 0;
+        long cWeight = (c != null) ? c.getWeight() : 0;
+
+        long yNewWeight = yOldWeight - xOldWeight + bWeight;
+        long zNewWeight = zOldWeight - yOldWeight + cWeight;
+        long xNewWeight = xOldWeight - bWeight - cWeight + yNewWeight + zNewWeight;
+        
+        y.setWeight(yNewWeight);
+        z.setWeight(zNewWeight);
+        x.setWeight(xNewWeight);
+        // ---------------------------------------------------------------
 
         return ret;
     }
     /* End of Rotations */
 
     /* Private Getters */
+    private double log2(long value) {
+        return Math.log(value) / Math.log(2);
+    }
+    
     private double zigDiffRank (Node x, Node y) {
         /*
                      y                   x
@@ -282,15 +388,16 @@ public class NetworkController extends SynchronizerLayer {
         long yNewWeight = yOldWeight - xOldWeight + bWeight;
         long xNewWeight = xOldWeight - bWeight + yNewWeight;
 
-        double xOldRank = (xOldWeight == 0) ? 0 : Math.log(xOldWeight);
-        double yOldRank = (yOldWeight == 0) ? 0 : Math.log(yOldWeight);
-        double xNewRank = (xNewWeight == 0) ? 0 : Math.log(xNewWeight);
-        double yNewRank = (yNewWeight == 0) ? 0 : Math.log(yNewWeight);
+        double xOldRank = (xOldWeight == 0) ? 0 : log2(xOldWeight);
+        double yOldRank = (yOldWeight == 0) ? 0 : log2(yOldWeight);
+        double xNewRank = (xNewWeight == 0) ? 0 : log2(xNewWeight);
+        double yNewRank = (yNewWeight == 0) ? 0 : log2(yNewWeight);
 
         double deltaRank = yNewRank + xNewRank - yOldRank - xOldRank;
 
         return deltaRank;
     }
+    
     private double zigZagDiffRank (Node x, Node y, Node z) {
         /*
              z					   *x
@@ -317,12 +424,12 @@ public class NetworkController extends SynchronizerLayer {
         long zNewWeight = zOldWeight - yOldWeight + cWeight;
         long xNewWeight = xOldWeight - bWeight - cWeight + yNewWeight + zNewWeight;
 
-        double xOldRank = (xOldWeight == 0) ? 0 : Math.log(xOldWeight);
-        double yOldRank = (yOldWeight == 0) ? 0 : Math.log(yOldWeight);
-        double zOldRank = (zOldWeight == 0) ? 0 : Math.log(zOldWeight);
-        double xNewRank = (xNewWeight == 0) ? 0 : Math.log(xNewWeight);
-        double yNewRank = (yNewWeight == 0) ? 0 : Math.log(yNewWeight);
-        double zNewRank = (zNewWeight == 0) ? 0 : Math.log(zNewWeight);
+        double xOldRank = (xOldWeight == 0) ? 0 : log2(xOldWeight);
+        double yOldRank = (yOldWeight == 0) ? 0 : log2(yOldWeight);
+        double zOldRank = (zOldWeight == 0) ? 0 : log2(zOldWeight);
+        double xNewRank = (xNewWeight == 0) ? 0 : log2(xNewWeight);
+        double yNewRank = (yNewWeight == 0) ? 0 : log2(yNewWeight);
+        double zNewRank = (zNewWeight == 0) ? 0 : log2(zNewWeight);
 
         double deltaRank = xNewRank + yNewRank + zNewRank - xOldRank - yOldRank - zOldRank;
 
@@ -425,7 +532,11 @@ public class NetworkController extends SynchronizerLayer {
                 }
         }
 
-        return operation;
+        if (maxDelta < this.epsilon) {
+        	return operation;
+        } else {
+        	return -1;
+        }
     }
     /* End of Private Getters */
 
@@ -603,7 +714,9 @@ public class NetworkController extends SynchronizerLayer {
 
         for (int i = 0; i < this.numNodes; i++) {
         	Node node = this.tree.get(i);
-            switch (getRotationToPerforme(node)) {
+        	int op = getRotationToPerforme(node);
+        	if (op == -1) continue;
+            switch (op) {
                 case 1:
                 case 2:
                         ret = this.zigZigBottomUp(node);

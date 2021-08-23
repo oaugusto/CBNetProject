@@ -13,6 +13,7 @@ import sinalgo.nodes.messages.Message;
 import sinalgo.gui.transformation.PositionTransformation;
 
 public class NetworkNode extends SynchronizerLayer {
+
     private int weights = 0;
     private ArrayList<InputNode> interfaces = new ArrayList<>();
     private Queue<NetworkMessage> buffer = new LinkedList<>();
@@ -23,6 +24,8 @@ public class NetworkNode extends SynchronizerLayer {
 
     private int minIdInSubtree = 0;
     private int maxIdInSubtree = 0;
+    
+    private boolean first = true;
 
     public NetworkNode() {
     	this.minIdInSubtree = this.ID;
@@ -114,16 +117,25 @@ public class NetworkNode extends SynchronizerLayer {
         }
 
         if (this.minIdInSubtree <= msg.getDst() && msg.getDst() < this.ID) {
+        	System.out.println("sent left");
             this.send(netmsg, this.leftChild);
         } else if (this.ID < msg.getDst() && msg.getDst() <= this.maxIdInSubtree) {
             this.send(netmsg, this.rightChild);
+            System.out.println("sent right");
         } else {
             this.send(netmsg, this.parent);
+            if (parent == null) System.out.println("null parent"); 
+            else System.out.println("sent parent");
         }
     }
     
     @Override
     public void nodeStep() {
+    	if (this.first && this.ID == 1) {
+    		this.first = false;
+    		System.out.println("sent");
+    		this.sendMsg(new NetworkMessage(this.ID, 3));
+    	}
     	if (buffer.isEmpty()) return;
     	NetworkMessage netmsg = this.buffer.poll();
     	this.sendMsg(netmsg);
@@ -137,6 +149,7 @@ public class NetworkNode extends SynchronizerLayer {
                 continue;
             }
             NetworkMessage cbmsg = (NetworkMessage) msg;
+            System.out.print("received msg from: " + cbmsg.getSrc());
             if (cbmsg.getDst() == this.ID) {
             	this.weights++;
                 System.out.println("Message received from node " + cbmsg.getSrc());
