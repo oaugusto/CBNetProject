@@ -1,6 +1,7 @@
 package projects.opticalNet.nodes.timers;
 
 import projects.opticalNet.CustomGlobal;
+import projects.opticalNet.nodes.nodeImplementations.NetworkNode;
 //import projects.opticalNet.nodes.nodeImplementations.CBNetNode;
 import sinalgo.nodes.timers.Timer;
 import sinalgo.tools.Tools;
@@ -21,10 +22,10 @@ public class TriggerNodeOperation extends Timer {
     @Override
     public void fire() {
 
-//        CBNetNode srcnode = (CBNetNode) Tools.getNodeByID(src);
-//        srcnode.newMessage(dst);
+        NetworkNode srcnode = (NetworkNode) Tools.getNodeByID(src);
+        srcnode.sendMsg(dst);
 
-//        CustomGlobal.mustGenerateSplay = true;
+        CustomGlobal.mustGenerateSplay = true;
     }
 
 }

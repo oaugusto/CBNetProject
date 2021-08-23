@@ -21,6 +21,11 @@ public class NetworkNode extends SynchronizerLayer {
     private int minIdInSubtree = 0;
     private int maxIdInSubtree = 0;
 
+    public NetworkNode() {
+    	this.minIdInSubtree = this.ID;
+    	this.maxIdInSubtree = this.ID;
+    }
+    
     public void connectToInputNode(InputNode node) {
         this.interfaces.add(node);
         this.addConnectionTo(node);
@@ -52,11 +57,15 @@ public class NetworkNode extends SynchronizerLayer {
 
     public void setRightChild(InputNode node, int maxId) {
         this.rightChild = node;
-        this.setMinIdInSubtree(maxId);
+        this.setMaxIdInSubtree(maxId);
     }
 
     public void setMinIdInSubtree(int value) {
-        this.minIdInSubtree = value;
+    	if (value == -1) {
+    		this.minIdInSubtree = this.ID;
+    	} else {
+    		this.minIdInSubtree = value;
+    	}
     }
 
     public int getMinIdInSubtree() {
@@ -64,7 +73,11 @@ public class NetworkNode extends SynchronizerLayer {
     }
 
     public void setMaxIdInSubtree(int value) {
-        this.maxIdInSubtree = value;
+    	if (value == -1) {
+    		this.maxIdInSubtree = this.ID;
+    	} else {
+    		this.maxIdInSubtree = value;
+    	}
     }
 
     public int getMaxIdInSubtree() {
@@ -84,6 +97,23 @@ public class NetworkNode extends SynchronizerLayer {
         super.init();
     }
 
+    public void sendMsg(int to) {
+    	NetworkMessage netmsg = new NetworkMessage(this.ID, to);
+    	if (to == this.ID) {
+        	this.weights++;
+            System.out.println("Message received from node " + to);
+            return;
+        }
+
+        if (this.minIdInSubtree <= to && to < this.ID) {
+            this.send(netmsg, this.leftChild);
+        } else if (this.ID < to && to <= this.maxIdInSubtree) {
+            this.send(netmsg, this.rightChild);
+        } else {
+            this.send(netmsg, this.parent);
+        }
+    }
+    
     @Override
     public void handleMessages(Inbox inbox) {
         while (inbox.hasNext()) {
@@ -93,6 +123,7 @@ public class NetworkNode extends SynchronizerLayer {
             }
             NetworkMessage cbmsg = (NetworkMessage) msg;
             if (cbmsg.getDst() == this.ID) {
+            	this.weights++;
                 System.out.println("Message received from node " + cbmsg.getSrc());
                 continue;
             }

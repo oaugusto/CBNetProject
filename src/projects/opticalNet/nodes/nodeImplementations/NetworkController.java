@@ -130,7 +130,7 @@ public class NetworkController extends SynchronizerLayer {
     private void setup (ArrayList<Integer> edgeList) {
         for (int i = 0; i < this.numNodes; i++) {
             if (edgeList.get(i) != -1) {
-            	Alt tmp = this.mapConn(this.tree.get(edgeList.get(i)), this.tree.get(i));
+            	this.setInitialCon(this.tree.get(edgeList.get(i)), this.tree.get(i));
 //            	System.out.println(tmp.getSwitchId() + ", " + tmp.getInNodeId() + ": " + tmp.getOutNodeId());
             }
         }
@@ -540,21 +540,34 @@ public class NetworkController extends SynchronizerLayer {
     /* End of Getters */
 
     /* Setters */
-    Alt mapConn (Node fromNode, Node toNode) {
+    
+    void setInitialCon(Node fromNode, Node toNode) {
         int swtId = this.getSwitchId(fromNode, toNode);
         int subtreeId = fromNode.setChild(toNode) + 1;
 
-//      this.getSwitch(swtId).updateSwitch(fromNode.getId() + 1, toNode.getId() + 1);
-//		this.getSwitch(swtId + 1).updateSwitch(toNode.getId() + 1, fromNode.getId() + 1, subtreeId);
+        this.getSwitch(swtId).updateSwitch(fromNode.getId() + 1, toNode.getId() + 1);
+		this.getSwitch(swtId + 1).updateSwitch(toNode.getId() + 1, fromNode.getId() + 1, subtreeId);     
+
+        return;
+    }
+    
+    Alt mapConn (Node fromNode, Node toNode) {
+        int swtId = this.getSwitchId(fromNode, toNode);
+        int subtreeId = fromNode.setChild(toNode) + 1;
         
         this.sendConnectNodesMessage(swtId, fromNode.getId() + 1, toNode.getId() + 1);
-        this.sendConnectNodesMessage(swtId + 1, toNode.getId() + 1, fromNode.getId() + 1);        
+        this.sendConnectNodesMessage(swtId + 1, toNode.getId() + 1, fromNode.getId() + 1, subtreeId);        
 
         return new Alt(swtId, fromNode.getId() + 1, toNode.getId() + 1);
     }
     
     private void sendConnectNodesMessage(int switchId, int from, int to) {
     	ConnectNodesMessage msg = new ConnectNodesMessage(from, to);
+    	this.send(msg, this.getSwitch(switchId));
+    }
+    
+    private void sendConnectNodesMessage(int switchId, int from, int to, int subtreeId) {
+    	ConnectNodesMessage msg = new ConnectNodesMessage(from, to, subtreeId);
     	this.send(msg, this.getSwitch(switchId));
     }
 
@@ -622,8 +635,8 @@ public class NetworkController extends SynchronizerLayer {
     /* End of Auxiliary Functions */
 
     @Override
-    public void nodeStep() {
-
+    public void controllerStep() {
+    	this.updateConn();
     }
 
     @Override

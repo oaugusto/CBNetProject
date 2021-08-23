@@ -2,14 +2,10 @@ package projects.opticalNet.nodes.messages;
 
 import sinalgo.nodes.messages.Message;
 
-/**
- * CBNetMessage
- */
-public class NetworkMessage extends Message implements Comparable<NetworkMessage> {
+public class NetworkMessage extends Message {
 
   private int src;
   private int dst;
-  private double priority;
 
   // collect data variable
   private long rotations;
@@ -18,10 +14,9 @@ public class NetworkMessage extends Message implements Comparable<NetworkMessage
   public long initialTime;
   public long finalTime;
 
-  public NetworkMessage(int src, int dst, double priority) {
+  public NetworkMessage(int src, int dst) {
     this.src = src;
     this.dst = dst;
-    this.priority = priority;
 
     // collect
     this.rotations = 0;
@@ -42,12 +37,6 @@ public class NetworkMessage extends Message implements Comparable<NetworkMessage
     return dst;
   }
 
-  /**
-   * @return the priority
-   */
-  public double getPriority() {
-    return priority;
-  }
 
   /**
    * @param src the src to set
@@ -63,12 +52,6 @@ public class NetworkMessage extends Message implements Comparable<NetworkMessage
     this.dst = dst;
   }
 
-  /**
-   * @param priority the priority to set
-   */
-  public void setPriority(double priority) {
-    this.priority = priority;
-  }
 
   @Override
   public Message clone() {
@@ -96,16 +79,4 @@ public class NetworkMessage extends Message implements Comparable<NetworkMessage
   public void incrementRouting() {
     this.routing++;
   }
-
-  @Override
-  public int compareTo(NetworkMessage o) {
-    int value = Double.compare(this.priority, o.priority);
-    if (value == 0) { // In case tie, compare the id of the source node
-      return this.dst - o.dst;
-    } else {
-      return value;
-    }
-  }
-
-
 }

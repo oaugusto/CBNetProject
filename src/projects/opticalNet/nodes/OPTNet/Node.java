@@ -1,7 +1,5 @@
 package projects.opticalNet.nodes.OPTNet;
 
-import java.util.Collections;
-
 public class Node {
 
 	/* Attributes */
@@ -98,7 +96,7 @@ public class Node {
 
     public int setLeftChild (Node child) {
         if (this.getId() == -1)
-            return;
+            return -1;
 
         if (this.leftChild.getId() != -1)
             this.leftChild.getFather().resetNode(this);
@@ -108,9 +106,9 @@ public class Node {
         return this.updateMinMax(child, false);
     }
 
-    public void setRightChild (Node child) {
+    public int setRightChild (Node child) {
         if (this.getId() == -1)
-            return;
+            return -1;
 
         if (this.rightChild.getId() != -1)
             this.rightChild.getFather().resetNode(this);

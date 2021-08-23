@@ -7,11 +7,14 @@ import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import projects.opticalNet.nodes.messages.ConnectNodesMessage;
+import projects.opticalNet.nodes.messages.NetworkMessage;
 import projects.opticalNet.nodes.nodeImplementations.NetworkNode;
 import sinalgo.configuration.WrongConfigurationException;
 import sinalgo.gui.transformation.PositionTransformation;
 import sinalgo.nodes.Node;
 import sinalgo.nodes.messages.Inbox;
+import sinalgo.nodes.messages.Message;
 import sinalgo.runtime.Global;
 import sinalgo.tools.Tools;
 
@@ -150,7 +153,7 @@ public class NetworkSwitch extends Node {
         InputNode inNode = this.inputId2Node.get(in);
         OutputNode outNode = this.outputId2Node.get(out);
 
-        outNode.getConnectedNode().setFather(inNode);
+        outNode.getConnectedNode().setParent(inNode);
         this.connectNodes(inNode, outNode);
     }
 
@@ -178,7 +181,18 @@ public class NetworkSwitch extends Node {
 
     @Override
     public void handleMessages(Inbox inbox) {
-
+        while (inbox.hasNext()) {
+            Message msg = inbox.next();
+            if (!(msg instanceof ConnectNodesMessage)) {
+                continue;
+            }
+            ConnectNodesMessage conmsg = (ConnectNodesMessage) msg;
+            if (conmsg.getSubtreeId() == -1) {
+            	this.updateSwitch(conmsg.getFrom(), conmsg.getTo());
+            } else {
+            	this.updateSwitch(conmsg.getFrom(), conmsg.getTo(), conmsg.getSubtreeId());
+            }
+        }
     }
 
     @Override
