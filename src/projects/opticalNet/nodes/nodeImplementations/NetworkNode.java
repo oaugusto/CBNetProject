@@ -3,6 +3,8 @@ package projects.opticalNet.nodes.nodeImplementations;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Queue;
 
 import projects.opticalNet.nodes.messages.NetworkMessage;
 import projects.opticalNet.nodes.infrastructureImplementations.InputNode;
@@ -13,6 +15,7 @@ import sinalgo.gui.transformation.PositionTransformation;
 public class NetworkNode extends SynchronizerLayer {
     private int weights = 0;
     private ArrayList<InputNode> interfaces = new ArrayList<>();
+    private Queue<NetworkMessage> buffer = new LinkedList<>();
 
     private InputNode parent = null;
     private InputNode leftChild = null;
@@ -97,21 +100,33 @@ public class NetworkNode extends SynchronizerLayer {
         super.init();
     }
 
-    public void sendMsg(int to) {
+    public void newMessage(int to) {
     	NetworkMessage netmsg = new NetworkMessage(this.ID, to);
-    	if (to == this.ID) {
+    	this.buffer.add(netmsg);
+    }
+    
+    public void sendMsg(NetworkMessage msg) {
+    	NetworkMessage netmsg = new NetworkMessage(this.ID, msg.getDst());
+    	if (msg.getDst() == this.ID) {
         	this.weights++;
-            System.out.println("Message received from node " + to);
+            System.out.println("Message received from node " + msg.getSrc());
             return;
         }
 
-        if (this.minIdInSubtree <= to && to < this.ID) {
+        if (this.minIdInSubtree <= msg.getDst() && msg.getDst() < this.ID) {
             this.send(netmsg, this.leftChild);
-        } else if (this.ID < to && to <= this.maxIdInSubtree) {
+        } else if (this.ID < msg.getDst() && msg.getDst() <= this.maxIdInSubtree) {
             this.send(netmsg, this.rightChild);
         } else {
             this.send(netmsg, this.parent);
         }
+    }
+    
+    @Override
+    public void nodeStep() {
+    	if (buffer.isEmpty()) return;
+    	NetworkMessage netmsg = this.buffer.poll();
+    	this.sendMsg(netmsg);
     }
     
     @Override

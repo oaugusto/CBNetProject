@@ -23,7 +23,7 @@ public class TriggerNodeOperation extends Timer {
     public void fire() {
 
         NetworkNode srcnode = (NetworkNode) Tools.getNodeByID(src);
-        srcnode.sendMsg(dst);
+        srcnode.newMessage(dst);
 
         CustomGlobal.mustGenerateSplay = true;
     }
