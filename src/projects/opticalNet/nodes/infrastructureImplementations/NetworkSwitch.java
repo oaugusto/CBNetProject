@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import projects.opticalNet.nodes.messages.ConnectNodesMessage;
-import projects.opticalNet.nodes.messages.NetworkMessage;
 import projects.opticalNet.nodes.nodeImplementations.NetworkNode;
 import sinalgo.configuration.WrongConfigurationException;
 import sinalgo.gui.transformation.PositionTransformation;
@@ -16,7 +15,6 @@ import sinalgo.nodes.Node;
 import sinalgo.nodes.messages.Inbox;
 import sinalgo.nodes.messages.Message;
 import sinalgo.runtime.Global;
-import sinalgo.tools.Tools;
 
 public class NetworkSwitch extends Node {
 
