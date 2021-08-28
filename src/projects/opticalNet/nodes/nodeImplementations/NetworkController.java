@@ -656,8 +656,8 @@ public class NetworkController extends SynchronizerLayer {
         int swtId = this.getSwitchId(fromNode, toNode);
         int subtreeId = fromNode.setChild(toNode) + 1;
 
-        this.getSwitch(swtId).updateSwitch(fromNode.getId() + 1, toNode.getId() + 1);
-		this.getSwitch(swtId + 1).updateSwitch(toNode.getId() + 1, fromNode.getId() + 1, subtreeId);     
+        this.getSwitch(swtId).updateSwitch(fromNode.getId() + 1, toNode.getId() + 1, subtreeId);
+		this.getSwitch(swtId + 1).updateSwitch(toNode.getId() + 1, fromNode.getId() + 1);     
 
         return;
     }
@@ -666,8 +666,8 @@ public class NetworkController extends SynchronizerLayer {
         int swtId = this.getSwitchId(fromNode, toNode);
         int subtreeId = fromNode.setChild(toNode) + 1;
         
-        this.sendConnectNodesMessage(swtId, fromNode.getId() + 1, toNode.getId() + 1);
-        this.sendConnectNodesMessage(swtId + 1, toNode.getId() + 1, fromNode.getId() + 1, subtreeId);        
+        this.sendConnectNodesMessage(swtId, fromNode.getId() + 1, toNode.getId() + 1, subtreeId);
+        this.sendConnectNodesMessage(swtId + 1, toNode.getId() + 1, fromNode.getId() + 1);        
 
         return new Alt(swtId, fromNode.getId() + 1, toNode.getId() + 1);
     }

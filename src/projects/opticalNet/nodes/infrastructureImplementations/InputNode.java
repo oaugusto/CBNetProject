@@ -5,6 +5,7 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 
+import projects.opticalNet.nodes.nodeImplementations.NetworkNode;
 import sinalgo.nodes.Node;
 import sinalgo.nodes.messages.Inbox;
 import sinalgo.nodes.messages.Message;
@@ -17,7 +18,7 @@ import sinalgo.gui.transformation.PositionTransformation;
  */
 public class InputNode extends Node {
     private int index = -1;
-    private Node connectedNode = null;
+    private NetworkNode connectedNode = null;
     private OutputNode outputNode = null;
 
     public void setIndex(int index) {
@@ -36,11 +37,11 @@ public class InputNode extends Node {
         return this.outputNode;
     }
 
-    public void connectToNode(Node node) {
+    public void connectToNode(NetworkNode node) {
         this.connectedNode = node;
     }
 
-    public Node getConnectedNode() {
+    public NetworkNode getConnectedNode() {
         return this.connectedNode;
     }
 

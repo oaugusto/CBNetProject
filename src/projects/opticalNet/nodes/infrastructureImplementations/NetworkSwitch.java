@@ -67,6 +67,7 @@ public class NetworkSwitch extends Node {
             node.connectToInputNode(inNode);
             inNode.connectToNode(node);
 
+            System.out.println("networkSwitch " + ID + ": " + inNode.ID + " ;" + inNode.getIndex() + " ; " + node.ID);
             this.inputNodes.add(inNode);
             this.inputId2Node.put(minId + i, inNode);
         }
@@ -143,7 +144,7 @@ public class NetworkSwitch extends Node {
         InputNode inNode = this.inputId2Node.get(in);
         OutputNode outNode = this.outputId2Node.get(out);
 
-        outNode.getConnectedNode().setChild(inNode, subtreeId);
+        inNode.getConnectedNode().setChild(inNode, subtreeId);
         this.connectNodes(inNode, outNode);
     }
 
@@ -151,7 +152,7 @@ public class NetworkSwitch extends Node {
         InputNode inNode = this.inputId2Node.get(in);
         OutputNode outNode = this.outputId2Node.get(out);
 
-        outNode.getConnectedNode().setParent(inNode);
+        inNode.getConnectedNode().setParent(inNode);
         this.connectNodes(inNode, outNode);
     }
 

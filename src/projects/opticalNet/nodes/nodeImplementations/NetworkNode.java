@@ -109,31 +109,31 @@ public class NetworkNode extends SynchronizerLayer {
     }
     
     public void sendMsg(NetworkMessage msg) {
+    	System.out.println("ID: " + ID);
     	NetworkMessage netmsg = new NetworkMessage(this.ID, msg.getDst());
     	if (msg.getDst() == this.ID) {
-        	this.weights++;
             System.out.println("Message received from node " + msg.getSrc());
             return;
         }
 
         if (this.minIdInSubtree <= msg.getDst() && msg.getDst() < this.ID) {
-        	System.out.println("sent left");
+        	System.out.println("sending left through node: " + this.leftChild.ID);
             this.send(netmsg, this.leftChild);
         } else if (this.ID < msg.getDst() && msg.getDst() <= this.maxIdInSubtree) {
             this.send(netmsg, this.rightChild);
-            System.out.println("sent right");
+            System.out.println("sending right through node: " + this.rightChild.ID);
         } else {
             this.send(netmsg, this.parent);
-            if (parent == null) System.out.println("null parent"); 
-            else System.out.println("sent parent");
+            System.out.println("sending parent through node: " + this.parent.ID + " index: " + this.parent.getIndex());
         }
     }
     
     @Override
     public void nodeStep() {
     	if (this.first && this.ID == 1) {
+    		System.out.println("First message node: " + ID);
     		this.first = false;
-    		System.out.println("sent");
+    		System.out.println("sending");
     		this.sendMsg(new NetworkMessage(this.ID, 3));
     	}
     	if (buffer.isEmpty()) return;
@@ -149,7 +149,7 @@ public class NetworkNode extends SynchronizerLayer {
                 continue;
             }
             NetworkMessage cbmsg = (NetworkMessage) msg;
-            System.out.print("received msg from: " + cbmsg.getSrc());
+            System.out.println(ID + " received msg from: " + cbmsg.getSrc());
             if (cbmsg.getDst() == this.ID) {
             	this.weights++;
                 System.out.println("Message received from node " + cbmsg.getSrc());
