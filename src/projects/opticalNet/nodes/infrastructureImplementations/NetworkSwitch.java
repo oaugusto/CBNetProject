@@ -67,7 +67,7 @@ public class NetworkSwitch extends Node {
             node.connectToInputNode(inNode);
             inNode.connectToNode(node);
 
-            System.out.println("networkSwitch " + ID + ": " + inNode.ID + " ;" + inNode.getIndex() + " ; " + node.ID);
+//            System.out.println("networkSwitch " + ID + ": " + inNode.ID + " ;" + inNode.getIndex() + " ; " + node.ID);
             this.inputNodes.add(inNode);
             this.inputId2Node.put(minId + i, inNode);
         }
@@ -272,8 +272,8 @@ public class NetworkSwitch extends Node {
 
         int internalNodeSize = (int)(this.internalNodeSize * pt.getZoomFactor());
         // Set the font
-//        String text_in = "In";
-        String text_in = this.index + "";
+        String text_in = "In";
+//        String text_in = this.index + "";
         int fontSize = (int) (internalNodeSize * 0.5);
         Font font = new Font(null, 0, (int) (fontSize));
         g.setFont(font);

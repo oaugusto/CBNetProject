@@ -167,7 +167,7 @@ public class NetworkController extends SynchronizerLayer {
         long yOldWeight = y.getWeight();
         long zOldWeight = z.getWeight();
 
-        long bWeight = (b != null) ? b.getWeight() : 0;
+        long bWeight = (b.getId() != -1) ? b.getWeight() : 0;
 
         long zNewWeight = zOldWeight - yOldWeight + bWeight;
         long yNewWeight = yOldWeight - bWeight + zNewWeight;
@@ -210,8 +210,8 @@ public class NetworkController extends SynchronizerLayer {
         long yOldWeight = y.getWeight();
         long zOldWeight = z.getWeight();
 
-        long bWeight = (b != null) ? b.getWeight() : 0;
-        long cWeight = (c != null) ? c.getWeight() : 0;
+        long bWeight = (b.getId() != -1) ? b.getWeight() : 0;
+        long cWeight = (c.getId() != -1) ? c.getWeight() : 0;
 
         long yNewWeight = yOldWeight - xOldWeight + bWeight;
         long zNewWeight = zOldWeight - yOldWeight + cWeight;
@@ -249,7 +249,7 @@ public class NetworkController extends SynchronizerLayer {
         long yOldWeight = y.getWeight();
         long zOldWeight = z.getWeight();
 
-        long bWeight = (b != null) ? b.getWeight() : 0;
+        long bWeight = (b.getId() != -1) ? b.getWeight() : 0;
 
         long zNewWeight = zOldWeight - yOldWeight + bWeight;
         long yNewWeight = yOldWeight - bWeight + zNewWeight;
@@ -276,7 +276,7 @@ public class NetworkController extends SynchronizerLayer {
         long yOldWeight = y.getWeight();
         long zOldWeight = z.getWeight();
 
-        long bWeight = (b != null) ? b.getWeight() : 0;
+        long bWeight = (b.getId() != -1) ? b.getWeight() : 0;
 
         long zNewWeight = zOldWeight - yOldWeight + bWeight;
         long yNewWeight = yOldWeight - bWeight + zNewWeight;
@@ -314,8 +314,8 @@ public class NetworkController extends SynchronizerLayer {
         long yOldWeight = y.getWeight();
         long zOldWeight = z.getWeight();
 
-        long bWeight = (b != null) ? b.getWeight() : 0;
-        long cWeight = (c != null) ? c.getWeight() : 0;
+        long bWeight = (b.getId() != -1) ? b.getWeight() : 0;
+        long cWeight = (c.getId() != -1) ? c.getWeight() : 0;
 
         long yNewWeight = yOldWeight - xOldWeight + bWeight;
         long zNewWeight = zOldWeight - yOldWeight + cWeight;
@@ -346,8 +346,8 @@ public class NetworkController extends SynchronizerLayer {
         long yOldWeight = y.getWeight();
         long zOldWeight = z.getWeight();
 
-        long bWeight = (b != null) ? b.getWeight() : 0;
-        long cWeight = (c != null) ? c.getWeight() : 0;
+        long bWeight = (b.getId() != -1) ? b.getWeight() : 0;
+        long cWeight = (c.getId() != -1) ? c.getWeight() : 0;
 
         long yNewWeight = yOldWeight - xOldWeight + bWeight;
         long zNewWeight = zOldWeight - yOldWeight + cWeight;
@@ -383,7 +383,7 @@ public class NetworkController extends SynchronizerLayer {
         long xOldWeight = x.getWeight();
         long yOldWeight = y.getWeight();
 
-        long bWeight = (b != null) ? b.getWeight() : 0;
+        long bWeight = (b.getId() != -1) ? b.getWeight() : 0;
 
         long yNewWeight = yOldWeight - xOldWeight + bWeight;
         long xNewWeight = xOldWeight - bWeight + yNewWeight;
@@ -417,8 +417,8 @@ public class NetworkController extends SynchronizerLayer {
         long yOldWeight = y.getWeight();
         long zOldWeight = z.getWeight();
 
-        long bWeight = (b != null) ? b.getWeight() : 0;
-        long cWeight = (c != null) ? c.getWeight() : 0;
+        long bWeight = (b.getId() != -1) ? b.getWeight() : 0;
+        long cWeight = (c.getId() != -1) ? c.getWeight() : 0;
 
         long yNewWeight = yOldWeight - xOldWeight + bWeight;
         long zNewWeight = zOldWeight - yOldWeight + cWeight;
@@ -441,12 +441,12 @@ public class NetworkController extends SynchronizerLayer {
         int operation = 0;
 
         /*bottom-up - BEGIN*/
-        if (x.getFather() != null && x.getFather().getFather() != null)
+        if (x.getFather().getId() != -1 && x.getFather().getFather().getId() != -1)
         {
             Node y = x.getFather();
             Node z = y.getFather();
-            if (y.getLeftChild() != null && x.getId() == y.getLeftChild().getId() &&
-                    z.getLeftChild() != null && y.getId() == z.getLeftChild().getId()) {
+            if (y.getLeftChild().getId() != -1 && x.getId() == y.getLeftChild().getId() &&
+                    z.getLeftChild().getId() != -1 && y.getId() == z.getLeftChild().getId()) {
                     // zigzigLeft
                     double aux = zigDiffRank(y, z);
                     if (aux > maxDelta) {
@@ -454,8 +454,8 @@ public class NetworkController extends SynchronizerLayer {
                             operation = 1;
                     }
             } else
-            if (y.getRightChild() != null && x.getId() == y.getRightChild().getId() &&
-                    z.getRightChild() != null && y.getId() == z.getRightChild().getId()) {
+            if (y.getRightChild().getId() != -1 && x.getId() == y.getRightChild().getId() &&
+                    z.getRightChild().getId() != -1 && y.getId() == z.getRightChild().getId()) {
                     // zigzigRight
                     double aux = zigDiffRank(y, z);
                     if (aux > maxDelta) {
@@ -463,8 +463,8 @@ public class NetworkController extends SynchronizerLayer {
                             operation = 2;
                     }
             } else
-            if (y.getRightChild() != null && x.getId() == y.getRightChild().getId() &&
-                    z.getLeftChild() != null && y.getId() == z.getLeftChild().getId()) {
+            if (y.getRightChild().getId() != -1 && x.getId() == y.getRightChild().getId() &&
+                    z.getLeftChild().getId() != -1 && y.getId() == z.getLeftChild().getId()) {
                     // zigzagLeft
                     double aux = zigZagDiffRank(x, y, z);
                     if (aux > maxDelta) {
@@ -472,8 +472,8 @@ public class NetworkController extends SynchronizerLayer {
                             operation = 3;
                     }
             } else
-            if (y.getLeftChild() != null && x.getId() == y.getLeftChild().getId() &&
-                    z.getRightChild() != null && y.getId() == z.getRightChild().getId()) {
+            if (y.getLeftChild().getId() != -1 && x.getId() == y.getLeftChild().getId() &&
+                    z.getRightChild().getId() != -1 && y.getId() == z.getRightChild().getId()) {
                     // zigzagRight
                     double aux = zigZagDiffRank(x, y, z);
                     if (aux > maxDelta) {
@@ -484,11 +484,11 @@ public class NetworkController extends SynchronizerLayer {
         }
 
         /*top-down - BEGIN*/
-        if (x.getLeftChild() != null) {
+        if (x.getLeftChild().getId() != -1) {
                 Node y = x.getLeftChild();
 
                 // zigzig left top-down
-                if (y.getLeftChild() != null) {
+                if (y.getLeftChild().getId() != -1) {
                         Node z = y.getLeftChild();
                         double aux = zigDiffRank(y, z);
                         if (aux > maxDelta) {
@@ -498,7 +498,7 @@ public class NetworkController extends SynchronizerLayer {
                 }
 
                 // zigzag left top-down
-                if (y.getRightChild() != null) {
+                if (y.getRightChild().getId() != -1) {
                         Node z = y.getRightChild();
                         double aux = zigDiffRank(y, z);
                         if (aux > maxDelta) {
@@ -508,11 +508,11 @@ public class NetworkController extends SynchronizerLayer {
                 }
         }
 
-        if (x.getRightChild() != null) {
+        if (x.getRightChild().getId() != -1) {
                 Node y = x.getRightChild();
 
                 // zigzig right top-down
-                if (y.getRightChild() != null) {
+                if (y.getRightChild().getId() != -1) {
                         Node z = y.getRightChild();
                         double aux = zigDiffRank(y, z);
                         if (aux > maxDelta) {
@@ -522,7 +522,7 @@ public class NetworkController extends SynchronizerLayer {
                 }
 
                 // zigzag right top-down
-                if (y.getLeftChild() != null) {
+                if (y.getLeftChild().getId() != -1) {
                         Node z = y.getLeftChild();
                         double aux = zigDiffRank(y, z);
                         if (aux > maxDelta) {
@@ -775,9 +775,8 @@ public class NetworkController extends SynchronizerLayer {
 		}
 
 		//set network switches position
-		int unit = height / ((6 * this.numSwitches) + 1);
-		int switch_height = 5 * unit;
-		int switch_width= switch_height / 2;
+		double unit = height / (double)((7 * this.numSwitches) + 1);
+		double switch_height = 5 * unit;
 //		this.leftSwitchInput.setPosition(3 * x_space, 3.5 * unit, 0);
 //		this.leftSwitchInput.setSwitchDimension(switch_height/3, switch_height);
 //		this.leftSwitchOutput.setPosition(3 * x_space, 9.5 * unit, 0);
@@ -788,8 +787,8 @@ public class NetworkController extends SynchronizerLayer {
 //		this.rightSwitchOutput.setSwitchDimension(switch_height/3, switch_height);
 		for (int i = 0; i < this.numSwitches; ++i) {
 			NetworkSwitch n = this.switches.get(i);
-			n.setPosition(3 * x_space, (i + 1) * 5 * unit, 0);
-			n.setSwitchDimension(switch_height/3, switch_height);
+			n.setPosition(3 * x_space, 2 * unit + switch_height/2 + (i * 7 * unit), 0);
+			n.setSwitchDimension((int)switch_height/3, (int)switch_height);
 		}
 
 		// set controller node position
