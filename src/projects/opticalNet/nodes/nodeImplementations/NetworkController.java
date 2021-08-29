@@ -33,7 +33,7 @@ public class NetworkController extends SynchronizerLayer {
 
     /* End of Attributes */
 
-    public NetworkController(int numNodes, int switchSize, ArrayList<NetworkNode> netNodes) {
+    public NetworkController (int numNodes, int switchSize, ArrayList<NetworkNode> netNodes) {
     	this.numNodes = numNodes;
     	this.switchSize = switchSize;
     	this.tree = new ArrayList<>();
@@ -126,7 +126,7 @@ public class NetworkController extends SynchronizerLayer {
     }
 
     @Override
-    public void init() {
+    public void init () {
         super.init();
     }
 
@@ -151,8 +151,8 @@ public class NetworkController extends SynchronizerLayer {
            a   b
         */
 
-        Node y = x.getFather();
-        Node z = y.getFather();
+        Node y = x.getParent();
+        Node z = y.getParent();
         boolean leftZigZig = (y.getId() == z.getLeftChild().getId());
         Node c = (leftZigZig) ? y.getRightChild() : y.getLeftChild();
 
@@ -191,9 +191,9 @@ public class NetworkController extends SynchronizerLayer {
                / \
               b   c
         */
-        Node y = x.getFather();
-        Node z = y.getFather();
-        Node w = z.getFather();
+        Node y = x.getParent();
+        Node z = y.getParent();
+        Node w = z.getParent();
         boolean leftZigZag = (y.getId() == z.getLeftChild().getId());
         Node b = (leftZigZag) ? x.getLeftChild() : x.getRightChild();
         Node c = (leftZigZag) ? x.getRightChild() : x.getLeftChild();
@@ -363,7 +363,7 @@ public class NetworkController extends SynchronizerLayer {
     /* End of Rotations */
 
     /* Private Getters */
-    private double log2(long value) {
+    private double log2 (long value) {
         return Math.log(value) / Math.log(2);
     }
 
@@ -441,10 +441,10 @@ public class NetworkController extends SynchronizerLayer {
         int operation = 0;
 
         /*bottom-up - BEGIN*/
-        if (x.getFather().getId() != -1 && x.getFather().getFather().getId() != -1)
+        if (x.getParent().getId() != -1 && x.getParent().getParent().getId() != -1)
         {
-            Node y = x.getFather();
-            Node z = y.getFather();
+            Node y = x.getParent();
+            Node z = y.getParent();
             if (y.getLeftChild().getId() != -1 && x.getId() == y.getLeftChild().getId() &&
                     z.getLeftChild().getId() != -1 && y.getId() == z.getLeftChild().getId()) {
                     // zigzigLeft
@@ -652,7 +652,7 @@ public class NetworkController extends SynchronizerLayer {
 
     /* Setters */
 
-    void setInitialCon(Node fromNode, Node toNode) {
+    void setInitialCon (Node fromNode, Node toNode) {
         int swtId = this.getSwitchId(fromNode, toNode);
         int subtreeId = fromNode.setChild(toNode) + 1;
 
@@ -752,35 +752,36 @@ public class NetworkController extends SynchronizerLayer {
     /* End of Auxiliary Functions */
 
     @Override
-    public void controllerStep() {
-    	this.updateConn();
+    public void controllerStep () {
+    	ArrayList<Alt> updates = this.updateConn();
+
     }
 
     @Override
-    public void handleMessages(Inbox inbox) {
+    public void handleMessages (Inbox inbox) {
         while (inbox.hasNext()) {
             Message msg = inbox.next();
             if (!(msg instanceof NetworkMessage)) {
                 continue;
             }
 
-            NetworkMessage cbmsg = (NetworkMessage) msg;
+            NetworkMessage optmsg = (NetworkMessage) msg;
             System.out.println(
-                "Network Node incrementing weights from " + cbmsg.getSrc() + " " + cbmsg.getDst()
+                "Network Node incrementing weights from " + optmsg.getSrc() + " " + optmsg.getDst()
             );
 
-            this.incrementPathWeight(cbmsg.getSrc(), cbmsg.getDst());
+            this.incrementPathWeight(optmsg.getSrc(), optmsg.getDst());
         }
     }
 
     @Override
-    public void draw(Graphics g, PositionTransformation pt, boolean highlight) {
+    public void draw (Graphics g, PositionTransformation pt, boolean highlight) {
         String text = "" + ID;
         // draw the node as a circle with the text inside
         super.drawNodeAsDiskWithText(g, pt, highlight, text, 12, Color.YELLOW);
     }
 
-    public void renderTopology(int width, int height) {
+    public void renderTopology (int width, int height) {
 		// set network nodes position
 		double x_space = width / 4.0;
 		double y_space = height / (double) (this.numNodes + 1);

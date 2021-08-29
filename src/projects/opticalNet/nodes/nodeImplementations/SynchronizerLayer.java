@@ -9,23 +9,23 @@ public abstract class SynchronizerLayer extends Node {
     private int timeslot;
     private long round;
 
-    public int getCurrentTimeSlot() {
+    public int getCurrentTimeSlot () {
         return this.timeslot;
     }
 
-    public long getCurrentRound() {
+    public long getCurrentRound () {
         return this.round;
     }
 
     @Override
-    public void init() {
+    public void init () {
         this.timeslot = 0;
     }
 
     @Override
-    public void postStep() {
+    public void postStep () {
         switch (this.timeslot) {
-        case 0: 
+        case 0:
         	nodeStep();
         	break;
         case 1: break;
@@ -43,26 +43,20 @@ public abstract class SynchronizerLayer extends Node {
         this.timeslot = (this.timeslot + 1) % MAX_TIMESLOT;
     }
 
-    public void nodeStep() {
+    public void nodeStep () { }
 
-    }
-    
-    public void controllerStep() {
-    	
-    }
+    public void controllerStep () { }
 
-    public void posRound() {
-        
-    }
-    
-    // unused methods ----------------------------------------------------    
+    public void posRound () { }
+
+    // unused methods ----------------------------------------------------
 	@Override
-	public void preStep() { }
-	
+	public void preStep () { }
+
 	@Override
-	public void neighborhoodChange() { }
-	
+	public void neighborhoodChange () { }
+
 	@Override
-	public void checkRequirements() throws WrongConfigurationException { }
+	public void checkRequirements () throws WrongConfigurationException { }
 
 }

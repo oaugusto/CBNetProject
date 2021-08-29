@@ -14,7 +14,7 @@ public class NetworkMessage extends Message {
   public long initialTime;
   public long finalTime;
 
-  public NetworkMessage(int src, int dst) {
+  public NetworkMessage (int src, int dst) {
     this.src = src;
     this.dst = dst;
 
@@ -26,14 +26,14 @@ public class NetworkMessage extends Message {
   /**
    * @return the src
    */
-  public int getSrc() {
+  public int getSrc () {
     return src;
   }
 
   /**
    * @return the dst
    */
-  public int getDst() {
+  public int getDst () {
     return dst;
   }
 
@@ -41,42 +41,42 @@ public class NetworkMessage extends Message {
   /**
    * @param src the src to set
    */
-  public void setSrc(int src) {
+  public void setSrc (int src) {
     this.src = src;
   }
 
   /**
    * @param dst the dst to set
    */
-  public void setDst(int dst) {
+  public void setDst (int dst) {
     this.dst = dst;
   }
 
 
   @Override
-  public Message clone() {
+  public Message clone () {
     return this;
   }
 
   /**
    * @return the rotations
    */
-  public long getRotations() {
+  public long getRotations () {
     return rotations;
   }
 
   /**
    * @return the routing
    */
-  public long getRouting() {
+  public long getRouting () {
     return routing;
   }
 
-  public void incrementRotations() {
+  public void incrementRotations () {
     this.rotations++;
   }
 
-  public void incrementRouting() {
+  public void incrementRouting () {
     this.routing++;
   }
 }

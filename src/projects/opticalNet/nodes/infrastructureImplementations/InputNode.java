@@ -21,35 +21,35 @@ public class InputNode extends Node {
     private NetworkNode connectedNode = null;
     private OutputNode outputNode = null;
 
-    public void setIndex(int index) {
+    public void setIndex (int index) {
         this.index = index;
     }
 
-    public int getIndex() {
+    public int getIndex () {
         return this.index;
     }
 
-    public void setOutputNode(OutputNode node) {
+    public void setOutputNode (OutputNode node) {
         this.outputNode = node;
     }
 
-    public OutputNode getOutputNode() {
+    public OutputNode getOutputNode () {
         return this.outputNode;
     }
 
-    public void connectToNode(NetworkNode node) {
+    public void connectToNode (NetworkNode node) {
         this.connectedNode = node;
     }
 
-    public NetworkNode getConnectedNode() {
+    public NetworkNode getConnectedNode () {
         return this.connectedNode;
     }
 
-    private boolean isConnectedTo(Node node) {
+    private boolean isConnectedTo (Node node) {
         return this.outgoingConnections.contains(this, node);
     }
 
-    private void addLinkTo(Node node) {
+    private void addLinkTo (Node node) {
         if (node != null) {
             this.outgoingConnections.add(this, node, false);
         }
@@ -60,7 +60,7 @@ public class InputNode extends Node {
      *
      * @param node
      */
-    private void removeLinkTo(Node node) {
+    private void removeLinkTo (Node node) {
         if (node == null) {
             return;
         }
@@ -76,7 +76,7 @@ public class InputNode extends Node {
      *
      * @param node
      */
-    public void addLinkToOutputNode(OutputNode node) {
+    public void addLinkToOutputNode (OutputNode node) {
         // set outputNode
         this.setOutputNode(node);
         node.setInputNode(this);
@@ -89,7 +89,7 @@ public class InputNode extends Node {
     *
     * @param node
     */
-    public void updateLinkToOutputNode(OutputNode node) {
+    public void updateLinkToOutputNode (OutputNode node) {
         // remove the previous connection
         this.removeLinkTo(this.outputNode);
         // set the new outputNode
@@ -98,7 +98,7 @@ public class InputNode extends Node {
         this.addLinkTo(node);
     }
 
-    protected void sendToOutputNode(Message msg) {
+    protected void sendToOutputNode (Message msg) {
         if (this.isConnectedTo(this.outputNode)) {
             send(msg, this.outputNode);
         } else {
@@ -107,7 +107,7 @@ public class InputNode extends Node {
     }
 
     @Override
-    public void handleMessages(Inbox inbox) {
+    public void handleMessages (Inbox inbox) {
         while (inbox.hasNext()) {
         	System.out.println("received message on InputNode: " + this.index);
             Message msg = inbox.next();
@@ -116,19 +116,19 @@ public class InputNode extends Node {
     }
 
     @Override
-    public void init() { }
+    public void init () { }
 
     @Override
-    public void preStep() { }
+    public void preStep () { }
 
     @Override
-    public void neighborhoodChange() { }
+    public void neighborhoodChange () { }
 
     @Override
-    public void postStep() { }
+    public void postStep () { }
 
     @Override
-    public void checkRequirements() throws WrongConfigurationException { }
+    public void checkRequirements () throws WrongConfigurationException { }
 
     //-----------------------------------------------------------------------------------
     //-----------------------------------------------------------------------------------
@@ -137,7 +137,7 @@ public class InputNode extends Node {
     //-----------------------------------------------------------------------------------
 
     @Override
-    public void draw(Graphics g, PositionTransformation pt, boolean highlight) {
+    public void draw (Graphics g, PositionTransformation pt, boolean highlight) {
         // Set the font
         String text = "" + this.index;
         int fontSize = (int) (defaultDrawingSizeInPixels * 0.7);

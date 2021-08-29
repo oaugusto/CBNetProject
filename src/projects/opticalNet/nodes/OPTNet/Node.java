@@ -3,7 +3,7 @@ package projects.opticalNet.nodes.OPTNet;
 public class Node {
 
 	/* Attributes */
-    Node father = null;
+    Node parent = null;
     Node leftChild = null;
     Node rightChild = null;
 
@@ -19,7 +19,7 @@ public class Node {
 	/* Constructors */
     public Node () {
     	this.id = ID++;
-    	this.father = new Node(-1);
+    	this.parent = new Node(-1);
     	this.leftChild = new Node(-1);
     	this.rightChild = new Node(-1);
     	this.minId = this.id;
@@ -32,9 +32,9 @@ public class Node {
     	this.maxId = this.id;
     }
 
-    public Node (Node father, Node leftChild, Node rightChild) {
+    public Node (Node parent, Node leftChild, Node rightChild) {
     	this.id = ID++;
-    	this.father = father;
+    	this.parent = parent;
     	this.leftChild = leftChild;
     	this.rightChild = rightChild;
     	this.minId = this.leftChild.getId() == -1 ? this.getId() : this.leftChild.getId();
@@ -47,8 +47,8 @@ public class Node {
         return this.id;
     }
 
-    public Node getFather () {
-        return this.father;
+    public Node getParent () {
+        return this.parent;
     }
 
     public Node getLeftChild () {
@@ -73,11 +73,11 @@ public class Node {
 
     /* End of Getters */
     /* Setters */
-    public void setFather (Node father) {
+    public void setParent (Node parent) {
         if (this.getId() == -1)
             return;
 
-        this.father = father;
+        this.parent = parent;
     }
 
     public int setChild (Node child) {
@@ -99,10 +99,10 @@ public class Node {
             return -1;
 
         if (this.leftChild.getId() != -1)
-            this.leftChild.getFather().resetNode(this);
+            this.leftChild.getParent().resetNode(this);
 
         this.leftChild = child;
-        this.leftChild.setFather(this);
+        this.leftChild.setParent(this);
         return this.updateMinMax(child, false);
     }
 
@@ -111,10 +111,10 @@ public class Node {
             return -1;
 
         if (this.rightChild.getId() != -1)
-            this.rightChild.getFather().resetNode(this);
+            this.rightChild.getParent().resetNode(this);
 
         this.rightChild = child;
-        this.rightChild.setFather(this);
+        this.rightChild.setParent(this);
 
         return this.updateMinMax(child, false);
     }
@@ -128,8 +128,8 @@ public class Node {
             this.leftChild = new Node(-1);
         } else if (this.rightChild.getId() == rstNode.getId()) {
             this.rightChild = new Node(-1);
-        } else if (this.father.getId() == rstNode.getId()) {
-            this.father = new Node(-1);
+        } else if (this.parent.getId() == rstNode.getId()) {
+            this.parent = new Node(-1);
         }
     }
 
@@ -144,11 +144,11 @@ public class Node {
             this.maxId = Math.max(this.maxId, child.getMaxId());
         }
 
-        if (this.getFather().getId() != -1) {
-            if (this.getFather().getMinId() != this.minId) {
-                this.getFather().updateMinMax(child, remove);
-            } else if (this.getFather().getMaxId() != this.maxId) {
-                this.getFather().updateMinMax(child, remove);
+        if (this.getParent().getId() != -1) {
+            if (this.getParent().getMinId() != this.minId) {
+                this.getParent().updateMinMax(child, remove);
+            } else if (this.getParent().getMaxId() != this.maxId) {
+                this.getParent().updateMinMax(child, remove);
             }
         }
 

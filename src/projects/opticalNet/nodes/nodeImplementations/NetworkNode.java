@@ -29,17 +29,17 @@ public class NetworkNode extends SynchronizerLayer {
 
     private boolean first = true;
 
-    public NetworkNode() {
+    public NetworkNode () {
     	this.minIdInSubtree = this.ID;
     	this.maxIdInSubtree = this.ID;
     }
 
-    public void connectToInputNode(InputNode node) {
+    public void connectToInputNode (InputNode node) {
         this.interfaces.add(node);
         this.addConnectionTo(node);
     }
 
-    public void setParent(InputNode node) {
+    public void setParent (InputNode node) {
         this.parent = node;
     }
 
@@ -47,7 +47,7 @@ public class NetworkNode extends SynchronizerLayer {
         this.controller = controller;
     }
 
-    public InputNode getParent() {
+    public InputNode getParent () {
         return this.parent;
     }
 
@@ -58,21 +58,21 @@ public class NetworkNode extends SynchronizerLayer {
             this.setLeftChild(node, subtreeId);
     }
 
-    public void setLeftChild(InputNode node, int minId) {
+    public void setLeftChild (InputNode node, int minId) {
         this.leftChild = node;
         this.setMinIdInSubtree(minId);
     }
 
-    public InputNode getLeftChild() {
+    public InputNode getLeftChild () {
         return this.leftChild;
     }
 
-    public void setRightChild(InputNode node, int maxId) {
+    public void setRightChild (InputNode node, int maxId) {
         this.rightChild = node;
         this.setMaxIdInSubtree(maxId);
     }
 
-    public void setMinIdInSubtree(int value) {
+    public void setMinIdInSubtree (int value) {
     	if (value == -1) {
     		this.minIdInSubtree = this.ID;
     	} else {
@@ -80,11 +80,11 @@ public class NetworkNode extends SynchronizerLayer {
     	}
     }
 
-    public int getMinIdInSubtree() {
+    public int getMinIdInSubtree () {
         return this.minIdInSubtree;
     }
 
-    public void setMaxIdInSubtree(int value) {
+    public void setMaxIdInSubtree (int value) {
     	if (value == -1) {
     		this.maxIdInSubtree = this.ID;
     	} else {
@@ -92,29 +92,29 @@ public class NetworkNode extends SynchronizerLayer {
     	}
     }
 
-    public int getMaxIdInSubtree() {
+    public int getMaxIdInSubtree () {
         return this.maxIdInSubtree;
     }
 
-    public int getWeight() {
+    public int getWeight () {
         return this.weights;
     }
 
-    public int getId() {
+    public int getId () {
         return this.ID;
     }
 
     @Override
-    public void init() {
+    public void init () {
         super.init();
     }
 
-    public void newMessage(int to) {
+    public void newMessage (int to) {
     	NetworkMessage netmsg = new NetworkMessage(this.ID, to);
     	this.buffer.add(netmsg);
     }
 
-    public void sendMsg(NetworkMessage msg) {
+    public void sendMsg (NetworkMessage msg) {
     	System.out.println("ID: " + ID);
     	NetworkMessage netmsg = new NetworkMessage(this.ID, msg.getDst());
     	if (msg.getDst() == this.ID) {
@@ -135,7 +135,7 @@ public class NetworkNode extends SynchronizerLayer {
     }
 
     @Override
-    public void nodeStep() {
+    public void nodeStep () {
     	if (this.first && this.ID == 1) {
     		System.out.println("First message node: " + ID);
     		this.first = false;
@@ -148,32 +148,32 @@ public class NetworkNode extends SynchronizerLayer {
     }
 
     @Override
-    public void handleMessages(Inbox inbox) {
+    public void handleMessages (Inbox inbox) {
         while (inbox.hasNext()) {
             Message msg = inbox.next();
             if (!(msg instanceof NetworkMessage)) {
                 continue;
             }
-            NetworkMessage cbmsg = (NetworkMessage) msg;
-            System.out.println(ID + " received msg from: " + cbmsg.getSrc());
-            if (cbmsg.getDst() == this.ID) {
-            	this.send(cbmsg, this.controller);
-                System.out.println("Message received from node " + cbmsg.getSrc());
+            NetworkMessage optmsg = (NetworkMessage) msg;
+            System.out.println(ID + " received msg from: " + optmsg.getSrc());
+            if (optmsg.getDst() == this.ID) {
+            	this.send(optmsg, this.controller);
+                System.out.println("Message received from node " + optmsg.getSrc());
                 continue;
             }
             // forward message in the network
-            if (this.minIdInSubtree <= cbmsg.getDst() && cbmsg.getDst() < this.ID) {
-                this.send(cbmsg, this.leftChild);
-            } else if (this.ID < cbmsg.getDst() && cbmsg.getDst() <= this.maxIdInSubtree) {
-                this.send(cbmsg, this.rightChild);
+            if (this.minIdInSubtree <= optmsg.getDst() && optmsg.getDst() < this.ID) {
+                this.send(optmsg, this.leftChild);
+            } else if (this.ID < optmsg.getDst() && optmsg.getDst() <= this.maxIdInSubtree) {
+                this.send(optmsg, this.rightChild);
             } else {
-                this.send(cbmsg, this.parent);
+                this.send(optmsg, this.parent);
             }
         }
     }
 
     @Override
-    public void draw(Graphics g, PositionTransformation pt, boolean highlight) {
+    public void draw (Graphics g, PositionTransformation pt, boolean highlight) {
         String text = "" + ID;
         // draw the node as a circle with the text inside
         super.drawNodeAsDiskWithText(g, pt, highlight, text, 12, Color.YELLOW);

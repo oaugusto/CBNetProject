@@ -39,11 +39,11 @@ public class NetworkSwitch extends Node {
     private int unitSize = 0;
     private int internalNodeSize = 0;
 
-    public void setIndex(int index) {
+    public void setIndex (int index) {
         this.index = index;
     }
 
-    public int getIndex() {
+    public int getIndex () {
         return this.index;
     }
 
@@ -166,11 +166,11 @@ public class NetworkSwitch extends Node {
         inNode.updateLinkToOutputNode(outNode);
     }
 
-    public InputNode getInputNode(int nodeId) {
+    public InputNode getInputNode (int nodeId) {
         return this.inputId2Node.get(nodeId);
     }
 
-    public OutputNode getOutputNode(int nodeId) {
+    public OutputNode getOutputNode (int nodeId) {
         return this.outputId2Node.get(nodeId);
     }
 
@@ -179,7 +179,7 @@ public class NetworkSwitch extends Node {
     }
 
     @Override
-    public void handleMessages(Inbox inbox) {
+    public void handleMessages (Inbox inbox) {
         while (inbox.hasNext()) {
             Message msg = inbox.next();
             if (!(msg instanceof ConnectNodesMessage)) {
@@ -195,22 +195,22 @@ public class NetworkSwitch extends Node {
     }
 
     @Override
-    public void preStep() {
+    public void preStep () {
 
     }
 
     @Override
-    public void neighborhoodChange() {
+    public void neighborhoodChange () {
 
     }
 
     @Override
-    public void postStep() {
+    public void postStep () {
 
     }
 
     @Override
-    public void checkRequirements() throws WrongConfigurationException {
+    public void checkRequirements () throws WrongConfigurationException {
 
     }
 
@@ -220,7 +220,7 @@ public class NetworkSwitch extends Node {
     //-----------------------------------------------------------------------------------
     //-----------------------------------------------------------------------------------
 
-    private void updateInternalNodesPositions() {
+    private void updateInternalNodesPositions () {
         double unitSize = this.height / (double)((6 * this.size) - 1);
         double xCof = this.getPosition().xCoord - (this.width/2.0) + (this.internalNodeSize/2.0);
         double yCof = this.getPosition().yCoord - (this.height/2.0) + (this.internalNodeSize/2.0);
@@ -235,7 +235,7 @@ public class NetworkSwitch extends Node {
         }
     }
 
-    public void setSwitchDimension(int width, int height) {
+    public void setSwitchDimension (int width, int height) {
         this.height = height;
         this.unitSize = this.height / ((6 * this.size) - 1); // unit used to construct internal nodes
         this.internalNodeSize = 5 * this.unitSize;
@@ -250,7 +250,7 @@ public class NetworkSwitch extends Node {
 
     // TODO: improve this method, separate into other methods
     @Override
-    public void draw(Graphics g, PositionTransformation pt, boolean highlight) {
+    public void draw (Graphics g, PositionTransformation pt, boolean highlight) {
         if (!Global.isGuiMode) {
             return;
         }
@@ -301,7 +301,7 @@ public class NetworkSwitch extends Node {
     }
 
     @Override
-    protected void nodePositionUpdated() {
+    protected void nodePositionUpdated () {
         this.updateInternalNodesPositions();
     }
 }

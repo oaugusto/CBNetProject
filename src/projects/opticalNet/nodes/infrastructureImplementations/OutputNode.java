@@ -20,36 +20,36 @@ public class OutputNode extends Node {
     private NetworkNode connectedNode = null;
     private InputNode inputNode = null;
 
-    public void setIndex(int index) {
+    public void setIndex (int index) {
         this.index = index;
     }
 
-    public int getIndex() {
+    public int getIndex () {
         return this.index;
     }
 
-    public void setInputNode(InputNode node) {
+    public void setInputNode (InputNode node) {
         this.inputNode = node;
     }
 
-    public InputNode getInputNode() {
+    public InputNode getInputNode () {
         return this.inputNode;
     }
 
-    public void connectToNode(NetworkNode node) {
+    public void connectToNode (NetworkNode node) {
         this.connectedNode = node;
     }
 
-    public NetworkNode getConnectedNode() {
+    public NetworkNode getConnectedNode () {
         return this.connectedNode;
     }
 
-    protected void sendToConnectedNode(Message msg) {
+    protected void sendToConnectedNode (Message msg) {
         sendDirect(msg, this.connectedNode);
     }
 
     @Override
-    public void handleMessages(Inbox inbox) {
+    public void handleMessages (Inbox inbox) {
         while (inbox.hasNext()) {
             Message msg = inbox.next();
             this.sendToConnectedNode(msg);
@@ -57,19 +57,19 @@ public class OutputNode extends Node {
     }
 
     @Override
-    public void init() { }
+    public void init () { }
 
     @Override
-    public void preStep() { }
+    public void preStep () { }
 
     @Override
-    public void neighborhoodChange() { }
+    public void neighborhoodChange () { }
 
     @Override
-    public void postStep() { }
+    public void postStep () { }
 
     @Override
-    public void checkRequirements() throws WrongConfigurationException { }
+    public void checkRequirements () throws WrongConfigurationException { }
 
     //-----------------------------------------------------------------------------------
     //-----------------------------------------------------------------------------------
@@ -78,7 +78,7 @@ public class OutputNode extends Node {
     //-----------------------------------------------------------------------------------
 
     @Override
-    public void draw(Graphics g, PositionTransformation pt, boolean highlight) {
+    public void draw (Graphics g, PositionTransformation pt, boolean highlight) {
         // Set the font
         String text = "" + this.index;
         int fontSize = (int) (defaultDrawingSizeInPixels * 0.7);
