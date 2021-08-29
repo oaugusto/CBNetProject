@@ -663,7 +663,7 @@ public class NetworkController extends SynchronizerLayer {
     }
 
     private void incrementPathWeight (int from, int to) {
-        this.tree.get(from - 1).incrementPathWeight(to - 1);
+        this.tree.get(from - 1).incrementPathWeight(to - 1, false);
     }
 
     /* End of Setters

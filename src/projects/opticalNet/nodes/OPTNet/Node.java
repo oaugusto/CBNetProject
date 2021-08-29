@@ -167,17 +167,20 @@ public class Node {
     	this.weight = weight;
     }
 
-    public void incrementPathWeight (int toId) {
+    public void incrementPathWeight (int toId, boolean rooted) {
         this.incrementWeight();
 
-        if (this.getId() == toId)
+        if (!rooted && this.parent.getId() != -1) {
+            this.incrementPathWeight(toId, false);
+        } else if (this.getId() == toId) {
             return;
-        else if (this.getId() < to && to <= this.maxId)
-            this.rightChild.incrementPathWeight(toId);
-        else if (this.minId <= to && to < this.getId())
-            this.leftChild.incrementPathWeight(toId);
-        else
-            this.parent.incrementPathWeight(toId);
+        } else if (this.getId() < to && to <= this.maxId) {
+            this.rightChild.incrementPathWeight(toId, true);
+        } else if (this.minId <= to && to < this.getId()) {
+            this.leftChild.incrementPathWeight(toId, true);
+        } else {
+            this.parent.incrementPathWeight(toId, true);
+        }
     }
 
     public void incrementWeight () {
