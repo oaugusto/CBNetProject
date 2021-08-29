@@ -140,7 +140,7 @@ public class NetworkController extends SynchronizerLayer {
     }
 
     /* Rotations */
-    private ArrayList<Alt> zigZigBottomUp (Node x) {
+    private void zigZigBottomUp (Node x) {
         /*
                  z                 *y
                 / \               /   \
@@ -156,9 +156,8 @@ public class NetworkController extends SynchronizerLayer {
         boolean leftZigZig = (y.getId() == z.getLeftChild().getId());
         Node c = (leftZigZig) ? y.getRightChild() : y.getLeftChild();
 
-        ArrayList<Alt> ret = new ArrayList<>();
-        ret.add(this.mapConn(y, z));
-        ret.add(this.mapConn(z, c));
+        this.mapConn(y, z);
+        this.mapConn(z, c);
 
         // calculate the new rank of nodes
         // type of operation----------------------------------------------------
@@ -175,11 +174,9 @@ public class NetworkController extends SynchronizerLayer {
         z.setWeight(zNewWeight);
         y.setWeight(yNewWeight);
         // ---------------------------------------------------------------------
-
-        return ret;
     }
 
-    private ArrayList<Alt> zigZagBottomUp (Node x) {
+    private void zigZagBottomUp (Node x) {
         /*
                   w               w
                  /               /
@@ -198,12 +195,11 @@ public class NetworkController extends SynchronizerLayer {
         Node b = (leftZigZag) ? x.getLeftChild() : x.getRightChild();
         Node c = (leftZigZag) ? x.getRightChild() : x.getLeftChild();
 
-        ArrayList<Alt> ret= new ArrayList<>();
-        ret.add(this.mapConn(w, x));
-        ret.add(this.mapConn(x, y));
-        ret.add(this.mapConn(x, z));
-        ret.add(this.mapConn(y, b));
-        ret.add(this.mapConn(z, c));
+        this.mapConn(w, x);
+        this.mapConn(x, y);
+        this.mapConn(x, z);
+        this.mapConn(y, b);
+        this.mapConn(z, c);
 
         // new weights------------------------------------------------------
         long xOldWeight = x.getWeight();
@@ -221,11 +217,9 @@ public class NetworkController extends SynchronizerLayer {
         z.setWeight(zNewWeight);
         x.setWeight(xNewWeight);
         // ---------------------------------------------------------------
-
-        return ret;
     }
 
-    private ArrayList<Alt> zigZigLeftTopDown (Node z) {
+    private void zigZigLeftTopDown (Node z) {
         /*
                  *z                    y
                  / \                 /   \
@@ -238,9 +232,8 @@ public class NetworkController extends SynchronizerLayer {
         Node y = z.getLeftChild();
         Node c = y.getRightChild();
 
-        ArrayList<Alt> ret = new ArrayList<>();
-        ret.add(this.mapConn(y, z));
-        ret.add(this.mapConn(z, c));
+        this.mapConn(y, z);
+        this.mapConn(z, c);
 
         // calculate the new rank of nodes
         // type of operation----------------------------------------------------
@@ -257,17 +250,14 @@ public class NetworkController extends SynchronizerLayer {
         z.setWeight(zNewWeight);
         y.setWeight(yNewWeight);
         // ---------------------------------------------------------------------
-
-        return ret;
     }
 
-    private ArrayList<Alt> zigZigRightTopDown (Node z) {
+    private void zigZigRightTopDown (Node z) {
         Node y = z.getRightChild();
         Node c = y.getLeftChild();
 
-        ArrayList<Alt> ret = new ArrayList<>();
-        ret.add(this.mapConn(y, z));
-        ret.add(this.mapConn(z, c));
+        this.mapConn(y, z);
+        this.mapConn(z, c);
 
         // calculate the new rank of nodes
         // type of operation----------------------------------------------------
@@ -284,11 +274,9 @@ public class NetworkController extends SynchronizerLayer {
         z.setWeight(zNewWeight);
         y.setWeight(yNewWeight);
         // ---------------------------------------------------------------------
-
-        return ret;
     }
 
-    private ArrayList<Alt> zigZagLeftTopDown (Node z) {
+    private void zigZagLeftTopDown (Node z) {
         /*
                      *z                     x
                      / \        -->       /   \
@@ -303,11 +291,10 @@ public class NetworkController extends SynchronizerLayer {
         Node b = x.getLeftChild();
         Node c = x.getRightChild();
 
-        ArrayList<Alt> ret = new ArrayList<>();
-        ret.add(this.mapConn(x, y));
-        ret.add(this.mapConn(x, z));
-        ret.add(this.mapConn(y, b));
-        ret.add(this.mapConn(z, c));
+        this.mapConn(x, y);
+        this.mapConn(x, z);
+        this.mapConn(y, b);
+        this.mapConn(z, c);
 
         // new weights------------------------------------------------------
         long xOldWeight = x.getWeight();
@@ -325,21 +312,18 @@ public class NetworkController extends SynchronizerLayer {
         z.setWeight(zNewWeight);
         x.setWeight(xNewWeight);
         // ---------------------------------------------------------------
-
-        return ret;
     }
 
-    private ArrayList<Alt> zigZagRightTopDown (Node z) {
+    private void zigZagRightTopDown (Node z) {
         Node y = z.getRightChild();
         Node x = y.getLeftChild();
         Node b = x.getRightChild();
         Node c = x.getLeftChild();
 
-        ArrayList<Alt> ret = new ArrayList<>();
-        ret.add(this.mapConn(x, y));
-        ret.add(this.mapConn(x, z));
-        ret.add(this.mapConn(y, b));
-        ret.add(this.mapConn(z, c));
+        this.mapConn(x, y);
+        this.mapConn(x, z);
+        this.mapConn(y, b);
+        this.mapConn(z, c);
 
         // new weights------------------------------------------------------
         long xOldWeight = x.getWeight();
@@ -357,8 +341,6 @@ public class NetworkController extends SynchronizerLayer {
         z.setWeight(zNewWeight);
         x.setWeight(xNewWeight);
         // ---------------------------------------------------------------
-
-        return ret;
     }
     /* End of Rotations */
 
@@ -652,7 +634,7 @@ public class NetworkController extends SynchronizerLayer {
 
     /* Setters */
 
-    void setInitialCon (Node fromNode, Node toNode) {
+    private void setInitialCon (Node fromNode, Node toNode) {
         int swtId = this.getSwitchId(fromNode, toNode);
         int subtreeId = fromNode.setChild(toNode) + 1;
 
@@ -662,14 +644,12 @@ public class NetworkController extends SynchronizerLayer {
         return;
     }
 
-    Alt mapConn (Node fromNode, Node toNode) {
+    private void mapConn (Node fromNode, Node toNode) {
         int swtId = this.getSwitchId(fromNode, toNode);
         int subtreeId = fromNode.setChild(toNode) + 1;
 
         this.sendConnectNodesMessage(swtId, fromNode.getId() + 1, toNode.getId() + 1, subtreeId);
         this.sendConnectNodesMessage(swtId + 1, toNode.getId() + 1, fromNode.getId() + 1);
-
-        return new Alt(swtId, fromNode.getId() + 1, toNode.getId() + 1);
     }
 
     private void sendConnectNodesMessage (int switchId, int from, int to) {
@@ -689,7 +669,7 @@ public class NetworkController extends SynchronizerLayer {
     /* End of Setters
 
     /* Auxiliary Functions */
-    int unionPos (int clsId1, int clsId2) {
+    private int unionPos (int clsId1, int clsId2) {
         /*
                 To calculate the postion of a UnionCluster we compute the
                 summation from (NUM_CLUSTERS - 1) to (NUM_CLUSTER - minimum(clsId1, clsId2))
@@ -713,9 +693,7 @@ public class NetworkController extends SynchronizerLayer {
         return apSum + clsId2 - clsId1 - 1;
     }
 
-    ArrayList<Alt> updateConn () {
-        ArrayList<Alt> ret = new ArrayList<>();
-
+    public void updateConn () {
         for (int i = 0; i < this.numNodes; i++) {
         	Node node = this.tree.get(i);
         	int op = getRotationToPerforme(node);
@@ -723,38 +701,35 @@ public class NetworkController extends SynchronizerLayer {
             switch (op) {
                 case 1:
                 case 2:
-                        ret = this.zigZigBottomUp(node);
+                        this.zigZigBottomUp(node);
                         break;
                 case 3:
                 case 4:
-                        ret = this.zigZagBottomUp(node);
+                        this.zigZagBottomUp(node);
                         break;
                 case 5:
-                        ret = this.zigZigLeftTopDown(node);
+                        this.zigZigLeftTopDown(node);
                         break;
                 case 6:
-                        ret = this.zigZigRightTopDown(node);
+                        this.zigZigRightTopDown(node);
                         break;
                 case 7:
-                        ret = this.zigZagLeftTopDown(node);
+                        this.zigZagLeftTopDown(node);
                         break;
                 case 8:
-                        ret = this.zigZagRightTopDown(node);
+                        this.zigZagRightTopDown(node);
                         break;
                 default:
                         break;
             }
         }
-
-        return ret;
     }
 
     /* End of Auxiliary Functions */
 
     @Override
     public void controllerStep () {
-    	ArrayList<Alt> updates = this.updateConn();
-
+    	this.updateConn();
     }
 
     @Override
