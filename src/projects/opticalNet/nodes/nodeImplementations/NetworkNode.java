@@ -22,16 +22,18 @@ public class NetworkNode extends SynchronizerLayer {
     private InputNode leftChild = null;
     private InputNode rightChild = null;
 
+    private NetworkController controller = null;
+
     private int minIdInSubtree = 0;
     private int maxIdInSubtree = 0;
-    
+
     private boolean first = true;
 
     public NetworkNode() {
     	this.minIdInSubtree = this.ID;
     	this.maxIdInSubtree = this.ID;
     }
-    
+
     public void connectToInputNode(InputNode node) {
         this.interfaces.add(node);
         this.addConnectionTo(node);
@@ -39,6 +41,10 @@ public class NetworkNode extends SynchronizerLayer {
 
     public void setParent(InputNode node) {
         this.parent = node;
+    }
+
+    public void setController (NetworkController controller) {
+        this.controller = controller;
     }
 
     public InputNode getParent() {
@@ -107,7 +113,7 @@ public class NetworkNode extends SynchronizerLayer {
     	NetworkMessage netmsg = new NetworkMessage(this.ID, to);
     	this.buffer.add(netmsg);
     }
-    
+
     public void sendMsg(NetworkMessage msg) {
     	System.out.println("ID: " + ID);
     	NetworkMessage netmsg = new NetworkMessage(this.ID, msg.getDst());
@@ -127,7 +133,7 @@ public class NetworkNode extends SynchronizerLayer {
             System.out.println("sending parent through node: " + this.parent.ID + " index: " + this.parent.getIndex());
         }
     }
-    
+
     @Override
     public void nodeStep() {
     	if (this.first && this.ID == 1) {
@@ -140,7 +146,7 @@ public class NetworkNode extends SynchronizerLayer {
     	NetworkMessage netmsg = this.buffer.poll();
     	this.sendMsg(netmsg);
     }
-    
+
     @Override
     public void handleMessages(Inbox inbox) {
         while (inbox.hasNext()) {
@@ -151,7 +157,7 @@ public class NetworkNode extends SynchronizerLayer {
             NetworkMessage cbmsg = (NetworkMessage) msg;
             System.out.println(ID + " received msg from: " + cbmsg.getSrc());
             if (cbmsg.getDst() == this.ID) {
-            	this.weights++;
+            	this.send(cbmsg, this.controller);
                 System.out.println("Message received from node " + cbmsg.getSrc());
                 continue;
             }

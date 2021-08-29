@@ -25,7 +25,7 @@ public class NetworkController extends SynchronizerLayer {
     private int numClusters = 0;
     private int numUnionClusters = 0;
     private int clusterSize;
-    
+
     private double epsilon = -1.5;
 
     private static final int SIZE_CLUSTER_TYPE1 = 4;
@@ -159,7 +159,7 @@ public class NetworkController extends SynchronizerLayer {
         ArrayList<Alt> ret = new ArrayList<>();
         ret.add(this.mapConn(y, z));
         ret.add(this.mapConn(z, c));
-        
+
         // calculate the new rank of nodes
         // type of operation----------------------------------------------------
         Node b = ((leftZigZig) ? y.getRightChild() : y.getLeftChild());
@@ -171,7 +171,7 @@ public class NetworkController extends SynchronizerLayer {
 
         long zNewWeight = zOldWeight - yOldWeight + bWeight;
         long yNewWeight = yOldWeight - bWeight + zNewWeight;
-        
+
         z.setWeight(zNewWeight);
         y.setWeight(yNewWeight);
         // ---------------------------------------------------------------------
@@ -216,12 +216,12 @@ public class NetworkController extends SynchronizerLayer {
         long yNewWeight = yOldWeight - xOldWeight + bWeight;
         long zNewWeight = zOldWeight - yOldWeight + cWeight;
         long xNewWeight = xOldWeight - bWeight - cWeight + yNewWeight + zNewWeight;
-        
+
         y.setWeight(yNewWeight);
         z.setWeight(zNewWeight);
         x.setWeight(xNewWeight);
         // ---------------------------------------------------------------
-        
+
         return ret;
     }
 
@@ -253,11 +253,11 @@ public class NetworkController extends SynchronizerLayer {
 
         long zNewWeight = zOldWeight - yOldWeight + bWeight;
         long yNewWeight = yOldWeight - bWeight + zNewWeight;
-        
+
         z.setWeight(zNewWeight);
         y.setWeight(yNewWeight);
         // ---------------------------------------------------------------------
-        
+
         return ret;
     }
 
@@ -268,7 +268,7 @@ public class NetworkController extends SynchronizerLayer {
         ArrayList<Alt> ret = new ArrayList<>();
         ret.add(this.mapConn(y, z));
         ret.add(this.mapConn(z, c));
-        
+
         // calculate the new rank of nodes
         // type of operation----------------------------------------------------
         Node b = y.getLeftChild();
@@ -280,7 +280,7 @@ public class NetworkController extends SynchronizerLayer {
 
         long zNewWeight = zOldWeight - yOldWeight + bWeight;
         long yNewWeight = yOldWeight - bWeight + zNewWeight;
-        
+
         z.setWeight(zNewWeight);
         y.setWeight(yNewWeight);
         // ---------------------------------------------------------------------
@@ -308,7 +308,7 @@ public class NetworkController extends SynchronizerLayer {
         ret.add(this.mapConn(x, z));
         ret.add(this.mapConn(y, b));
         ret.add(this.mapConn(z, c));
-        
+
         // new weights------------------------------------------------------
         long xOldWeight = x.getWeight();
         long yOldWeight = y.getWeight();
@@ -320,7 +320,7 @@ public class NetworkController extends SynchronizerLayer {
         long yNewWeight = yOldWeight - xOldWeight + bWeight;
         long zNewWeight = zOldWeight - yOldWeight + cWeight;
         long xNewWeight = xOldWeight - bWeight - cWeight + yNewWeight + zNewWeight;
-        
+
         y.setWeight(yNewWeight);
         z.setWeight(zNewWeight);
         x.setWeight(xNewWeight);
@@ -340,7 +340,7 @@ public class NetworkController extends SynchronizerLayer {
         ret.add(this.mapConn(x, z));
         ret.add(this.mapConn(y, b));
         ret.add(this.mapConn(z, c));
-        
+
         // new weights------------------------------------------------------
         long xOldWeight = x.getWeight();
         long yOldWeight = y.getWeight();
@@ -352,7 +352,7 @@ public class NetworkController extends SynchronizerLayer {
         long yNewWeight = yOldWeight - xOldWeight + bWeight;
         long zNewWeight = zOldWeight - yOldWeight + cWeight;
         long xNewWeight = xOldWeight - bWeight - cWeight + yNewWeight + zNewWeight;
-        
+
         y.setWeight(yNewWeight);
         z.setWeight(zNewWeight);
         x.setWeight(xNewWeight);
@@ -366,7 +366,7 @@ public class NetworkController extends SynchronizerLayer {
     private double log2(long value) {
         return Math.log(value) / Math.log(2);
     }
-    
+
     private double zigDiffRank (Node x, Node y) {
         /*
                      y                   x
@@ -397,7 +397,7 @@ public class NetworkController extends SynchronizerLayer {
 
         return deltaRank;
     }
-    
+
     private double zigZagDiffRank (Node x, Node y, Node z) {
         /*
              z					   *x
@@ -651,35 +651,39 @@ public class NetworkController extends SynchronizerLayer {
     /* End of Getters */
 
     /* Setters */
-    
+
     void setInitialCon(Node fromNode, Node toNode) {
         int swtId = this.getSwitchId(fromNode, toNode);
         int subtreeId = fromNode.setChild(toNode) + 1;
 
         this.getSwitch(swtId).updateSwitch(fromNode.getId() + 1, toNode.getId() + 1, subtreeId);
-		this.getSwitch(swtId + 1).updateSwitch(toNode.getId() + 1, fromNode.getId() + 1);     
+		this.getSwitch(swtId + 1).updateSwitch(toNode.getId() + 1, fromNode.getId() + 1);
 
         return;
     }
-    
+
     Alt mapConn (Node fromNode, Node toNode) {
         int swtId = this.getSwitchId(fromNode, toNode);
         int subtreeId = fromNode.setChild(toNode) + 1;
-        
+
         this.sendConnectNodesMessage(swtId, fromNode.getId() + 1, toNode.getId() + 1, subtreeId);
-        this.sendConnectNodesMessage(swtId + 1, toNode.getId() + 1, fromNode.getId() + 1);        
+        this.sendConnectNodesMessage(swtId + 1, toNode.getId() + 1, fromNode.getId() + 1);
 
         return new Alt(swtId, fromNode.getId() + 1, toNode.getId() + 1);
     }
-    
-    private void sendConnectNodesMessage(int switchId, int from, int to) {
+
+    private void sendConnectNodesMessage (int switchId, int from, int to) {
     	ConnectNodesMessage msg = new ConnectNodesMessage(from, to);
     	this.send(msg, this.getSwitch(switchId));
     }
-    
-    private void sendConnectNodesMessage(int switchId, int from, int to, int subtreeId) {
+
+    private void sendConnectNodesMessage (int switchId, int from, int to, int subtreeId) {
     	ConnectNodesMessage msg = new ConnectNodesMessage(from, to, subtreeId);
     	this.send(msg, this.getSwitch(switchId));
+    }
+
+    private void incrementPathWeight (int from, int to) {
+        this.tree.get(from - 1).incrementPathWeight(to - 1);
     }
 
     /* End of Setters
@@ -754,8 +758,19 @@ public class NetworkController extends SynchronizerLayer {
 
     @Override
     public void handleMessages(Inbox inbox) {
+        while (inbox.hasNext()) {
+            Message msg = inbox.next();
+            if (!(msg instanceof NetworkMessage)) {
+                continue;
+            }
 
+            NetworkMessage cbmsg = (NetworkMessage) msg;
+            System.out.println(
+                "Network Node incrementing weights from " + cbmsg.getSrc() + " " + cbmsg.getDst()
+            );
 
+            this.incrementPathWeight(cbmsg.getSrc(), cbmsg.getDst());
+        }
     }
 
     @Override
@@ -777,14 +792,7 @@ public class NetworkController extends SynchronizerLayer {
 		//set network switches position
 		double unit = height / (double)((7 * this.numSwitches) + 1);
 		double switch_height = 5 * unit;
-//		this.leftSwitchInput.setPosition(3 * x_space, 3.5 * unit, 0);
-//		this.leftSwitchInput.setSwitchDimension(switch_height/3, switch_height);
-//		this.leftSwitchOutput.setPosition(3 * x_space, 9.5 * unit, 0);
-//		this.leftSwitchOutput.setSwitchDimension(switch_height/3, switch_height);
-//		this.rightSwitchInput.setPosition(3 * x_space, 15.5 * unit, 0);
-//		this.rightSwitchInput.setSwitchDimension(switch_height/3, switch_height);
-//		this.rightSwitchOutput.setPosition(3 * x_space, 21.5 * unit, 0);
-//		this.rightSwitchOutput.setSwitchDimension(switch_height/3, switch_height);
+
 		for (int i = 0; i < this.numSwitches; ++i) {
 			NetworkSwitch n = this.switches.get(i);
 			n.setPosition(3 * x_space, 2 * unit + switch_height/2 + (i * 7 * unit), 0);

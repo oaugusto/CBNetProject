@@ -162,12 +162,25 @@ public class Node {
     public void setMaxId (int maxId) {
         this.maxId = maxId;
     }
-    
-    public void setWeight(long weight) {
+
+    public void setWeight (long weight) {
     	this.weight = weight;
     }
-    
-    public void incrementWeight() {
+
+    public void incrementPathWeight (int toId) {
+        this.incrementWeight();
+
+        if (this.getId() == toId)
+            return;
+        else if (this.getId() < to && to <= this.maxId)
+            this.rightChild.incrementPathWeight(toId);
+        else if (this.minId <= to && to < this.getId())
+            this.leftChild.incrementPathWeight(toId);
+        else
+            this.parent.incrementPathWeight(toId);
+    }
+
+    public void incrementWeight () {
         this.weight++;
     }
     /* End of Setters */

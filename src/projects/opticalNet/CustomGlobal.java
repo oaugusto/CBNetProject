@@ -15,102 +15,106 @@ import sinalgo.tools.Tuple;
 
 public class CustomGlobal extends AbstractCustomGlobal {
 
-	// final condition
-	public long MAX_REQ;
-	
-	// simulation
-	public int numberOfNodes = 32;
-	public int switchSize = 256;
-	public NetworkController controller = null;
-	public ArrayList<NetworkNode> netNodes = new ArrayList<>();
-	
-	public RequestQueue requestQueue;
-	
-	// control execution
-	public static boolean isSequencial = true;
-	public static boolean mustGenerateSplay = true;
-	
-	public Random random = Tools.getRandomNumberGenerator();
-	public double lambda = 0.05;
+    // final condition
+    public long MAX_REQ;
 
-	  // LOG
-	DataCollection data = DataCollection.getInstance();
+    // simulation
+    public int numberOfNodes = 32;
+    public int switchSize = 256;
+    public NetworkController controller = null;
+    public ArrayList<NetworkNode> netNodes = new ArrayList<>();
 
-  	@Override
-	public void preRun() {
-  		String input = "";
-  	    String output = "";
+    public RequestQueue requestQueue;
 
-  	    try {
+    // control execution
+    public static boolean isSequencial = true;
+    public static boolean mustGenerateSplay = true;
 
-  	      if (Configuration.hasParameter("input")) {
-  	        input = Configuration.getStringParameter("input");
-  	      }
+    public Random random = Tools.getRandomNumberGenerator();
+    public double lambda = 0.05;
 
-  	      if (Configuration.hasParameter("output")) {
-  	        output = Configuration.getStringParameter("output");
-  	      }
+      // LOG
+    DataCollection data = DataCollection.getInstance();
 
-  	      if (Configuration.hasParameter("mu")) {
-  	        double mu = (double) Configuration.getIntegerParameter("mu");
-  	        lambda = (double) (1 / mu);
-  	      }
+    @Override
+    public void preRun () {
+        String input = "";
+        String output = "";
 
-  	    } catch (Exception e) {
-  	      e.printStackTrace();
-  	      System.out.println("Missing configuration parameters");
-  	    }
+        try {
 
-  	    // Set Log Path
-  	    this.data.setPath(output);
+            if (Configuration.hasParameter("input")) {
+                input = Configuration.getStringParameter("input");
+            }
 
-  	    /*
-  	     * read input data and configure the simulation
-  	     */
-  	    this.requestQueue = new RequestQueue(input);
-  	    this.numberOfNodes = this.requestQueue.getNumberOfNodes();
-  	    MAX_REQ = this.requestQueue.getNumberOfRequests();
-  		
-  		
-  		for (int i = 0; i < this.numberOfNodes; i++) {
-  			NetworkNode newNetNode = new NetworkNode();
-  			newNetNode.finishInitializationWithDefaultModels(true);
-  			netNodes.add(newNetNode);
-  		}
-  		
-  		this.controller = new NetworkController(this.numberOfNodes, this.switchSize, netNodes);
-  		this.controller.renderTopology(Configuration.dimX, Configuration.dimY);
-  	}
+            if (Configuration.hasParameter("output")) {
+                output = Configuration.getStringParameter("output");
+            }
 
-  	 @Override
-  	 public void preRound() {
-  		 if (mustGenerateSplay && this.requestQueue.hasNextRequest()) {
-  			 mustGenerateSplay = false;
+            if (Configuration.hasParameter("mu")) {
+                double mu = (double) Configuration.getIntegerParameter("mu");
+                lambda = (double) (1 / mu);
+            }
 
-  			 double u = random.nextDouble();
-  			 double x = Math.log(1 - u) / (-lambda);
-  			 x = (int) x;
-  			 if (x <= 0) {
-  				 x = 1;
-  			 }
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Missing configuration parameters");
+        }
 
-  			Tuple<Integer, Integer> r = this.requestQueue.getNextRequest();
-  	      	TriggerNodeOperation ted = new TriggerNodeOperation(r.first, r.second);
-  	      	ted.startGlobalTimer(x);
+        // Set Log Path
+        this.data.setPath(output);
 
-  		 }
-  	 }
+        /*
+        * read input data and configure the simulation
+        */
+        this.requestQueue = new RequestQueue(input);
+        this.numberOfNodes = this.requestQueue.getNumberOfNodes();
+        MAX_REQ = this.requestQueue.getNumberOfRequests();
 
-	@Override
-	public boolean hasTerminated() {
-		if (this.data.getCompletedRequests() >= MAX_REQ) {
-//			CBNetApp node = (CBNetApp) Tools.getNodeByID(1);
-//			this.data.addTotalTime(node.getCurrentRound());
-//			this.data.printRotationData();
-//			this.data.printRoutingData();
-			return true;
-	    }
-	    return false;
-	}
+        for (int i = 0; i < this.numberOfNodes; i++) {
+            NetworkNode newNetNode = new NetworkNode();
+            newNetNode.finishInitializationWithDefaultModels(true);
+            netNodes.add(newNetNode);
+        }
+
+        this.controller = new NetworkController(this.numberOfNodes, this.switchSize, netNodes);
+
+        for (int i = 0; i < this.numberOfNodes; i++) {
+            netNodes.get(i).setController(this.controller);
+        }
+
+        this.controller.renderTopology(Configuration.dimX, Configuration.dimY);
+    }
+
+    @Override
+    public void preRound () {
+        if (mustGenerateSplay && this.requestQueue.hasNextRequest()) {
+            mustGenerateSplay = false;
+
+            double u = random.nextDouble();
+            double x = Math.log(1 - u) / (-lambda);
+            x = (int) x;
+            if (x <= 0) {
+                x = 1;
+            }
+
+            Tuple<Integer, Integer> r = this.requestQueue.getNextRequest();
+            TriggerNodeOperation ted = new TriggerNodeOperation(r.first, r.second);
+            ted.startGlobalTimer(x);
+
+        }
+    }
+
+    @Override
+    public boolean hasTerminated () {
+        if (this.data.getCompletedRequests() >= MAX_REQ) {
+            //CBNetApp node = (CBNetApp) Tools.getNodeByID(1);
+            //this.data.addTotalTime(node.getCurrentRound());
+            //this.data.printRotationData();
+            //this.data.printRoutingData();
+            return true;
+        }
+        return false;
+    }
 
 }
