@@ -78,7 +78,8 @@ public class CustomGlobal extends AbstractCustomGlobal {
         }
 
         this.controller = new NetworkController(this.numberOfNodes, this.switchSize, netNodes);
-
+        this.controller.finishInitializationWithDefaultModels(true);
+        
         for (int i = 0; i < this.numberOfNodes; i++) {
             netNodes.get(i).setController(this.controller);
         }

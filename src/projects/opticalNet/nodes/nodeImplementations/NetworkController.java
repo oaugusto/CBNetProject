@@ -9,8 +9,10 @@ import projects.opticalNet.nodes.OPTNet.Alt;
 import projects.opticalNet.nodes.OPTNet.Node;
 import projects.opticalNet.nodes.infrastructureImplementations.NetworkSwitch;
 import projects.opticalNet.nodes.messages.ConnectNodesMessage;
+import projects.opticalNet.nodes.messages.NetworkMessage;
 import sinalgo.gui.transformation.PositionTransformation;
 import sinalgo.nodes.messages.Inbox;
+import sinalgo.nodes.messages.Message;
 
 public class NetworkController extends SynchronizerLayer {
 
@@ -736,6 +738,7 @@ public class NetworkController extends SynchronizerLayer {
     public void handleMessages (Inbox inbox) {
         while (inbox.hasNext()) {
             Message msg = inbox.next();
+            System.out.println("Receive message");
             if (!(msg instanceof NetworkMessage)) {
                 continue;
             }

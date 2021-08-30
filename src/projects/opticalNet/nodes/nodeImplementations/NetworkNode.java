@@ -8,6 +8,7 @@ import java.util.Queue;
 
 import projects.opticalNet.nodes.messages.NetworkMessage;
 import projects.opticalNet.nodes.infrastructureImplementations.InputNode;
+import sinalgo.nodes.Node;
 import sinalgo.nodes.messages.Inbox;
 import sinalgo.nodes.messages.Message;
 import sinalgo.gui.transformation.PositionTransformation;
@@ -103,7 +104,7 @@ public class NetworkNode extends SynchronizerLayer {
     public int getId () {
         return this.ID;
     }
-
+    
     @Override
     public void init () {
         super.init();
@@ -115,7 +116,7 @@ public class NetworkNode extends SynchronizerLayer {
     }
 
     public void sendMsg (NetworkMessage msg) {
-    	System.out.println("ID: " + ID);
+//    	System.out.println("ID: " + ID);
     	NetworkMessage netmsg = new NetworkMessage(this.ID, msg.getDst());
     	if (msg.getDst() == this.ID) {
             System.out.println("Message received from node " + msg.getSrc());
@@ -123,25 +124,19 @@ public class NetworkNode extends SynchronizerLayer {
         }
 
         if (this.minIdInSubtree <= msg.getDst() && msg.getDst() < this.ID) {
-        	System.out.println("sending left through node: " + this.leftChild.ID);
+//        	System.out.println("sending left through node: " + this.leftChild.ID);
             this.send(netmsg, this.leftChild);
         } else if (this.ID < msg.getDst() && msg.getDst() <= this.maxIdInSubtree) {
             this.send(netmsg, this.rightChild);
-            System.out.println("sending right through node: " + this.rightChild.ID);
+//            System.out.println("sending right through node: " + this.rightChild.ID);
         } else {
             this.send(netmsg, this.parent);
-            System.out.println("sending parent through node: " + this.parent.ID + " index: " + this.parent.getIndex());
+//            System.out.println("sending parent through node: " + this.parent.ID + " index: " + this.parent.getIndex());
         }
     }
 
     @Override
     public void nodeStep () {
-    	if (this.first && this.ID == 1) {
-    		System.out.println("First message node: " + ID);
-    		this.first = false;
-    		System.out.println("sending");
-    		this.sendMsg(new NetworkMessage(this.ID, 3));
-    	}
     	if (buffer.isEmpty()) return;
     	NetworkMessage netmsg = this.buffer.poll();
     	this.sendMsg(netmsg);
@@ -155,10 +150,9 @@ public class NetworkNode extends SynchronizerLayer {
                 continue;
             }
             NetworkMessage optmsg = (NetworkMessage) msg;
-            System.out.println(ID + " received msg from: " + optmsg.getSrc());
             if (optmsg.getDst() == this.ID) {
-            	this.send(optmsg, this.controller);
-                System.out.println("Message received from node " + optmsg.getSrc());
+            	this.sendDirect(optmsg, this.controller);
+//                System.out.println("Message received from node " + optmsg.getSrc());
                 continue;
             }
             // forward message in the network

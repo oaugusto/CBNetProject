@@ -109,7 +109,7 @@ public class InputNode extends Node {
     @Override
     public void handleMessages (Inbox inbox) {
         while (inbox.hasNext()) {
-        	System.out.println("received message on InputNode: " + this.index);
+//        	System.out.println("received message on InputNode: " + this.index);
             Message msg = inbox.next();
             this.sendToOutputNode(msg);
         }

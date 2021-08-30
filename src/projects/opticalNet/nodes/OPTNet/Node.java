@@ -174,9 +174,9 @@ public class Node {
             this.incrementPathWeight(toId, false);
         } else if (this.getId() == toId) {
             return;
-        } else if (this.getId() < to && to <= this.maxId) {
+        } else if (this.getId() < toId && toId <= this.maxId) {
             this.rightChild.incrementPathWeight(toId, true);
-        } else if (this.minId <= to && to < this.getId()) {
+        } else if (this.minId <= toId && toId < this.getId()) {
             this.leftChild.incrementPathWeight(toId, true);
         } else {
             this.parent.incrementPathWeight(toId, true);
