@@ -19,7 +19,7 @@ public class CustomGlobal extends AbstractCustomGlobal {
     public long MAX_REQ;
 
     // simulation
-    public int numberOfNodes = 32;
+    public int numberOfNodes = 128;
     public int switchSize = 256;
     public NetworkController controller = null;
     public ArrayList<NetworkNode> netNodes = new ArrayList<>();
@@ -82,6 +82,12 @@ public class CustomGlobal extends AbstractCustomGlobal {
         
         for (int i = 0; i < this.numberOfNodes; i++) {
             netNodes.get(i).setController(this.controller);
+            System.out.println("ID: " + this.controller.getNode(i).getId() + " lftID: " 
+            + this.controller.getNode(i).getLeftChild().getId() 
+            + " rgtID: " + this.controller.getNode(i).getRightChild().getId());
+            System.out.println("ID: " + this.controller.getNode(i).getId() + " lftSUB: " 
+                    + this.controller.getNode(i).getMinId() 
+                    + " rgtSUB: " + this.controller.getNode(i).getMaxId());
         }
 
         this.controller.renderTopology(Configuration.dimX, Configuration.dimY);

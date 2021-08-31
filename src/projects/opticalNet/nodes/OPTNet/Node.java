@@ -171,7 +171,7 @@ public class Node {
         this.incrementWeight();
 
         if (!rooted && this.parent.getId() != -1) {
-            this.incrementPathWeight(toId, false);
+            this.parent.incrementPathWeight(toId, false);
         } else if (this.getId() == toId) {
             return;
         } else if (this.getId() < toId && toId <= this.maxId) {

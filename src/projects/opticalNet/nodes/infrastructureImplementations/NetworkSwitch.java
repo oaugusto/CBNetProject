@@ -15,9 +15,9 @@ import sinalgo.nodes.Node;
 import sinalgo.nodes.messages.Inbox;
 import sinalgo.nodes.messages.Message;
 import sinalgo.runtime.Global;
+import sinalgo.tools.Tools;
 
 public class NetworkSwitch extends Node {
-
     // switch id
     private int index = -1;
 

@@ -371,7 +371,7 @@ public class NetworkController extends SynchronizerLayer {
 
         long yNewWeight = yOldWeight - xOldWeight + bWeight;
         long xNewWeight = xOldWeight - bWeight + yNewWeight;
-
+        
         double xOldRank = (xOldWeight == 0) ? 0 : log2(xOldWeight);
         double yOldRank = (yOldWeight == 0) ? 0 : log2(yOldWeight);
         double xNewRank = (xNewWeight == 0) ? 0 : log2(xNewWeight);
@@ -379,6 +379,7 @@ public class NetworkController extends SynchronizerLayer {
 
         double deltaRank = yNewRank + xNewRank - yOldRank - xOldRank;
 
+//        System.out.println("XOLD: " + xOldWeight + " YOLD: " + yOldWeight + " DELTA: " + deltaRank);
         return deltaRank;
     }
 
@@ -433,7 +434,7 @@ public class NetworkController extends SynchronizerLayer {
                     z.getLeftChild().getId() != -1 && y.getId() == z.getLeftChild().getId()) {
                     // zigzigLeft
                     double aux = zigDiffRank(y, z);
-                    if (aux > maxDelta) {
+                    if (aux < maxDelta) {
                             maxDelta = aux;
                             operation = 1;
                     }
@@ -442,7 +443,7 @@ public class NetworkController extends SynchronizerLayer {
                     z.getRightChild().getId() != -1 && y.getId() == z.getRightChild().getId()) {
                     // zigzigRight
                     double aux = zigDiffRank(y, z);
-                    if (aux > maxDelta) {
+                    if (aux < maxDelta) {
                             maxDelta = aux;
                             operation = 2;
                     }
@@ -451,7 +452,7 @@ public class NetworkController extends SynchronizerLayer {
                     z.getLeftChild().getId() != -1 && y.getId() == z.getLeftChild().getId()) {
                     // zigzagLeft
                     double aux = zigZagDiffRank(x, y, z);
-                    if (aux > maxDelta) {
+                    if (aux < maxDelta) {
                             maxDelta = aux;
                             operation = 3;
                     }
@@ -460,7 +461,7 @@ public class NetworkController extends SynchronizerLayer {
                     z.getRightChild().getId() != -1 && y.getId() == z.getRightChild().getId()) {
                     // zigzagRight
                     double aux = zigZagDiffRank(x, y, z);
-                    if (aux > maxDelta) {
+                    if (aux < maxDelta) {
                             maxDelta = aux;
                             operation = 4;
                     }
@@ -475,7 +476,7 @@ public class NetworkController extends SynchronizerLayer {
                 if (y.getLeftChild().getId() != -1) {
                         Node z = y.getLeftChild();
                         double aux = zigDiffRank(y, z);
-                        if (aux > maxDelta) {
+                        if (aux < maxDelta) {
                                 maxDelta = aux;
                                 operation = 5;
                         }
@@ -485,7 +486,7 @@ public class NetworkController extends SynchronizerLayer {
                 if (y.getRightChild().getId() != -1) {
                         Node z = y.getRightChild();
                         double aux = zigDiffRank(y, z);
-                        if (aux > maxDelta) {
+                        if (aux < maxDelta) {
                                 maxDelta = aux;
                                 operation = 6;
                         }
@@ -499,7 +500,7 @@ public class NetworkController extends SynchronizerLayer {
                 if (y.getRightChild().getId() != -1) {
                         Node z = y.getRightChild();
                         double aux = zigDiffRank(y, z);
-                        if (aux > maxDelta) {
+                        if (aux < maxDelta) {
                                 maxDelta = aux;
                                 operation = 7;
                         }
@@ -509,7 +510,7 @@ public class NetworkController extends SynchronizerLayer {
                 if (y.getLeftChild().getId() != -1) {
                         Node z = y.getLeftChild();
                         double aux = zigDiffRank(y, z);
-                        if (aux > maxDelta) {
+                        if (aux < maxDelta) {
                                 maxDelta = aux;
                                 operation = 8;
                         }
@@ -517,6 +518,8 @@ public class NetworkController extends SynchronizerLayer {
         }
 
         if (maxDelta < this.epsilon) {
+//        	this.printTree();
+        	if (operation == 3) return -1;
         	return operation;
         } else {
         	return -1;
@@ -570,7 +573,7 @@ public class NetworkController extends SynchronizerLayer {
         return ret;
     }
 
-    Node getNode (int nodeId) {
+    public Node getNode (int nodeId) {
         return this.tree.get(nodeId);
     }
 
@@ -656,12 +659,12 @@ public class NetworkController extends SynchronizerLayer {
 
     private void sendConnectNodesMessage (int switchId, int from, int to) {
     	ConnectNodesMessage msg = new ConnectNodesMessage(from, to);
-    	this.send(msg, this.getSwitch(switchId));
+    	this.sendDirect(msg, this.getSwitch(switchId));
     }
 
     private void sendConnectNodesMessage (int switchId, int from, int to, int subtreeId) {
     	ConnectNodesMessage msg = new ConnectNodesMessage(from, to, subtreeId);
-    	this.send(msg, this.getSwitch(switchId));
+    	this.sendDirect(msg, this.getSwitch(switchId));
     }
 
     private void incrementPathWeight (int from, int to) {
@@ -699,6 +702,7 @@ public class NetworkController extends SynchronizerLayer {
         for (int i = 0; i < this.numNodes; i++) {
         	Node node = this.tree.get(i);
         	int op = getRotationToPerforme(node);
+        	System.out.println("OPERATION: " + op);
         	if (op == -1) continue;
             switch (op) {
                 case 1:
@@ -738,15 +742,14 @@ public class NetworkController extends SynchronizerLayer {
     public void handleMessages (Inbox inbox) {
         while (inbox.hasNext()) {
             Message msg = inbox.next();
-            System.out.println("Receive message");
             if (!(msg instanceof NetworkMessage)) {
                 continue;
             }
 
             NetworkMessage optmsg = (NetworkMessage) msg;
-            System.out.println(
-                "Network Node incrementing weights from " + optmsg.getSrc() + " " + optmsg.getDst()
-            );
+//            System.out.println(
+//                "Network Node incrementing weights from " + optmsg.getSrc() + " " + optmsg.getDst()
+//            );
 
             this.incrementPathWeight(optmsg.getSrc(), optmsg.getDst());
         }
@@ -781,4 +784,26 @@ public class NetworkController extends SynchronizerLayer {
 		// set controller node position
 		this.setPosition(4 * x_space, height / 2, 0);
 	}
+    
+    public void printTree () {
+        Node root = null;
+        for (int i = 0; i < this.numNodes; i++)
+            if (this.tree.get(i).getParent().getId() == -1)
+                root = this.tree.get(i);
+
+        this.printNode(root);
+    }
+
+    public void printNode (Node node) {
+        if (node.getId() == -1)
+            return;
+
+        System.out.println("Node ID: " + node.getId());
+
+        System.out.println("MIN SUBTREE: " + node.getMinId());
+        printNode(node.getLeftChild());
+        
+        System.out.println("MAX SUBTREE: " + node.getMaxId());
+        printNode(node.getRightChild());
+    }
 }
