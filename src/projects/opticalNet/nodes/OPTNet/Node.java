@@ -96,7 +96,7 @@ public class Node {
             return this.setRightChild(child);
         }
     }
-    
+
     public int setLeftChild (Node child) {
         if (this.getId() == -1)
             return -1;
@@ -120,13 +120,13 @@ public class Node {
         if (this.getId() == -1)
             return;
 
-        if (this.leftChild.getId() == rstNode.getId()) {
+        if (this.leftChild.getId() != -1 && this.leftChild.getId() == rstNode.getId()) {
         	this.updateMinMax(rstNode, true);
             this.leftChild = new Node(-1);
-        } else if (this.rightChild.getId() == rstNode.getId()) {
+        } else if (this.rightChild.getId() != -1 && this.rightChild.getId() == rstNode.getId()) {
         	this.updateMinMax(rstNode, true);
             this.rightChild = new Node(-1);
-        } else if (this.parent.getId() == rstNode.getId()) {
+        } else if (this.parent.getId() != -1 && this.parent.getId() == rstNode.getId()) {
             this.parent = new Node(-1);
         }
     }
