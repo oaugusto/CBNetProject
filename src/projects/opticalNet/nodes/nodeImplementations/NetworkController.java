@@ -158,8 +158,8 @@ public class NetworkController extends SynchronizerLayer {
         boolean leftZigZig = (y.getId() == z.getLeftChild().getId());
         Node c = (leftZigZig) ? y.getRightChild() : y.getLeftChild();
 
-        this.mapConn(y, z);
         this.mapConn(z, c);
+        this.mapConn(y, z);
 
         // calculate the new rank of nodes
         // type of operation----------------------------------------------------
@@ -197,11 +197,11 @@ public class NetworkController extends SynchronizerLayer {
         Node b = (leftZigZag) ? x.getLeftChild() : x.getRightChild();
         Node c = (leftZigZag) ? x.getRightChild() : x.getLeftChild();
 
-        this.mapConn(w, x);
-        this.mapConn(x, y);
-        this.mapConn(x, z);
         this.mapConn(y, b);
+        this.mapConn(x, y);
         this.mapConn(z, c);
+        this.mapConn(x, z);
+        this.mapConn(w, x);
 
         // new weights------------------------------------------------------
         long xOldWeight = x.getWeight();
@@ -234,8 +234,8 @@ public class NetworkController extends SynchronizerLayer {
         Node y = z.getLeftChild();
         Node c = y.getRightChild();
 
-        this.mapConn(y, z);
         this.mapConn(z, c);
+        this.mapConn(y, z);
 
         // calculate the new rank of nodes
         // type of operation----------------------------------------------------
@@ -258,8 +258,8 @@ public class NetworkController extends SynchronizerLayer {
         Node y = z.getRightChild();
         Node c = y.getLeftChild();
 
-        this.mapConn(y, z);
         this.mapConn(z, c);
+        this.mapConn(y, z);
 
         // calculate the new rank of nodes
         // type of operation----------------------------------------------------
@@ -293,10 +293,10 @@ public class NetworkController extends SynchronizerLayer {
         Node b = x.getLeftChild();
         Node c = x.getRightChild();
 
-        this.mapConn(x, y);
-        this.mapConn(x, z);
         this.mapConn(y, b);
+        this.mapConn(x, y);
         this.mapConn(z, c);
+        this.mapConn(x, z);
 
         // new weights------------------------------------------------------
         long xOldWeight = x.getWeight();
@@ -322,10 +322,10 @@ public class NetworkController extends SynchronizerLayer {
         Node b = x.getRightChild();
         Node c = x.getLeftChild();
 
-        this.mapConn(x, y);
-        this.mapConn(x, z);
         this.mapConn(y, b);
+        this.mapConn(x, y);
         this.mapConn(z, c);
+        this.mapConn(x, z);
 
         // new weights------------------------------------------------------
         long xOldWeight = x.getWeight();
@@ -650,8 +650,10 @@ public class NetworkController extends SynchronizerLayer {
     }
 
     private void mapConn (Node fromNode, Node toNode) {
+    	System.out.println("From Node: " + fromNode.getId() + " to node: " + toNode.getId());
         int swtId = this.getSwitchId(fromNode, toNode);
         int subtreeId = fromNode.setChild(toNode) + 1;
+        
 
         this.sendConnectNodesMessage(swtId, fromNode.getId() + 1, toNode.getId() + 1, subtreeId);
         this.sendConnectNodesMessage(swtId + 1, toNode.getId() + 1, fromNode.getId() + 1);
@@ -707,22 +709,28 @@ public class NetworkController extends SynchronizerLayer {
             switch (op) {
                 case 1:
                 case 2:
+                		System.out.println("zigZigBottomUp");
                         this.zigZigBottomUp(node);
                         break;
                 case 3:
                 case 4:
+                		System.out.println("zigZigBottomUp");
                         this.zigZagBottomUp(node);
                         break;
                 case 5:
+                		System.out.println("zigZigLeftTopDown");
                         this.zigZigLeftTopDown(node);
                         break;
                 case 6:
+                		System.out.println("zigZigRightTopDown");
                         this.zigZigRightTopDown(node);
                         break;
                 case 7:
+                		System.out.println("zigZagLeftTopDown");
                         this.zigZagLeftTopDown(node);
                         break;
                 case 8:
+                		System.out.println("zigZagRightTopDown");
                         this.zigZagRightTopDown(node);
                         break;
                 default:

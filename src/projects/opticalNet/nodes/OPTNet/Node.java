@@ -77,7 +77,8 @@ public class Node {
         if (this.getId() == -1)
             return;
 
-        this.resetNode(this.parent);
+        this.parent.resetNode(this);
+        System.out.println("AQUIIIIIII!!");
         this.parent = parent;
     }
 
@@ -101,8 +102,9 @@ public class Node {
         if (this.getId() == -1)
             return -1;
 
+        child.setParent(this);
         this.leftChild = child;
-        this.leftChild.setParent(this);
+        
         return this.updateMinMax(child, false);
     }
 
@@ -110,8 +112,8 @@ public class Node {
         if (this.getId() == -1)
             return -1;
 
+        child.setParent(this);
         this.rightChild = child;
-        this.rightChild.setParent(this);
 
         return this.updateMinMax(child, false);
     }
@@ -138,16 +140,16 @@ public class Node {
             else
                 this.minId = this.getId();
         } else {
-        	System.out.println(" minId: " + this.minId + " maxId" + this.maxId + " childmin: " + child.getMinId() + " childMax: " + child.getMaxId());
+//        	System.out.println(" minId: " + this.minId + " maxId" + this.maxId + " childmin: " + child.getMinId() + " childMax: " + child.getMaxId());
             this.minId = Math.min(this.minId, child.getMinId());
             this.maxId = Math.max(this.maxId, child.getMaxId());
-            System.out.println(" minId: " + this.minId + " maxId" + this.maxId);
+//            System.out.println(" minId: " + this.minId + " maxId" + this.maxId + " Id: " + this.getId());
         }
 
         if (this.getParent().getId() != -1) {
         	this.getParent().updateMinMax(this, false);
         }
-        System.out.println(" minId: " + this.minId + " maxId" + this.maxId + " Id" + this.getId());
+//        System.out.println(" minId: " + this.minId + " maxId" + this.maxId + " Id" + this.getId());
 
         return (this.minId == child.getMinId() ? this.minId : this.maxId);
     }
