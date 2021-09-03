@@ -702,7 +702,7 @@ public class NetworkController extends SynchronizerLayer {
         for (int i = 0; i < this.numNodes; i++) {
         	Node node = this.tree.get(i);
         	int op = getRotationToPerforme(node);
-        	System.out.println("OPERATION: " + op);
+//        	System.out.println("OPERATION: " + op);
         	if (op == -1) continue;
             switch (op) {
                 case 1:

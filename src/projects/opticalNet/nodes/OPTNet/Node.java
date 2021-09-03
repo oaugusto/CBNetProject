@@ -77,6 +77,7 @@ public class Node {
         if (this.getId() == -1)
             return;
 
+        this.resetNode(this.parent);
         this.parent = parent;
     }
 
@@ -88,18 +89,17 @@ public class Node {
                 return this.setRightChild(child);
 
         } else if (this.getId() > child.getId()) {
+        	this.getLeftChild().resetNode(this);
             return this.setLeftChild(child);
         } else {
+        	this.getRightChild().resetNode(this);
             return this.setRightChild(child);
         }
     }
-
+    
     public int setLeftChild (Node child) {
         if (this.getId() == -1)
             return -1;
-
-        if (this.leftChild.getId() != -1)
-            this.leftChild.getParent().resetNode(this);
 
         this.leftChild = child;
         this.leftChild.setParent(this);
@@ -109,9 +109,6 @@ public class Node {
     public int setRightChild (Node child) {
         if (this.getId() == -1)
             return -1;
-
-        if (this.rightChild.getId() != -1)
-            this.rightChild.getParent().resetNode(this);
 
         this.rightChild = child;
         this.rightChild.setParent(this);
@@ -123,10 +120,11 @@ public class Node {
         if (this.getId() == -1)
             return;
 
-        this.updateMinMax(rstNode, true);
         if (this.leftChild.getId() == rstNode.getId()) {
+        	this.updateMinMax(rstNode, true);
             this.leftChild = new Node(-1);
         } else if (this.rightChild.getId() == rstNode.getId()) {
+        	this.updateMinMax(rstNode, true);
             this.rightChild = new Node(-1);
         } else if (this.parent.getId() == rstNode.getId()) {
             this.parent = new Node(-1);
@@ -140,17 +138,16 @@ public class Node {
             else
                 this.minId = this.getId();
         } else {
+        	System.out.println(" minId: " + this.minId + " maxId" + this.maxId + " childmin: " + child.getMinId() + " childMax: " + child.getMaxId());
             this.minId = Math.min(this.minId, child.getMinId());
             this.maxId = Math.max(this.maxId, child.getMaxId());
+            System.out.println(" minId: " + this.minId + " maxId" + this.maxId);
         }
 
         if (this.getParent().getId() != -1) {
-            if (this.getParent().getMinId() != this.minId) {
-                this.getParent().updateMinMax(child, remove);
-            } else if (this.getParent().getMaxId() != this.maxId) {
-                this.getParent().updateMinMax(child, remove);
-            }
+        	this.getParent().updateMinMax(this, false);
         }
+        System.out.println(" minId: " + this.minId + " maxId" + this.maxId + " Id" + this.getId());
 
         return (this.minId == child.getMinId() ? this.minId : this.maxId);
     }
@@ -169,6 +166,8 @@ public class Node {
 
     public void incrementPathWeight (int toId, boolean rooted) {
         this.incrementWeight();
+//        System.out.println("NODE: " + this.getId() + " parent: " + this.parent.getId() + " ToId: " + toId);
+        System.out.println("NODE: " + this.getId() + " Minid: " + this.minId + " ToId: " + toId);
 
         if (!rooted && this.parent.getId() != -1) {
             this.parent.incrementPathWeight(toId, false);

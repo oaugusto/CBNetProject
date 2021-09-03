@@ -185,12 +185,12 @@ public class NetworkSwitch extends Node {
             if (!(msg instanceof ConnectNodesMessage)) {
                 continue;
             }
-            ConnectNodesMessage conmsg = (ConnectNodesMessage) msg;
-            if (conmsg.getSubtreeId() == -1) {
-            	this.updateSwitch(conmsg.getFrom(), conmsg.getTo());
-            } else {
-            	this.updateSwitch(conmsg.getFrom(), conmsg.getTo(), conmsg.getSubtreeId());
-            }
+//            ConnectNodesMessage conmsg = (ConnectNodesMessage) msg;
+//            if (conmsg.getSubtreeId() == -1) {
+//            	this.updateSwitch(conmsg.getFrom(), conmsg.getTo());
+//            } else {
+//            	this.updateSwitch(conmsg.getFrom(), conmsg.getTo(), conmsg.getSubtreeId());
+//            }
         }
     }
 
