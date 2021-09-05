@@ -30,41 +30,41 @@ public class CBNetNode extends RotationLayer {
         PASSIVE, COMMUNICATING
     }
 
-//    private States state;
+    private States state;
 
     @Override
     public void init() {
         super.init();
 
         this.bufferRequest = new LinkedList<>();
-//        this.state = States.PASSIVE;
+        this.state = States.PASSIVE;
     }
 
     @Override
     public void updateState() {
         super.updateState();
 
-//        switch (this.state) {
-//        case PASSIVE:
+        switch (this.state) {
+        case PASSIVE:
 
             if (!this.bufferRequest.isEmpty()) {
                 Request rq = this.bufferRequest.poll();
                 this.sendCBNetMessage(rq.dstId, Global.currentTime + rand.nextDouble());
-//                this.state = States.COMMUNICATING;
+                this.state = States.COMMUNICATING;
                 this.newMessageSent();
                 //Log
                 this.data.addSequence(rq.srcId - 1, rq.dstId - 1);
             }
 
-//            break;
-//
-//        case COMMUNICATING:
-//            break;
-//
-//        default:
-//            Tools.fatalError("Invalid CBNetNode state");
-//            break;
-//        }
+            break;
+
+        case COMMUNICATING:
+            break;
+
+        default:
+            Tools.fatalError("Invalid CBNetNode state");
+            break;
+        }
 
     }
 
@@ -75,7 +75,7 @@ public class CBNetNode extends RotationLayer {
 
     @Override
     public void ackCBNetMessageReceived(CBNetMessage msg) {
-//        this.state = States.PASSIVE;
+        this.state = States.PASSIVE;
         msg.finalTime = this.getCurrentRound();
         this.communicationCompleted(msg);
     }
