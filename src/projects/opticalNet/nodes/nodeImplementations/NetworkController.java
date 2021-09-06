@@ -732,6 +732,10 @@ public class NetworkController extends SynchronizerLayer {
         	Tools.fatalError("Trying to make root node as a child");
         }
 
+        if (swtId >= 8) {
+            this.switches.get(i).debugSwitch();
+        }
+
         this.sendConnectNodesMessage(swtId, fromNode.getId() + 1, toNode.getId() + 1, subtreeId);
         this.sendConnectNodesMessage(swtId + 1, toNode.getId() + 1, fromNode.getId() + 1);
     }
