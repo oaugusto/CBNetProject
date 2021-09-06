@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <sinalgo>
-	<ProjectSelector windowWidth="600" windowHeight="400" lastChosenProject="opticalNet" windowPosX="969" windowPosY="431" isMaximized="false" selectedTab="1" />
-	<GUI windowWidth="800" windowHeight="550" windowPosX="342" windowPosY="276" isMaximized="true" ControlPanelExpandSimulation="true" ControlPanelShowFullViewPanel="true" ControlPanelShowTextPanel="true" ControlPanelShowProjectControl="true" RunOperationIsLimited="false" helpWindowWidth="500" helpWindowHeight="500" helpWindowPosX="200" helpWindowPosY="200" helpWindowIsMaximized="false" />
-	<RandomSeed seedFromPreviousRun="2236248633700453118" />
+	<ProjectSelector windowWidth="600" windowHeight="420" lastChosenProject="opticalNet" windowPosX="611" windowPosY="282" isMaximized="false" selectedTab="1" />
+	<GUI windowWidth="800" windowHeight="550" windowPosX="2568" windowPosY="-14" isMaximized="true" ControlPanelExpandSimulation="true" ControlPanelShowFullViewPanel="true" ControlPanelShowTextPanel="true" ControlPanelShowProjectControl="true" RunOperationIsLimited="false" helpWindowWidth="500" helpWindowHeight="500" helpWindowPosX="200" helpWindowPosY="200" helpWindowIsMaximized="false" />
+	<RandomSeed seedFromPreviousRun="9212963330977065068" />
 	<App lastSelectedFileDirectory="" checkForUpdatesAtStartup="true" updateCheckTimeStamp="1630888990389" runCmdLineArgs="-overwrite input=input/tor_128.txt output=output/tor decayTime=30 " />
 	<GenNodesDlg numNodes="100" />
 </sinalgo>
