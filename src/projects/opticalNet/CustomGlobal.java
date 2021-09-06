@@ -20,7 +20,7 @@ public class CustomGlobal extends AbstractCustomGlobal {
 
     // simulation
     public int numberOfNodes = 128;
-    public int switchSize = 256;
+    public int switchSize = 128;
     public NetworkController controller = null;
     public ArrayList<NetworkNode> netNodes = new ArrayList<>();
 

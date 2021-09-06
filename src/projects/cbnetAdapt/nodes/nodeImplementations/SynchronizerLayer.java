@@ -158,7 +158,7 @@ public abstract class SynchronizerLayer extends CBTreeLayer {
     }
     
     public void decayFunction() {
-    	System.out.println("DECAY FUNCTION: " + this.round);
+//    	System.out.println("DECAY FUNCTION: " + this.round);
     	this.decayWeight();
     }
 
