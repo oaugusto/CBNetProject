@@ -145,7 +145,7 @@ public class NetworkSwitch extends Node {
         OutputNode outNode = this.outputId2Node.get(out);
 
         System.out.println("In: " + in + " out: " + out);
-        
+
         inNode.getConnectedNode().setChild(inNode, subtreeId);
         this.connectNodes(inNode, outNode);
     }
@@ -214,6 +214,18 @@ public class NetworkSwitch extends Node {
     @Override
     public void checkRequirements () throws WrongConfigurationException {
 
+    }
+
+    public void debugSwitch () {
+    	System.out.println("SWITCH ID: " + this.index);
+    	System.out.println("Input Nodes: ");
+        for (int i = 0; i < this.size; i++) {
+            System.out.println((i + 1) + " Node: " + this.inputNodes.get(i).getIndex());
+        }
+    	System.out.println("Output Nodes: ");
+        for (int i = 0; i < this.size; i++) {
+            System.out.println((i + 1) + " Node: " + this.outputNodes.get(i).getIndex());
+        }
     }
 
     //-----------------------------------------------------------------------------------
