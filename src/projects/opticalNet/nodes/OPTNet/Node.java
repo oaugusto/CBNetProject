@@ -121,7 +121,7 @@ public class Node {
         child.setParent(this);
         this.leftChild = child;
 
-        return this.updateMinMax(child, false);
+        return this.updateMin(child);
     }
 
     public int setRightChild (Node child) {
@@ -131,7 +131,7 @@ public class Node {
         child.setParent(this);
         this.rightChild = child;
 
-        return this.updateMinMax(child, false);
+        return this.updateMax(child);
     }
 
     public void resetNode (Node rstNode) {
@@ -139,35 +139,28 @@ public class Node {
             return;
 
         if (this.leftChild.getId() != -1 && this.leftChild.getId() == rstNode.getId()) {
-        	this.updateMinMax(rstNode, true);
+        	this.updateMin(new Node(-1));
             this.leftChild = new Node(-1);
         } else if (this.rightChild.getId() != -1 && this.rightChild.getId() == rstNode.getId()) {
-        	this.updateMinMax(rstNode, true);
+        	this.updateMax(new Node(-1));
             this.rightChild = new Node(-1);
         } else if (this.parent.getId() != -1 && this.parent.getId() == rstNode.getId()) {
             this.parent = new Node(-1);
         }
     }
 
-    public int updateMinMax (Node child, boolean remove /*= false*/) {
-        if (remove) {
-            if (child.getId() > this.getId())
-                this.maxId = this.getId();
-            else
-                this.minId = this.getId();
-        } else {
-//        	System.out.println(" minId: " + this.minId + " maxId" + this.maxId + " childmin: " + child.getMinId() + " childMax: " + child.getMaxId());
-            this.minId = Math.min(this.minId, child.getMinId());
-            this.maxId = Math.max(this.maxId, child.getMaxId());
-//            System.out.println(" minId: " + this.minId + " maxId" + this.maxId + " Id: " + this.getId());
-        }
+    public int updateMin (Node child) {
+        if (child.getId() == -1)
+            return this.minId = this.getId();
 
-        if (this.getParent().getId() != -1) {
-        	this.getParent().updateMinMax(this, false);
-        }
-//        System.out.println(" minId: " + this.minId + " maxId" + this.maxId + " Id" + this.getId());
+        return this.minId = child.getMinId();
+    }
 
-        return (this.minId == child.getMinId() ? this.minId : this.maxId);
+    public int updateMax (Node child) {
+        if (child.getId() == -1)
+            return this.maxId = this.getId();
+
+        return this.maxId = child.getMaxId();
     }
 
     public void setMinId (int minId) {
