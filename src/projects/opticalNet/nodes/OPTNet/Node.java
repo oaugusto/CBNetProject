@@ -75,11 +75,12 @@ public class Node {
 
     /* End of Getters */
     /* Setters */
+
     public void setParent (Node parent) {
         if (this.getId() == -1)
             return;
 
-        this.parent.resetNode(this);
+        this.parent.resetChild(this);
         System.out.println("AQUIIIIIII!!");
         this.parent = parent;
     }
@@ -91,11 +92,11 @@ public class Node {
             );
             return -1;
         } else if (this.getId() > child.getId()) {
-        	this.getLeftChild().resetNode(this);
+        	this.getLeftChild().resetParent(this);
             return this.setLeftChild(child);
 
         } else {
-        	this.getRightChild().resetNode(this);
+        	this.getRightChild().resetParent(this);
             return this.setRightChild(child);
         }
     }
@@ -108,10 +109,10 @@ public class Node {
                 return this.setRightChild(child);
 
         } else if (this.getId() > child.getId()) {
-        	this.getLeftChild().resetNode(this);
+        	this.getLeftChild().resetParent(this);
             return this.setLeftChild(child);
         } else {
-        	this.getRightChild().resetNode(this);
+        	this.getRightChild().resetParent(this);
             return this.setRightChild(child);
         }
     }
@@ -136,17 +137,26 @@ public class Node {
         return this.updateMax(child);
     }
 
-    public void resetNode (Node rstNode) {
+    public void resetChild (Node rstNode) {
         if (this.getId() == -1)
             return;
 
         if (this.leftChild.getId() != -1 && this.leftChild.getId() == rstNode.getId()) {
         	this.updateMin(new Node(-1));
             this.leftChild = new Node(-1);
+
         } else if (this.rightChild.getId() != -1 && this.rightChild.getId() == rstNode.getId()) {
         	this.updateMax(new Node(-1));
             this.rightChild = new Node(-1);
-        } else if (this.parent.getId() != -1 && this.parent.getId() == rstNode.getId()) {
+
+        }
+    }
+
+    public void resetParent (Node rstNode) {
+        if (this.getId() == -1)
+            return;
+
+        if (this.parent.getId() != -1 && this.parent.getId() == rstNode.getId()) {
             this.parent = new Node(-1);
         }
     }
