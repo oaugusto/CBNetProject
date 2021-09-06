@@ -56,10 +56,10 @@ public class NetworkController extends SynchronizerLayer {
         );
 
         ArrayList<Integer> edgeList = new ArrayList<Integer>();
-        for (int i = 0; i < this.numNodes; i++) {
+        for (int i = 0; i <= this.numNodes; i++) {
             Node newNode = new Node();
             this.tree.add(newNode);
-            if (i != numNodes - 1) {
+            if (i != numNodes) {
                 edgeList.add(i + 1);
             } else {
                 edgeList.add(-1);
@@ -135,10 +135,8 @@ public class NetworkController extends SynchronizerLayer {
 
     private void setup (ArrayList<Integer> edgeList) {
         for (int i = 0; i < this.numNodes; i++) {
-            if (edgeList.get(i) != -1) {
-            	this.setInitialCon(this.tree.get(edgeList.get(i)), this.tree.get(i));
-//            	System.out.println(tmp.getSwitchId() + ", " + tmp.getInNodeId() + ": " + tmp.getOutNodeId());
-            }
+            this.setInitialCon(this.tree.get(edgeList.get(i)), this.tree.get(i));
+//          System.out.println(tmp.getSwitchId() + ", " + tmp.getInNodeId() + ": " + tmp.getOutNodeId());
         }
     }
 
@@ -453,12 +451,12 @@ public class NetworkController extends SynchronizerLayer {
         int operation = 0;
 
         /*bottom-up - BEGIN*/
-        if (x.getParent().getId() != -1 && x.getParent().getParent().getId() != -1)
+        if (this.isValidNode(x.getParent()) && this.isValidNode(x.getParent().getParent()))
         {
             Node y = x.getParent();
             Node z = y.getParent();
-            if (y.getLeftChild().getId() != -1 && x.getId() == y.getLeftChild().getId() &&
-                    z.getLeftChild().getId() != -1 && y.getId() == z.getLeftChild().getId()) {
+            if (this.isValidNode(y.getLeftChild()) && x.getId() == y.getLeftChild().getId() &&
+            		this.isValidNode(z.getLeftChild()) && y.getId() == z.getLeftChild().getId()) {
                     // zigzigLeft
                     double aux = zigDiffRank(y, z);
                     if (aux < maxDelta) {
@@ -652,15 +650,24 @@ public class NetworkController extends SynchronizerLayer {
         return previousSwitches + 2 * (fromNode.getId() > toNode.getId() ? 1 : 0);
     }
 
-    NetworkSwitch getSwitch (Node fromNode, Node toNode) {
+    public NetworkSwitch getSwitch (Node fromNode, Node toNode) {
         return this.switches.get(this.getSwitchId(fromNode, toNode));
     }
-    NetworkSwitch getSwitch (int switchId) {
+    public NetworkSwitch getSwitch (int switchId) {
         return this.switches.get(switchId);
     }
 
-    boolean areSameCluster (Node node1, Node node2) {
+    private boolean areSameCluster (Node node1, Node node2) {
         return this.getClusterId(node1) == this.getClusterId(node2);
+    }
+    
+    private boolean isValidNode (Node node) {
+    	if (node.getId() == -1) {
+    		return false;
+    	} else if (node.getId() == this.numNodes) {
+    		return false;
+    	}
+    	return true;
     }
     /* End of Getters */
 
@@ -670,6 +677,12 @@ public class NetworkController extends SynchronizerLayer {
         int swtId = this.getSwitchId(fromNode, toNode);
         int subtreeId = fromNode.setChild(toNode) + 1;
 
+        if (fromNode.getId() == this.numNodes) {
+        	return;
+        } else if (toNode.getId() == this.numNodes) {
+        	Tools.fatalError("Trying to make root node as a child");
+        }
+        
         this.getSwitch(swtId).updateSwitch(fromNode.getId() + 1, toNode.getId() + 1, subtreeId);
 		this.getSwitch(swtId + 1).updateSwitch(toNode.getId() + 1, fromNode.getId() + 1);
 
@@ -681,6 +694,12 @@ public class NetworkController extends SynchronizerLayer {
         int swtId = this.getSwitchId(fromNode, toNode);
         int subtreeId = fromNode.setChild(toNode) + 1;
 
+        if (fromNode.getId() == this.numNodes) {
+        	return;
+        } else if (toNode.getId() == this.numNodes) {
+        	Tools.fatalError("Trying to make root node as a child");
+        }
+        
         this.sendConnectNodesMessage(swtId, fromNode.getId() + 1, toNode.getId() + 1, subtreeId);
         this.sendConnectNodesMessage(swtId + 1, toNode.getId() + 1, fromNode.getId() + 1);
     }
@@ -690,6 +709,12 @@ public class NetworkController extends SynchronizerLayer {
         int swtId = this.getSwitchId(fromNode, toNode);
         int subtreeId = fromNode.setChild(toNode, oldParent) + 1;
 
+        if (fromNode.getId() == this.numNodes) {
+        	return;
+        } else if (toNode.getId() == this.numNodes) {
+        	Tools.fatalError("Trying to make root node as a child");
+        }
+        
         this.sendConnectNodesMessage(swtId, fromNode.getId() + 1, toNode.getId() + 1, subtreeId);
         this.sendConnectNodesMessage(swtId + 1, toNode.getId() + 1, fromNode.getId() + 1);
     }
