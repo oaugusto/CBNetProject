@@ -158,7 +158,7 @@ public class NetworkController extends SynchronizerLayer {
         boolean leftZigZig = (y.getId() == z.getLeftChild().getId());
         Node c = (leftZigZig) ? y.getRightChild() : y.getLeftChild();
 
-        this.mapConn(z, c);
+        this.mapConn(z, c, y);
         this.mapConn(y, z);
 
         // calculate the new rank of nodes
@@ -197,9 +197,9 @@ public class NetworkController extends SynchronizerLayer {
         Node b = (leftZigZag) ? x.getLeftChild() : x.getRightChild();
         Node c = (leftZigZag) ? x.getRightChild() : x.getLeftChild();
 
-        this.mapConn(y, b);
+        this.mapConn(y, b, x);
         this.mapConn(x, y);
-        this.mapConn(z, c);
+        this.mapConn(z, c, x);
         this.mapConn(x, z);
         this.mapConn(w, x);
 
@@ -234,7 +234,7 @@ public class NetworkController extends SynchronizerLayer {
         Node y = z.getLeftChild();
         Node c = y.getRightChild();
 
-        this.mapConn(z, c);
+        this.mapConn(z, c, y);
         this.mapConn(y, z);
 
         // calculate the new rank of nodes
@@ -258,7 +258,7 @@ public class NetworkController extends SynchronizerLayer {
         Node y = z.getRightChild();
         Node c = y.getLeftChild();
 
-        this.mapConn(z, c);
+        this.mapConn(z, c, y);
         this.mapConn(y, z);
 
         // calculate the new rank of nodes
@@ -293,9 +293,9 @@ public class NetworkController extends SynchronizerLayer {
         Node b = x.getLeftChild();
         Node c = x.getRightChild();
 
-        this.mapConn(y, b);
+        this.mapConn(y, b, x);
         this.mapConn(x, y);
-        this.mapConn(z, c);
+        this.mapConn(z, c, x);
         this.mapConn(x, z);
 
         // new weights------------------------------------------------------
@@ -322,9 +322,9 @@ public class NetworkController extends SynchronizerLayer {
         Node b = x.getRightChild();
         Node c = x.getLeftChild();
 
-        this.mapConn(y, b);
+        this.mapConn(y, b, x);
         this.mapConn(x, y);
-        this.mapConn(z, c);
+        this.mapConn(z, c, x);
         this.mapConn(x, z);
 
         // new weights------------------------------------------------------
@@ -371,7 +371,7 @@ public class NetworkController extends SynchronizerLayer {
 
         long yNewWeight = yOldWeight - xOldWeight + bWeight;
         long xNewWeight = xOldWeight - bWeight + yNewWeight;
-        
+
         double xOldRank = (xOldWeight == 0) ? 0 : log2(xOldWeight);
         double yOldRank = (yOldWeight == 0) ? 0 : log2(yOldWeight);
         double xNewRank = (xNewWeight == 0) ? 0 : log2(xNewWeight);
@@ -653,7 +653,15 @@ public class NetworkController extends SynchronizerLayer {
     	System.out.println("From Node: " + fromNode.getId() + " to node: " + toNode.getId());
         int swtId = this.getSwitchId(fromNode, toNode);
         int subtreeId = fromNode.setChild(toNode) + 1;
-        
+
+        this.sendConnectNodesMessage(swtId, fromNode.getId() + 1, toNode.getId() + 1, subtreeId);
+        this.sendConnectNodesMessage(swtId + 1, toNode.getId() + 1, fromNode.getId() + 1);
+    }
+
+    private void mapConn (Node fromNode, Node toNode, Node oldParent) {
+    	System.out.println("From Node: " + fromNode.getId() + " to node: " + toNode.getId());
+        int swtId = this.getSwitchId(fromNode, toNode);
+        int subtreeId = fromNode.setChild(toNode, oldParent) + 1;
 
         this.sendConnectNodesMessage(swtId, fromNode.getId() + 1, toNode.getId() + 1, subtreeId);
         this.sendConnectNodesMessage(swtId + 1, toNode.getId() + 1, fromNode.getId() + 1);
@@ -792,7 +800,7 @@ public class NetworkController extends SynchronizerLayer {
 		// set controller node position
 		this.setPosition(4 * x_space, height / 2, 0);
 	}
-    
+
     public void printTree () {
         Node root = null;
         for (int i = 0; i < this.numNodes; i++)
@@ -810,7 +818,7 @@ public class NetworkController extends SynchronizerLayer {
 
         System.out.println("MIN SUBTREE: " + node.getMinId());
         printNode(node.getLeftChild());
-        
+
         System.out.println("MAX SUBTREE: " + node.getMaxId());
         printNode(node.getRightChild());
     }

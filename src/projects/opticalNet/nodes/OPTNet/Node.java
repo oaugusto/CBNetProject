@@ -84,7 +84,23 @@ public class Node {
 
     public int setChild (Node child) {
         if (child.getId() == -1) {
-            if (this.getLeftChild().getId() == -1)
+            Tools.fatalError(
+                "Trying to add a Dummy node to " + ID + " without specifying its parent"
+            );
+
+        } else if (this.getId() > child.getId()) {
+        	this.getLeftChild().resetNode(this);
+            return this.setLeftChild(child);
+
+        } else {
+        	this.getRightChild().resetNode(this);
+            return this.setRightChild(child);
+        }
+    }
+
+    public int setChild (Node child, Node oldParent) {
+        if (child.getId() == -1) {
+            if (this.getId() > oldParent.getId())
                 return this.setLeftChild(child);
             else
                 return this.setRightChild(child);
@@ -104,7 +120,7 @@ public class Node {
 
         child.setParent(this);
         this.leftChild = child;
-        
+
         return this.updateMinMax(child, false);
     }
 
