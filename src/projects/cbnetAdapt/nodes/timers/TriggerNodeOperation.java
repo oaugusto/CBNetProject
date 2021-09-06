@@ -1,7 +1,7 @@
 package projects.cbnetAdapt.nodes.timers;
 
-import projects.cbnet.CustomGlobal;
-import projects.cbnet.nodes.nodeImplementations.CBNetNode;
+import projects.cbnetAdapt.CustomGlobal;
+import projects.cbnetAdapt.nodes.nodeImplementations.CBNetNode;
 import sinalgo.nodes.timers.Timer;
 import sinalgo.tools.Tools;
 

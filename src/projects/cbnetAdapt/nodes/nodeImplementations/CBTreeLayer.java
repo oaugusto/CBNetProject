@@ -28,6 +28,10 @@ public abstract class CBTreeLayer extends BinarySearchTreeLayer {
     public void incrementWeight() {
         this.weight++;
     }
+    
+    public void decayWeight() {
+    	this.weight /= 2;
+    }
 
     public void updateWeights(int from, int to) {
         CBTreeLayer aux = this;

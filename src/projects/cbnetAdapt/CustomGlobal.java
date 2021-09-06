@@ -37,6 +37,8 @@ public class CustomGlobal extends AbstractCustomGlobal {
   public Random random = Tools.getRandomNumberGenerator();
   public double lambda = 0.05;
 
+  public static int decayTime = 30;
+  
   // LOG
   DataCollection data = DataCollection.getInstance();
 
@@ -71,6 +73,10 @@ public class CustomGlobal extends AbstractCustomGlobal {
       if (Configuration.hasParameter("mu")) {
         double mu = (double) Configuration.getIntegerParameter("mu");
         lambda = (double) (1 / mu);
+      }
+      
+      if (Configuration.hasParameter("decayTime")) {
+        this.decayTime = (int) Configuration.getIntegerParameter("decayTime");
       }
 
     } catch (Exception e) {

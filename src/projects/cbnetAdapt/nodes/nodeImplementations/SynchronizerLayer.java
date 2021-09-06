@@ -1,5 +1,7 @@
 package projects.cbnetAdapt.nodes.nodeImplementations;
 
+import projects.cbnetAdapt.CustomGlobal;
+
 /**
  * SynchronizerLayer TODO : reduce the number of time slots
  */
@@ -9,6 +11,8 @@ public abstract class SynchronizerLayer extends CBTreeLayer {
     private int timeslot;
     private long round;
 
+    private int currentTime_decayFunction = 0;
+    
     public int getCurrentTimeSlot() {
         return this.timeslot;
     }
@@ -77,6 +81,11 @@ public abstract class SynchronizerLayer extends CBTreeLayer {
             posRound();
 
             this.round++;
+            this.currentTime_decayFunction++;
+            if (this.currentTime_decayFunction >= CustomGlobal.decayTime) {
+            	decayFunction();
+            	this.currentTime_decayFunction = 0;
+            }
             break;
 
         default:
@@ -146,6 +155,11 @@ public abstract class SynchronizerLayer extends CBTreeLayer {
 
     public void nodeStep() {
 
+    }
+    
+    public void decayFunction() {
+    	System.out.println("DECAY FUNCTION: " + this.round);
+    	this.decayWeight();
     }
 
 }
