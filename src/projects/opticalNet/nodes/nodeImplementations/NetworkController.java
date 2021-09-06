@@ -250,7 +250,6 @@ public class NetworkController extends SynchronizerLayer {
         this.debugNode(w);
         this.debugNode(z);
         this.debugNode(y);
-        this.debugNode(x);
 
         this.mapConn(z, c, y);
         this.mapConn(y, z);
@@ -281,7 +280,6 @@ public class NetworkController extends SynchronizerLayer {
         this.debugNode(w);
         this.debugNode(z);
         this.debugNode(y);
-        this.debugNode(x);
 
         this.mapConn(z, c, y);
         this.mapConn(y, z);
@@ -711,6 +709,8 @@ public class NetworkController extends SynchronizerLayer {
 
         if (fromNode.getId() == this.numNodes) {
         	return;
+        } else if (toNode.getId() == -1) {
+        	return;
         } else if (toNode.getId() == this.numNodes) {
         	Tools.fatalError("Trying to make root node as a child");
         }
@@ -725,6 +725,8 @@ public class NetworkController extends SynchronizerLayer {
         int subtreeId = fromNode.setChild(toNode, oldParent) + 1;
 
         if (fromNode.getId() == this.numNodes) {
+        	return;
+        } else if (toNode.getId() == -1) {
         	return;
         } else if (toNode.getId() == this.numNodes) {
         	Tools.fatalError("Trying to make root node as a child");
@@ -789,7 +791,7 @@ public class NetworkController extends SynchronizerLayer {
                         break;
                 case 3:
                 case 4:
-                		System.out.println("zigZigBottomUp");
+                		System.out.println("zigZagBottomUp");
                         this.zigZagBottomUp(node);
                         break;
                 case 5:
@@ -797,12 +799,12 @@ public class NetworkController extends SynchronizerLayer {
                         this.zigZigLeftTopDown(node);
                         break;
                 case 6:
-                		System.out.println("zigZigRightTopDown");
-                        this.zigZigRightTopDown(node);
-                        break;
-                case 7:
                 		System.out.println("zigZagLeftTopDown");
                         this.zigZagLeftTopDown(node);
+                        break;
+                case 7:
+                		System.out.println("zigZigRightTopDown");
+                        this.zigZigRightTopDown(node);
                         break;
                 case 8:
                 		System.out.println("zigZagRightTopDown");

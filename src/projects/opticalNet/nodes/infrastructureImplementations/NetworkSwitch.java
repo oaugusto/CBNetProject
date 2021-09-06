@@ -144,6 +144,8 @@ public class NetworkSwitch extends Node {
         InputNode inNode = this.inputId2Node.get(in);
         OutputNode outNode = this.outputId2Node.get(out);
 
+        System.out.println("In: " + in + " out: " + out);
+        
         inNode.getConnectedNode().setChild(inNode, subtreeId);
         this.connectNodes(inNode, outNode);
     }
@@ -185,12 +187,12 @@ public class NetworkSwitch extends Node {
             if (!(msg instanceof ConnectNodesMessage)) {
                 continue;
             }
-//            ConnectNodesMessage conmsg = (ConnectNodesMessage) msg;
-//            if (conmsg.getSubtreeId() == -1) {
-//            	this.updateSwitch(conmsg.getFrom(), conmsg.getTo());
-//            } else {
-//            	this.updateSwitch(conmsg.getFrom(), conmsg.getTo(), conmsg.getSubtreeId());
-//            }
+            ConnectNodesMessage conmsg = (ConnectNodesMessage) msg;
+            if (conmsg.getSubtreeId() == -1) {
+            	this.updateSwitch(conmsg.getFrom(), conmsg.getTo());
+            } else {
+            	this.updateSwitch(conmsg.getFrom(), conmsg.getTo(), conmsg.getSubtreeId());
+            }
         }
     }
 
