@@ -156,27 +156,17 @@ public class NetworkController extends SynchronizerLayer {
         Node z = y.getParent();
         Node w = z.getParent();
 
+        this.debugNode(w);
+        this.debugNode(z);
+        this.debugNode(y);
+        this.debugNode(x);
+
         boolean leftZigZig = (y.getId() == z.getLeftChild().getId());
         Node c = (leftZigZig) ? y.getRightChild() : y.getLeftChild();
 
         this.mapConn(z, c, y);
         this.mapConn(y, z);
         this.mapConn(w, y);
-
-        System.out.println("ID: " + y.getId() + " lftID: "
-                + y.getLeftChild().getId()
-                + " rgtID: " + y.getRightChild().getId() + " parentId: " + y.getParent().getId());
-        System.out.println("ID: " + y.getId() + " lftSUB: "
-                + y.getMinId()
-                + " rgtSUB: " + y.getMaxId());
-        System.out.println("ID: " + z.getId() + " lftID: "
-            + z.getLeftChild().getId()
-            + " rgtID: " + z.getRightChild().getId() + " parentId: " + z.getParent().getId());
-        System.out.println("ID: " + z.getId() + " lftSUB: "
-                + z.getMinId()
-                + " rgtSUB: " + z.getMaxId());
-
-        Tools.fatalError("Parou");
 
         // calculate the new rank of nodes
         // type of operation----------------------------------------------------
@@ -213,6 +203,11 @@ public class NetworkController extends SynchronizerLayer {
         boolean leftZigZag = (y.getId() == z.getLeftChild().getId());
         Node b = (leftZigZag) ? x.getLeftChild() : x.getRightChild();
         Node c = (leftZigZag) ? x.getRightChild() : x.getLeftChild();
+
+        this.debugNode(w);
+        this.debugNode(z);
+        this.debugNode(y);
+        this.debugNode(x);
 
         this.mapConn(y, b, x);
         this.mapConn(x, y);
@@ -252,6 +247,11 @@ public class NetworkController extends SynchronizerLayer {
         Node y = z.getLeftChild();
         Node c = y.getRightChild();
 
+        this.debugNode(w);
+        this.debugNode(z);
+        this.debugNode(y);
+        this.debugNode(x);
+
         this.mapConn(z, c, y);
         this.mapConn(y, z);
         this.mapConn(w, y);
@@ -277,6 +277,11 @@ public class NetworkController extends SynchronizerLayer {
     	Node w = z.getParent();
         Node y = z.getRightChild();
         Node c = y.getLeftChild();
+
+        this.debugNode(w);
+        this.debugNode(z);
+        this.debugNode(y);
+        this.debugNode(x);
 
         this.mapConn(z, c, y);
         this.mapConn(y, z);
@@ -315,6 +320,11 @@ public class NetworkController extends SynchronizerLayer {
         Node b = x.getLeftChild();
         Node c = x.getRightChild();
 
+        this.debugNode(w);
+        this.debugNode(y);
+        this.debugNode(x);
+        this.debugNode(z);
+
         this.mapConn(y, b, x);
         this.mapConn(x, y);
         this.mapConn(z, c, x);
@@ -345,6 +355,11 @@ public class NetworkController extends SynchronizerLayer {
         Node x = y.getLeftChild();
         Node b = x.getRightChild();
         Node c = x.getLeftChild();
+
+        this.debugNode(w);
+        this.debugNode(z);
+        this.debugNode(y);
+        this.debugNode(x);
 
         this.mapConn(y, b, x);
         this.mapConn(x, y);
@@ -821,6 +836,13 @@ public class NetworkController extends SynchronizerLayer {
 
             this.incrementPathWeight(optmsg.getSrc(), optmsg.getDst());
         }
+    }
+
+    public void debugNode (Node node) {
+        System.out.println("ID: " + node.getId() + " lftID: "
+            + node.getLeftChild().getId()
+            + " rgtID: " + node.getRightChild().getId() + " parentId: " + node.getParent().getId()
+        );
     }
 
     @Override
