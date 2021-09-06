@@ -155,14 +155,14 @@ public class NetworkController extends SynchronizerLayer {
         Node y = x.getParent();
         Node z = y.getParent();
         Node w = z.getParent();
-        
+
         boolean leftZigZig = (y.getId() == z.getLeftChild().getId());
         Node c = (leftZigZig) ? y.getRightChild() : y.getLeftChild();
 
         this.mapConn(z, c, y);
         this.mapConn(y, z);
         this.mapConn(w, y);
-        
+
         System.out.println("ID: " + y.getId() + " lftID: "
                 + y.getLeftChild().getId()
                 + " rgtID: " + y.getRightChild().getId() + " parentId: " + y.getParent().getId());
@@ -175,7 +175,7 @@ public class NetworkController extends SynchronizerLayer {
         System.out.println("ID: " + z.getId() + " lftSUB: "
                 + z.getMinId()
                 + " rgtSUB: " + z.getMaxId());
-        
+
         Tools.fatalError("Parou");
 
         // calculate the new rank of nodes
@@ -351,7 +351,7 @@ public class NetworkController extends SynchronizerLayer {
         this.mapConn(z, c, x);
         this.mapConn(x, z);
         this.mapConn(w, x);
-        
+
         // new weights------------------------------------------------------
         long xOldWeight = x.getWeight();
         long yOldWeight = y.getWeight();
@@ -464,8 +464,8 @@ public class NetworkController extends SynchronizerLayer {
                             operation = 1;
                     }
             } else
-            if (y.getRightChild().getId() != -1 && x.getId() == y.getRightChild().getId() &&
-                    z.getRightChild().getId() != -1 && y.getId() == z.getRightChild().getId()) {
+            if (this.isValidNode(y.getRightChild()) && x.getId() == y.getRightChild().getId() &&
+                    this.isValidNode(z.getRightChild()) && y.getId() == z.getRightChild().getId()) {
                     // zigzigRight
                     double aux = zigDiffRank(y, z);
                     if (aux < maxDelta) {
@@ -473,8 +473,8 @@ public class NetworkController extends SynchronizerLayer {
                             operation = 2;
                     }
             } else
-            if (y.getRightChild().getId() != -1 && x.getId() == y.getRightChild().getId() &&
-                    z.getLeftChild().getId() != -1 && y.getId() == z.getLeftChild().getId()) {
+            if (this.isValidNode(y.getRightChild()) && x.getId() == y.getRightChild().getId() &&
+                    this.isValidNode(z.getLeftChild()) && y.getId() == z.getLeftChild().getId()) {
                     // zigzagLeft
                     double aux = zigZagDiffRank(x, y, z);
                     if (aux < maxDelta) {
@@ -482,8 +482,8 @@ public class NetworkController extends SynchronizerLayer {
                             operation = 3;
                     }
             } else
-            if (y.getLeftChild().getId() != -1 && x.getId() == y.getLeftChild().getId() &&
-                    z.getRightChild().getId() != -1 && y.getId() == z.getRightChild().getId()) {
+            if (this.isValidNode(y.getLeftChild()) && x.getId() == y.getLeftChild().getId() &&
+                    this.isValidNode(z.getRightChild()) && y.getId() == z.getRightChild().getId()) {
                     // zigzagRight
                     double aux = zigZagDiffRank(x, y, z);
                     if (aux < maxDelta) {
@@ -494,11 +494,11 @@ public class NetworkController extends SynchronizerLayer {
         }
 
         /*top-down - BEGIN*/
-        if (x.getLeftChild().getId() != -1) {
+        if (this.isValidNode(x.getLeftChild())) {
                 Node y = x.getLeftChild();
 
                 // zigzig left top-down
-                if (y.getLeftChild().getId() != -1) {
+                if (this.isValidNode(y.getLeftChild())) {
                         Node z = y.getLeftChild();
                         double aux = zigDiffRank(y, z);
                         if (aux < maxDelta) {
@@ -508,7 +508,7 @@ public class NetworkController extends SynchronizerLayer {
                 }
 
                 // zigzag left top-down
-                if (y.getRightChild().getId() != -1) {
+                if (this.isValidNode(y.getRightChild())) {
                         Node z = y.getRightChild();
                         double aux = zigDiffRank(y, z);
                         if (aux < maxDelta) {
@@ -518,11 +518,11 @@ public class NetworkController extends SynchronizerLayer {
                 }
         }
 
-        if (x.getRightChild().getId() != -1) {
+        if (this.isValidNode(x.getRightChild())) {
                 Node y = x.getRightChild();
 
                 // zigzig right top-down
-                if (y.getRightChild().getId() != -1) {
+                if (this.isValidNode(y.getRightChild())) {
                         Node z = y.getRightChild();
                         double aux = zigDiffRank(y, z);
                         if (aux < maxDelta) {
@@ -532,7 +532,7 @@ public class NetworkController extends SynchronizerLayer {
                 }
 
                 // zigzag right top-down
-                if (y.getLeftChild().getId() != -1) {
+                if (this.isValidNode(y.getLeftChild())) {
                         Node z = y.getLeftChild();
                         double aux = zigDiffRank(y, z);
                         if (aux < maxDelta) {
@@ -660,7 +660,7 @@ public class NetworkController extends SynchronizerLayer {
     private boolean areSameCluster (Node node1, Node node2) {
         return this.getClusterId(node1) == this.getClusterId(node2);
     }
-    
+
     private boolean isValidNode (Node node) {
     	if (node.getId() == -1) {
     		return false;
@@ -682,7 +682,7 @@ public class NetworkController extends SynchronizerLayer {
         } else if (toNode.getId() == this.numNodes) {
         	Tools.fatalError("Trying to make root node as a child");
         }
-        
+
         this.getSwitch(swtId).updateSwitch(fromNode.getId() + 1, toNode.getId() + 1, subtreeId);
 		this.getSwitch(swtId + 1).updateSwitch(toNode.getId() + 1, fromNode.getId() + 1);
 
@@ -699,7 +699,7 @@ public class NetworkController extends SynchronizerLayer {
         } else if (toNode.getId() == this.numNodes) {
         	Tools.fatalError("Trying to make root node as a child");
         }
-        
+
         this.sendConnectNodesMessage(swtId, fromNode.getId() + 1, toNode.getId() + 1, subtreeId);
         this.sendConnectNodesMessage(swtId + 1, toNode.getId() + 1, fromNode.getId() + 1);
     }
@@ -714,7 +714,7 @@ public class NetworkController extends SynchronizerLayer {
         } else if (toNode.getId() == this.numNodes) {
         	Tools.fatalError("Trying to make root node as a child");
         }
-        
+
         this.sendConnectNodesMessage(swtId, fromNode.getId() + 1, toNode.getId() + 1, subtreeId);
         this.sendConnectNodesMessage(swtId + 1, toNode.getId() + 1, fromNode.getId() + 1);
     }
