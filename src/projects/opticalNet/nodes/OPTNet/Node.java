@@ -81,7 +81,6 @@ public class Node {
             return;
 
         this.parent.resetChild(this);
-        System.out.println("AQUIIIIIII!!");
         this.parent = parent;
     }
 
@@ -189,8 +188,6 @@ public class Node {
 
     public void incrementPathWeight (int toId, boolean rooted) {
         this.incrementWeight();
-        System.out.println("NODE: " + this.getId() + " parent: " + this.parent.getId() + " ToId: " + toId);
-        System.out.println("NODE: " + this.getId() + " Minid: " + this.minId + " ToId: " + toId);
 
         if (!rooted && this.parent.getId() != -1) {
             this.parent.incrementPathWeight(toId, false);

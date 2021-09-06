@@ -19,8 +19,8 @@ public class CustomGlobal extends AbstractCustomGlobal {
     public long MAX_REQ;
 
     // simulation
-    public int numberOfNodes = 128;
-    public int switchSize = 128;
+    public int numberOfNodes = 16;
+    public int switchSize = 16;
     public NetworkController controller = null;
     public ArrayList<NetworkNode> netNodes = new ArrayList<>();
 
@@ -68,7 +68,7 @@ public class CustomGlobal extends AbstractCustomGlobal {
         * read input data and configure the simulation
         */
         this.requestQueue = new RequestQueue(input);
-        this.numberOfNodes = this.requestQueue.getNumberOfNodes();
+//        this.numberOfNodes = this.requestQueue.getNumberOfNodes();
         MAX_REQ = this.requestQueue.getNumberOfRequests();
 
         for (int i = 0; i < this.numberOfNodes; i++) {
@@ -106,7 +106,7 @@ public class CustomGlobal extends AbstractCustomGlobal {
             }
 
             Tuple<Integer, Integer> r = this.requestQueue.getNextRequest();
-            TriggerNodeOperation ted = new TriggerNodeOperation(r.first, r.second);
+            TriggerNodeOperation ted = new TriggerNodeOperation(r.first%16+1, r.second%16+1);
             ted.startGlobalTimer(x);
 
         }

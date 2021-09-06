@@ -703,26 +703,13 @@ public class NetworkController extends SynchronizerLayer {
     }
 
     private void mapConn (Node fromNode, Node toNode) {
-    	System.out.println("From Node: " + fromNode.getId() + " to node: " + toNode.getId());
-        int swtId = this.getSwitchId(fromNode, toNode);
-        int subtreeId = fromNode.setChild(toNode) + 1;
-
-        if (fromNode.getId() == this.numNodes) {
-        	return;
-        } else if (toNode.getId() == -1) {
-        	return;
-        } else if (toNode.getId() == this.numNodes) {
-        	Tools.fatalError("Trying to make root node as a child");
-        }
-
-        this.sendConnectNodesMessage(swtId, fromNode.getId() + 1, toNode.getId() + 1, subtreeId);
-        this.sendConnectNodesMessage(swtId + 1, toNode.getId() + 1, fromNode.getId() + 1);
+        this.mapConn(fromNode, toNode, new Node(-1));
     }
 
     private void mapConn (Node fromNode, Node toNode, Node oldParent) {
-    	System.out.println("From Node: " + fromNode.getId() + " to node: " + toNode.getId());
         int swtId = this.getSwitchId(fromNode, toNode);
         int subtreeId = fromNode.setChild(toNode, oldParent) + 1;
+        System.out.println("From Node: " + fromNode.getId() + " to node: " + toNode.getId() + " in switch: " + swtId);
 
         if (fromNode.getId() == this.numNodes) {
         	return;
@@ -733,7 +720,10 @@ public class NetworkController extends SynchronizerLayer {
         }
 
         if (swtId >= 8) {
-            this.switches.get(i).debugSwitch();
+        	System.out.println("UnioPos: " + this.unionPos(
+                    this.getClusterId(fromNode), this.getClusterId(toNode)
+            ));
+            this.switches.get(swtId).debugSwitch();
         }
 
         this.sendConnectNodesMessage(swtId, fromNode.getId() + 1, toNode.getId() + 1, subtreeId);

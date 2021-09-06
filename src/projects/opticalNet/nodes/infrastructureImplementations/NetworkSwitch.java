@@ -145,6 +145,8 @@ public class NetworkSwitch extends Node {
         OutputNode outNode = this.outputId2Node.get(out);
 
         System.out.println("In: " + in + " out: " + out);
+        if (this.index > 8)
+        	this.debugSwitch();
 
         inNode.getConnectedNode().setChild(inNode, subtreeId);
         this.connectNodes(inNode, outNode);
@@ -154,6 +156,9 @@ public class NetworkSwitch extends Node {
         InputNode inNode = this.inputId2Node.get(in);
         OutputNode outNode = this.outputId2Node.get(out);
 
+        System.out.println("In: " + in + " out: " + out);
+//        this.debugSwitch();
+        
         inNode.getConnectedNode().setParent(inNode);
         this.connectNodes(inNode, outNode);
     }
