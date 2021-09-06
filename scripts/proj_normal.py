@@ -22,11 +22,10 @@ file = open("scripts/logs/projectorLog.txt", "a+")
 file_lock = threading.Lock()
 
 # projects = ["optnet", "simplenet", "displaynet", "cbnet", "cbnetAdapt"]
-projects = ["cbnetAdapt"]
+projects = ["optnet", "simplenet", "displaynet", "cbnet"]
 # project = sys.argv[1]
 
 # parameters of simulation
-delayInt = [30, 100, 500, 1000]
 numData = [1, 2, 4]
 numSimulations = 1
 
@@ -67,14 +66,13 @@ for project in projects:
 
     # generate all possibles inputs for simulation
     for n in numData:
-        for i in delayInt:
-            input = 'input/{}_tor_128.txt'.format(n)
-            output = 'output/projector_adapt/{}/{}'.format(project, n)
-            cmd = '{} {} -overwrite input={} output={} decayTime={} AutoStart=true > /dev/null'.format(command, project, input, output, i)
+        input = 'input/{}_tor_128.txt'.format(n)
+        output = 'output/projector_adapt/{}/{}'.format(project, n)
+        cmd = '{} {} -overwrite input={} output={} AutoStart=true > /dev/null'.format(command, project, input, output)
 
-            # not executed yet
-            if cmd not in log:
-                commands.append(cmd)
+        # not executed yet
+        if cmd not in log:
+            commands.append(cmd)
 
     numCommands = len(commands)
 
