@@ -1,5 +1,7 @@
 package projects.opticalNet.nodes.OPTNet;
 
+import sinalgo.tools.Tools;
+
 public class Node {
 
 	/* Attributes */
@@ -87,7 +89,7 @@ public class Node {
             Tools.fatalError(
                 "Trying to add a Dummy node to " + ID + " without specifying its parent"
             );
-
+            return -1;
         } else if (this.getId() > child.getId()) {
         	this.getLeftChild().resetNode(this);
             return this.setLeftChild(child);
@@ -177,7 +179,7 @@ public class Node {
 
     public void incrementPathWeight (int toId, boolean rooted) {
         this.incrementWeight();
-//        System.out.println("NODE: " + this.getId() + " parent: " + this.parent.getId() + " ToId: " + toId);
+        System.out.println("NODE: " + this.getId() + " parent: " + this.parent.getId() + " ToId: " + toId);
         System.out.println("NODE: " + this.getId() + " Minid: " + this.minId + " ToId: " + toId);
 
         if (!rooted && this.parent.getId() != -1) {

@@ -13,6 +13,7 @@ import projects.opticalNet.nodes.messages.NetworkMessage;
 import sinalgo.gui.transformation.PositionTransformation;
 import sinalgo.nodes.messages.Inbox;
 import sinalgo.nodes.messages.Message;
+import sinalgo.tools.Tools;
 
 public class NetworkController extends SynchronizerLayer {
 
@@ -155,11 +156,29 @@ public class NetworkController extends SynchronizerLayer {
 
         Node y = x.getParent();
         Node z = y.getParent();
+        Node w = z.getParent();
+        
         boolean leftZigZig = (y.getId() == z.getLeftChild().getId());
         Node c = (leftZigZig) ? y.getRightChild() : y.getLeftChild();
 
         this.mapConn(z, c, y);
         this.mapConn(y, z);
+        this.mapConn(w, y);
+        
+        System.out.println("ID: " + y.getId() + " lftID: "
+                + y.getLeftChild().getId()
+                + " rgtID: " + y.getRightChild().getId() + " parentId: " + y.getParent().getId());
+        System.out.println("ID: " + y.getId() + " lftSUB: "
+                + y.getMinId()
+                + " rgtSUB: " + y.getMaxId());
+        System.out.println("ID: " + z.getId() + " lftID: "
+            + z.getLeftChild().getId()
+            + " rgtID: " + z.getRightChild().getId() + " parentId: " + z.getParent().getId());
+        System.out.println("ID: " + z.getId() + " lftSUB: "
+                + z.getMinId()
+                + " rgtSUB: " + z.getMaxId());
+        
+        Tools.fatalError("Parou");
 
         // calculate the new rank of nodes
         // type of operation----------------------------------------------------
@@ -231,11 +250,13 @@ public class NetworkController extends SynchronizerLayer {
              / \
             a   b
         */
+    	Node w = z.getParent();
         Node y = z.getLeftChild();
         Node c = y.getRightChild();
 
         this.mapConn(z, c, y);
         this.mapConn(y, z);
+        this.mapConn(w, y);
 
         // calculate the new rank of nodes
         // type of operation----------------------------------------------------
@@ -255,11 +276,13 @@ public class NetworkController extends SynchronizerLayer {
     }
 
     private void zigZigRightTopDown (Node z) {
+    	Node w = z.getParent();
         Node y = z.getRightChild();
         Node c = y.getLeftChild();
 
         this.mapConn(z, c, y);
         this.mapConn(y, z);
+        this.mapConn(w, y);
 
         // calculate the new rank of nodes
         // type of operation----------------------------------------------------
@@ -288,6 +311,7 @@ public class NetworkController extends SynchronizerLayer {
                      / \
                     b   c
         */
+    	Node w = z.getParent();
         Node y = z.getLeftChild();
         Node x = y.getRightChild();
         Node b = x.getLeftChild();
@@ -297,6 +321,7 @@ public class NetworkController extends SynchronizerLayer {
         this.mapConn(x, y);
         this.mapConn(z, c, x);
         this.mapConn(x, z);
+        this.mapConn(w, x);
 
         // new weights------------------------------------------------------
         long xOldWeight = x.getWeight();
@@ -317,6 +342,7 @@ public class NetworkController extends SynchronizerLayer {
     }
 
     private void zigZagRightTopDown (Node z) {
+    	Node w = z.getParent();
         Node y = z.getRightChild();
         Node x = y.getLeftChild();
         Node b = x.getRightChild();
@@ -326,7 +352,8 @@ public class NetworkController extends SynchronizerLayer {
         this.mapConn(x, y);
         this.mapConn(z, c, x);
         this.mapConn(x, z);
-
+        this.mapConn(w, x);
+        
         // new weights------------------------------------------------------
         long xOldWeight = x.getWeight();
         long yOldWeight = y.getWeight();

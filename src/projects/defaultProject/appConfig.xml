@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <sinalgo>
-	<ProjectSelector windowWidth="600" windowHeight="400" lastChosenProject="cbnetAdapt" windowPosX="655" windowPosY="198" isMaximized="false" selectedTab="1" />
+	<ProjectSelector windowWidth="600" windowHeight="400" lastChosenProject="opticalNet" windowPosX="655" windowPosY="198" isMaximized="false" selectedTab="1" />
 	<GUI windowWidth="800" windowHeight="550" windowPosX="342" windowPosY="276" isMaximized="true" ControlPanelExpandSimulation="true" ControlPanelShowFullViewPanel="true" ControlPanelShowTextPanel="true" ControlPanelShowProjectControl="true" RunOperationIsLimited="false" helpWindowWidth="500" helpWindowHeight="500" helpWindowPosX="200" helpWindowPosY="200" helpWindowIsMaximized="false" />
-	<RandomSeed seedFromPreviousRun="-8741927838172708410" />
-	<App lastSelectedFileDirectory="" checkForUpdatesAtStartup="true" updateCheckTimeStamp="1630759137830" runCmdLineArgs="-overwrite input=input/tor_128.txt output=output/tor decayTime=30 " />
+	<RandomSeed seedFromPreviousRun="-6528668757784184760" />
+	<App lastSelectedFileDirectory="" checkForUpdatesAtStartup="true" updateCheckTimeStamp="1630888990389" runCmdLineArgs="-overwrite input=input/tor_128.txt output=output/tor decayTime=30 " />
 	<GenNodesDlg numNodes="100" />
 </sinalgo>
 
