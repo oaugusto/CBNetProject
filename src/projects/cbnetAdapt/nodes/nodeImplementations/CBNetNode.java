@@ -1,4 +1,4 @@
-package projects.cbnet.nodes.nodeImplementations;
+package projects.cbnetAdapt.nodes.nodeImplementations;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -6,8 +6,8 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Random;
 
-import projects.cbnet.nodes.messages.CBNetMessage;
-import projects.cbnet.nodes.tableEntry.Request;
+import projects.cbnetAdapt.nodes.messages.CBNetMessage;
+import projects.cbnetAdapt.nodes.tableEntry.Request;
 import sinalgo.gui.transformation.PositionTransformation;
 import sinalgo.runtime.Global;
 import sinalgo.tools.Tools;
