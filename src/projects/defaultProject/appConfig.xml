@@ -2,8 +2,8 @@
 <sinalgo>
 	<ProjectSelector windowWidth="600" windowHeight="400" lastChosenProject="" windowPosX="50" windowPosY="50" isMaximized="false" selectedTab="1" />
 	<GUI windowWidth="800" windowHeight="600" windowPosX="50" windowPosY="50" isMaximized="false" ControlPanelExpandSimulation="true" ControlPanelShowFullViewPanel="true" ControlPanelShowTextPanel="true" ControlPanelShowProjectControl="true" RunOperationIsLimited="true" helpWindowWidth="500" helpWindowHeight="500" helpWindowPosX="200" helpWindowPosY="200" helpWindowIsMaximized="false" />
-	<RandomSeed seedFromPreviousRun="-4174312836643991146" />
-	<App lastSelectedFileDirectory="" checkForUpdatesAtStartup="true" updateCheckTimeStamp="1601425524156" runCmdLineArgs="-batch -project seqsemisplaynet -overwrite input=input/hpcDS/cesar_mocfe.txt output=output/hpc/seqsemisplaynet/cesar_mocfe AutoStart=true " />
+	<RandomSeed seedFromPreviousRun="1292724929296917086" />
+	<App lastSelectedFileDirectory="" checkForUpdatesAtStartup="true" updateCheckTimeStamp="1601659627621" runCmdLineArgs="-batch -project seqsemisplaynet -overwrite input=input/hpcDS/cesar_mocfe.txt output=output/hpc/seqsemisplaynet/cesar_mocfe AutoStart=true " />
 	<GenNodesDlg numNodes="100" />
 </sinalgo>
 
