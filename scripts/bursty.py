@@ -22,9 +22,8 @@ file = open("scripts/logs/burstyLog.txt", "a+")
 file_lock = threading.Lock()
 
 #projects = ["optnet", "flattening", "flatnet", "splaynet", "displaynet", "semisplaynet", "seqsemisplaynet", "simplenet"]
-projects = ["splaynet", "displaynet", "flattening", "flatnet", "semisplaynet", "seqsemisplaynet"]
-#projects = ["optnet", "flattening", "flatnet", "cbnet", "seqcbnet", "splaynet", "displaynet", "simplenet"]
-#projects = ["optnet", "splaynet", "displaynet", "simplenet"]
+#projects = ["optnet", "cbnet", "seqcbnet", "splaynet", "displaynet", "simplenet"]
+projects = ["cbnetAdapt"]
 # project = sys.argv[1]
 
 # parameters of simulation

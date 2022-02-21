@@ -75,9 +75,9 @@ public class CustomGlobal extends AbstractCustomGlobal {
         lambda = (double) (1 / mu);
       }
       
-      if (Configuration.hasParameter("decayTime")) {
-        this.decayTime = (int) Configuration.getIntegerParameter("decayTime");
-      }
+      //if (Configuration.hasParameter("decayTime")) {
+      //  this.decayTime = (int) Configuration.getIntegerParameter("decayTime");
+      //}
 
     } catch (Exception e) {
       e.printStackTrace();

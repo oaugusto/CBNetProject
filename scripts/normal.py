@@ -21,11 +21,9 @@ log = set(line.rstrip() for line in open(os.path.join(log_path, log_file), 'r'))
 file = open("scripts/logs/normalLog.txt", "a+")
 file_lock = threading.Lock()
 
-#projects = ["optnet", "flattening", "flatnet", "splaynet", "displaynet", "semisplaynet", "seqsemisplaynet", "simplenet"]
-projects = ["splaynet", "displaynet", "flattening", "flatnet", "semisplaynet", "seqsemisplaynet"]
-#projects = ["simplenet", "semisplaynet", "seqsemisplaynet"]
-#projects = ["flattening", "flatnet", "cbnet", "seqcbnet", "splaynet", "displaynet", "semisplaynet", "seqsemisplaynet", "simplenet"]
-#projects = ["optnet", "splaynet", "displaynet", "simplenet"]
+#projects = ["optnet", "cbnet", "seqcbnet", "splaynet", "displaynet", "simplenet"]
+projects = ["cbnetAdapt"]
+#projects = ["splaynet", "displaynet", "flattening", "flatnet", "semisplaynet", "seqsemisplaynet"]
 # project = sys.argv[1]
 
 # parameters of simulation
