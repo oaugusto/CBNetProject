@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <sinalgo>
-	<ProjectSelector windowWidth="600" windowHeight="400" lastChosenProject="" windowPosX="50" windowPosY="50" isMaximized="false" selectedTab="1" />
-	<GUI windowWidth="800" windowHeight="600" windowPosX="50" windowPosY="50" isMaximized="false" ControlPanelExpandSimulation="true" ControlPanelShowFullViewPanel="true" ControlPanelShowTextPanel="true" ControlPanelShowProjectControl="true" RunOperationIsLimited="true" helpWindowWidth="500" helpWindowHeight="500" helpWindowPosX="200" helpWindowPosY="200" helpWindowIsMaximized="false" />
-	<RandomSeed seedFromPreviousRun="-1555969755694482690" />
-	<App lastSelectedFileDirectory="" checkForUpdatesAtStartup="true" updateCheckTimeStamp="1635855154153" runCmdLineArgs="-batch -project cbnetAdapt -overwrite input=input/p_fabDS/trace_0_8.txt output=output/pfab/cbnetAdapt/trace_0_8 AutoStart=true " />
+	<ProjectSelector windowWidth="600" windowHeight="420" lastChosenProject="seqrandomdisplaynet" windowPosX="578" windowPosY="279" isMaximized="false" selectedTab="1" />
+	<GUI windowWidth="800" windowHeight="550" windowPosX="458" windowPosY="-22" isMaximized="true" ControlPanelExpandSimulation="true" ControlPanelShowFullViewPanel="true" ControlPanelShowTextPanel="true" ControlPanelShowProjectControl="true" RunOperationIsLimited="false" helpWindowWidth="500" helpWindowHeight="500" helpWindowPosX="200" helpWindowPosY="200" helpWindowIsMaximized="false" />
+	<RandomSeed seedFromPreviousRun="-4187085541166077936" />
+	<App lastSelectedFileDirectory="" checkForUpdatesAtStartup="true" updateCheckTimeStamp="1645406651590" runCmdLineArgs="-overwrite input=input/tor_128.txt p=0.0 " />
 	<GenNodesDlg numNodes="100" />
 </sinalgo>
 
