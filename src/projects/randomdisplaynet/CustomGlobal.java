@@ -75,8 +75,9 @@ public class CustomGlobal extends AbstractCustomGlobal {
         lambda = (double) (1 / mu);
       }
       
-      if (Configuration.hasParameter("p")) {
-        p = (double) Configuration.getDoubleParameter("p");
+      if (Configuration.hasParameter("pp")) {
+        double exp = (double) Configuration.getIntegerParameter("pp");
+        p = 1 / Math.pow(2, exp);
       }
 
     } catch (Exception e) {
